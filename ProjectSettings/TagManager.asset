@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Ground
+  - Ladders
+  - Item
+  - Chest
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Ground
+  - Ladders
+  - Player
+  - Border
+  - Monster_Flying
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Background
+    uniqueID: 1847092235
+    locked: 0
+  - name: Monster
+    uniqueID: 779625009
+    locked: 0
+  - name: Character
+    uniqueID: 893202451
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 2162784421
+    locked: 0
