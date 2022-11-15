@@ -36,11 +36,11 @@ public class InputManager : MonoBehaviour
 
             mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mousePosition, transform.forward, maxDisatance);
-            ITouchedObj hasTouchedObj = hit.collider.GetComponent<ITouchedObj>(); 
+            ITouchedObj IhasTouchedObj = hit.collider.GetComponent<ITouchedObj>(); 
 
-            if(hasTouchedObj != null)
+            if(IhasTouchedObj != null)
             {
-                hasTouchedObj.Touch();
+                IhasTouchedObj.Touch();
             }
             //setClickObj(toucedObj); //클릭한 물체의 태그에 따라 기능을 실현한다.
 
@@ -64,7 +64,7 @@ public class InputManager : MonoBehaviour
         }
 
 
-        // 모바일 클릭 기능을 여기서 구현하자.
+        // 모바일 클릭 기능을 여기서 구현하자???? >>> 꼭 Touch로 해야할 필요가 있을까?
         if (Input.touchCount > 0)
         {
             //싱글터치로 구현하자, 이동하면서 상자를 열수 없게 하자!
@@ -96,7 +96,6 @@ public class InputManager : MonoBehaviour
     // switch문 이용해서 tag에 따라 기능을 실행하자.
     void setClickObj(GameObject touchedObj)
     {
-
         string touchedTag = touchedObj.tag;
         //etouchedObj = eWhatTouched.touchedTag;
 
@@ -105,9 +104,6 @@ public class InputManager : MonoBehaviour
             case "chest": // 여기서 eWhatTouched의 값을 바로 스트링으로 넣을 수는 없을까??
                 etouchedObj = eWhatTouched.chest;
                 break;
-            //case "chest":
-            //    etouchedObj = eWhatTouched.chest;
-            //    break;
             default:
                 etouchedObj = eWhatTouched.othersNoMeaning;
                 break;

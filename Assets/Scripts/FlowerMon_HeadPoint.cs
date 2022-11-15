@@ -22,7 +22,6 @@ public class FlowerMon_HeadPoint : MonoBehaviour
             PlayerMovement attackingPlayers = collision.gameObject.GetComponent<PlayerMovement>();
             if (!attackingPlayers.isGrounded) // 땅에 있을 때에는 작동하지 HeadShot 효과가 작동하지 않는다. 
             {
-                GameObject isPlayer = collision.gameObject;
 
                 ContactPoint2D cp = collision.GetContact(0);
                 Vector2 dir = cp.point - (Vector2)Tr.position; // 플레이어가 튕겨야하므로, 플레이어방향 - 현재 몬스터 방향으로 함 
