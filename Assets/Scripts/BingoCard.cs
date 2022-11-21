@@ -19,42 +19,73 @@ public class BingoCard : MonoBehaviour
     [SerializeField] Text bingoInfo;
     [SerializeField] Image completedImage;
     eBingoItem myBingoItem;
-    bool hasbingoItem;
-    bool completed;
+    bool hasbingoItem; // 방고 아이템이 세팅 되었는가?
+    bool completed; // 빙고칸이 달성되었는가?
+
+    //빙고 아이템 인포
+    string whatItem;
+    int ItemNumber;
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        Sprite imageFile = Resources.Load<Sprite>("flower") as Sprite;
+        itemImage.sprite = imageFile;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        SetBingoItem();
     }
 
-    void SetBingoItem(eBingoItem myItem)
+    void SetBingoItem()
     {
-        if (!completed) { return; }
+        if (!hasbingoItem) { return; }
 
-        switch (myItem)
+        string itemName = "N";
+
+
+        int eBingoIndex = Random.Range(0, 5);
+        myBingoItem = (eBingoItem)eBingoIndex;
+        itemName = myBingoItem.ToString();
+
+
+        if (itemName != "N")
         {
-            case eBingoItem.carrot:
-                break;
-            case eBingoItem.star:
-                break;
-            case eBingoItem.flower:
-                break;
-            case eBingoItem.slug:
-                break;
-            case eBingoItem.player:
-                break;
+            int ItemRandomNumber = Random.Range(5, 10);
+
+
+            SetImage(itemName);
+            SetBingoInfoMessage(itemName, ItemRandomNumber);
+            SetBingoItemInfo(itemName, ItemRandomNumber);
+
+            hasbingoItem = true;
+
         }
+
+
     }
 
-    void setImage(string imageName)
+    void SetImage(string imageName) // 빙고 이미지 
     {
-        itemImage = Resources.Load("Resources/" + imageName) as Image;
+        Debug.Log(imageName+ "SetImage 작동한다!");
+        Sprite imageFile = Resources.Load<Sprite>("Resources/" + imageName) as Sprite;
+        itemImage.sprite = imageFile;
     }
+
+    void SetBingoInfoMessage(string itemName, int value)
+    {
+        bingoInfo.text = itemName + value + "개";
+    }
+
+    void SetBingoItemInfo(string name, int value)
+    {
+        whatItem = name;
+        ItemNumber = value;
+
+    }
+
+    
 }
