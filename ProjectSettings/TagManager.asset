@@ -8,6 +8,7 @@ TagManager:
   - Ladders
   - Item
   - Chest
+  - BINGOCHEST
   layers:
   - Default
   - TransparentFX

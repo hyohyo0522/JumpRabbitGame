@@ -41,6 +41,7 @@ public class InputManager : MonoBehaviour
             if(IhasTouchedObj != null)
             {
                 IhasTouchedObj.Touch();
+                // ★ 터치된 오브젝트가 뭔지 eWhatTouched etouchedObj 에 enum값을 세팅하게 한다. 
             }
             //setClickObj(toucedObj); //클릭한 물체의 태그에 따라 기능을 실현한다.
 
