@@ -1,21 +1,53 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class BingoPanel : MonoBehaviour
 {
+    public event Action OnDisableEvent;
     [SerializeField] BingoCard[] myBingoCards = new BingoCard[9];
 
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-    // Update is called once per frame
-    void Update()
+
+    private void OnEnable()
     {
         //클릭한  체스트의 빙고 정보를 가져와야 한다.
-
         // 그걸 빙고판UI에 적용시켜야 한다. 
     }
+
+
+    private void OnDisable()
+    {
+        InputManager.instance.ExitITouchedObjPanel();
+        if (OnDisableEvent != null)
+        {
+            OnDisableEvent();
+            OnDisableEvent = null;
+
+        }
+
+
+    }
+
+    public void getBingoCardsInfo(eBingoItem itemNameFromChest, int ItemNumFromChest, int index)
+    {
+        for(int n =0; n< myBingoCards.Length; n++)
+        {
+            if(index == n)
+            {
+                myBingoCards[n].ShowBingoCardUI(itemNameFromChest, ItemNumFromChest);
+            }
+        }
+
+
+    }
+
+    public void showDelegateEvent()
+    {
+        string value = OnDisableEvent.ToString();
+        Debug.Log(value + "딜리게이트 이벤트가 제대로 담겼는지 확인하라.");
+    }
+
+
 }

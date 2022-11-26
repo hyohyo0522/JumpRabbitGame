@@ -9,7 +9,7 @@ public class FlowerEnemy : LivingEntity
     public LayerMask PlayerMask;
     public Transform _rightattackpoint;
     public Transform _leftattackpoint;
-    Transform playerPos;
+    Vector3 playerPos;
     bool stateInAttack;
 
     bool beDamaged=false;
@@ -81,11 +81,17 @@ public class FlowerEnemy : LivingEntity
         if (hasPlayerClose.Length > 0)
         {
             int r = Random.Range(0, hasPlayerClose.Length); // 플레이어가 2명이상 감지될 경우 랜덤으로 한명의 위치를 받아온다.
-            playerPos = hasPlayerClose[r].GetComponent<Transform>();
+            playerPos = hasPlayerClose[r].GetComponent<Transform>().position;
             StartCoroutine(UpdateXdirection());  // 플립X 코루틴 메서드 활성화
             return true;
         }
-        else return false;
+        else 
+        {
+            float randomx = Random.RandomRange(this.transform.position.x - 10, this.transform.position.x + 10);
+            Vector3 temPos = new Vector3(randomx, 0, 0);
+            playerPos = temPos; // 자꾸 Transform 값 미싱오류나서 추가함 
+            return false;
+        } 
     }
 
 
@@ -153,7 +159,7 @@ public class FlowerEnemy : LivingEntity
     private void ActivateAttack()
     {
 
-        if((this.transform.position.x - playerPos.position.x)<0)
+        if((this.transform.position.x - playerPos.x)<0)
         {
             //Debug.Log("플레이가 오른쪽에 있다."); // 점검완료
             Collider2D[] PlayerisRight = Physics2D.OverlapCircleAll((Vector2)_rightattackpoint.position,0.6f, PlayerMask);
@@ -241,7 +247,7 @@ public class FlowerEnemy : LivingEntity
         while (stateInAttack)
         {
 
-            _flowerSpriteRenderer.flipX = ((this.transform.position.x - playerPos.position.x) < 0) ? true : false;
+            _flowerSpriteRenderer.flipX = ((this.transform.position.x - playerPos.x) < 0) ? true : false;
             yield return new WaitForSeconds(3f);
         }
 

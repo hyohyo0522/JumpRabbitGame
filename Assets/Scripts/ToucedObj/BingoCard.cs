@@ -50,7 +50,7 @@ public class BingoCard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SetBingoItem();
+        //SetBingoItem();
     }
     
 
@@ -86,7 +86,7 @@ public class BingoCard : MonoBehaviour
     }
 
 
-    void ShowBingoCardUI(eBingoItem whatItem, int ItemNum, bool completed)
+    public void ShowBingoCardUI(eBingoItem whatItem, int ItemNum) //BingoPanel(부모)에서 쓰고 있는것.
     {
         string Name = whatItem.ToString();
         SetImage(Name); // 빙고 이미지 생성
@@ -94,13 +94,14 @@ public class BingoCard : MonoBehaviour
         SetBingoItemInfo(name, ItemNum);
 
         hasbingoItem = true;
+        
 
     }
 
 
     public void SetCompletedStamp()
     {
-
+        
         CompletedStamp.SetActive(true);
     }
 

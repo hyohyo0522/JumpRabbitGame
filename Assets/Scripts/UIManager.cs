@@ -29,5 +29,9 @@ public class  UIManager : MonoBehaviour
         _myCarrotCount.text = value.ToString();
     }
 
+    public void openBingoChset()
+    {
+
+    }
 
 }
