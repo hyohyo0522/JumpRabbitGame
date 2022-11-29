@@ -59,9 +59,6 @@ public class Chest : MonoBehaviour,ITouchedObj
         directIcon.gameObject.SetActive(false);
 
 
-
-
-
     }
 
     // Update is called once per frame
@@ -249,7 +246,7 @@ public class Chest : MonoBehaviour,ITouchedObj
     {
         public eBingoItem whatItem;
         public int ItemNumber;
-        bool hasComplted = false;
+        bool hasComplted { get;  set; } = false;
         PlayerMovement whoCliick = null;
 
         public bingoCardInfo()  // 생성자에서 빙고 아이템과 수를 정한다.
@@ -278,6 +275,12 @@ public class Chest : MonoBehaviour,ITouchedObj
             }
 
             ItemNumber = itemValueIndex;
+        }
+
+
+        void SaveCompleteInfo()
+        {
+
         }
 
         public void getBingoInfo()

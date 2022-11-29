@@ -11,30 +11,30 @@ public class PlayerLife : LivingEntity
 
     //점수UI 관련
     int _myScore = 0; //점수
-    public Text _scoreTxt;
+    //public Text _scoreTxt;
 
     //돈 UI관련
     int _myMoney = 100; // 돈 
-    public Text _moneyTxt;
+    //public Text _moneyTxt;
 
     //달팽이 UI관련
     int _mySlug = 0;
-    public Text _slugText;
+    //public Text _slugText;
 
     //플라워몬 Kill UI 관련
     int _killFlowers = 0;
-    public Text _flowerKill;
+    //public Text _flowerKill;
 
     // 플레이어킬 UI관련
     int _killPlayer = 0;
-    public Text _playerKill;
+   // public Text _playerKill;
 
     /* 돈과 머니 최대수치 */
     int maxMoneyAndScore = 999999;
 
     // 체력표시 UI
-    public Slider _myHeathSlider;
-    public Text _myHealthValue;
+   // public Slider _myHeathSlider;
+    //public Text _myHealthValue;
 
     public bool attacked = false;
     SpriteRenderer playerSprite;
@@ -58,18 +58,37 @@ public class PlayerLife : LivingEntity
 
         _myMovement = this.gameObject.GetComponent<PlayerMovement>();
 
-        _myHeathSlider.maxValue = MaxHealth; // 체력 슬라이더의 최댓값을 기본 체력값으로 변경
-        _myHeathSlider.value = hp; // 체력 슬라이더 값을 현재값으로 변경
 
-        //UI 텍스트 초기화
-        _myHealthValue.text = hp.ToString();
-        _moneyTxt.text = _myMoney.ToString();
-        _scoreTxt.text = _myScore.ToString();
-        _slugText.text = _mySlug.ToString();
-        _flowerKill.text = _killPlayer.ToString();
+        // --------------------------------------------
+        //UI 텍스트 초기화( 초기 버전 )
+        //_myHeathSlider.maxValue = MaxHealth; // 체력 슬라이더의 최댓값을 기본 체력값으로 변경
+        //_myHeathSlider.value = hp; // 체력 슬라이더 값을 현재값으로 변경
 
 
-        _myHeathSlider.gameObject.SetActive(true); // 체력슬라이더 활성화
+        //_myHealthValue.text = hp.ToString();
+        //_moneyTxt.text = _myMoney.ToString();
+        //_scoreTxt.text = _myScore.ToString();
+        //_slugText.text = _mySlug.ToString();
+        //_flowerKill.text = _killPlayer.ToString();
+
+        //_myHeathSlider.gameObject.SetActive(true); // 체력슬라이더 활성화
+
+        // ---------------------------------
+        //여기서부터 바꾼 버전
+
+        UIManager.instance._myHeathSlider.maxValue = MaxHealth; // 체력 슬라이더의 최댓값을 기본 체력값으로 변경
+        UIManager.instance._myHeathSlider.value = hp; // 체력 슬라이더 값을 현재값으로 변경
+
+
+        UIManager.instance._myHealthValue.text = hp.ToString();
+        UIManager.instance._moneyTxt.text = _myMoney.ToString();
+        UIManager.instance._scoreTxt.text = _myScore.ToString();
+        UIManager.instance._slugText.text = _mySlug.ToString();
+        UIManager.instance._flowerKill.text = _killPlayer.ToString();
+
+
+
+        UIManager.instance._myHeathSlider.gameObject.SetActive(true); // 체력슬라이더 활성화
 
  
     }
@@ -88,8 +107,8 @@ public class PlayerLife : LivingEntity
         base.OnDamage(value);
 
         //헬스 슬라이더 UI갱신
-        _myHeathSlider.value = hp;
-        _myHealthValue.text = hp.ToString();
+        UIManager.instance._myHeathSlider.value = hp;
+        UIManager.instance._myHealthValue.text = hp.ToString();
 
         if (hp <= 0) return; //체력이 0이하로 되었을 때에는 색깔 바뀌는 걸 방지
         StartCoroutine(onDamageforChange());
@@ -119,8 +138,8 @@ public class PlayerLife : LivingEntity
             hp += addHealth;
 
             //헬스 슬라이더 UI갱신
-            _myHeathSlider.value = hp;
-            _myHealthValue.text = hp.ToString();
+            UIManager.instance._myHeathSlider.value = hp;
+            UIManager.instance._myHealthValue.text = hp.ToString();
         }
     }
 
@@ -145,8 +164,8 @@ public class PlayerLife : LivingEntity
         {
             _myScore += value;
         }
-        
-        _scoreTxt.text = GetThousandCommaText(_myScore).ToString();
+
+        UIManager.instance._scoreTxt.text = GetThousandCommaText(_myScore).ToString();
 
     }
 
@@ -158,21 +177,21 @@ public class PlayerLife : LivingEntity
         }
 
 
-        _moneyTxt.text = GetThousandCommaText(_myMoney).ToString();
+        UIManager.instance._moneyTxt.text = GetThousandCommaText(_myMoney).ToString();
 
     }
 
     public void UpdateSlugUI(int value)
     {
         _mySlug += value;
-        _slugText.text = GetThousandCommaText(_mySlug).ToString();
+        UIManager.instance._slugText.text = GetThousandCommaText(_mySlug).ToString();
 
     }
 
     public void UpgateFlowerKillUI()
     {
         _killFlowers ++;
-        _flowerKill.text = GetThousandCommaText(_killFlowers).ToString();
+        UIManager.instance._flowerKill.text = GetThousandCommaText(_killFlowers).ToString();
     }
 
     

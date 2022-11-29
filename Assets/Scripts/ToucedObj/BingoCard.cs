@@ -25,6 +25,8 @@ public class BingoCard : MonoBehaviour
     Button myButton;
     [SerializeField] GameObject CompletedStamp;
 
+    [SerializeField] PlayerLife myPlayerInfo;
+
     //빙고 아이템 인포
     string whatItem;
     int ItemNumber;
@@ -36,6 +38,7 @@ public class BingoCard : MonoBehaviour
     private void OnEnable()
     {
         CompletedStamp.SetActive(false);
+        myPlayerInfo = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerLife>();
     }
 
     // Start is called before the first frame update
@@ -98,6 +101,17 @@ public class BingoCard : MonoBehaviour
 
     }
 
+
+    public void OnClick()
+    {
+        // ★나중에 멀티플레이어 기능 추가될 때,
+        // 여기서 버튼을 클릭한 플레이어의 정보를 저장하는 오브젝트를 추가해야할 것 같다. 
+        if (!completed)
+        {
+
+        }
+        SetCompletedStamp();
+    }
 
     public void SetCompletedStamp()
     {

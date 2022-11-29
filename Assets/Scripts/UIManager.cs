@@ -24,14 +24,25 @@ public class  UIManager : MonoBehaviour
 
     public Text _myCarrotCount; // 점프당근 횟수
 
+    public Text _scoreTxt;     // 스타UI 관련
+    public Text _moneyTxt;      //돈 UI관련
+    public Text _slugText; // 슬러그 겟 관련 UI
+    public Text _flowerKill;    //플라워몬 Kill UI 관련
+    public Text _playerKill;    // 플레이어킬 UI관련
+
+
+    // 체력표시 UI
+    public Slider _myHeathSlider;
+    public Text _myHealthValue;
+
+
+
+
     public void UpdateCarrotText(int value)
     {
         _myCarrotCount.text = value.ToString();
     }
 
-    public void openBingoChset()
-    {
 
-    }
 
 }

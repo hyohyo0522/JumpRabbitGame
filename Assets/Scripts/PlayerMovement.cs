@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -65,6 +66,10 @@ public class PlayerMovement : MonoBehaviour
     public event Action ImRevie;
     bool notRevive;
 
+
+
+
+
     void Start()
     {
         playerAnimator = GetComponent<Animator>();
@@ -73,11 +78,13 @@ public class PlayerMovement : MonoBehaviour
         playerCollider = GetComponent<Collider2D>();
 
 
+
+
         //점프 카운트 리셋을 위한 이벤트 등록 
         //Ground ground = FindObjectOfType<Ground>();
         //ground.playerTouched += resetJumpCount;
 
-        
+
 
     }
 
@@ -94,7 +101,11 @@ public class PlayerMovement : MonoBehaviour
             GroundCheck();
             Jump();
             Walk();
-            HasNearItem();
+
+            if (!InputManager.instance.touchOn) // InputManger에서 관리하는 창들이 열려있을 때에는 아이템을 먹지 않는다. 
+            {
+                HasNearItem();
+            }
             //CheckbeingFlying();
 
 
@@ -210,6 +221,7 @@ public class PlayerMovement : MonoBehaviour
         if (m_HorizontalMovement != 0)
         {
             playerAnimator.SetBool("DoWalk", true);
+            InputManager.instance.ClickAllCancleFamButton();
         }
         else playerAnimator.SetBool("DoWalk", false);
 
@@ -222,7 +234,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKey(KeyCode.UpArrow))
         {
-
+            InputManager.instance.ClickAllCancleFamButton();
             if (!isGrounded) return;
 
             if (!JumpEnable) return;
@@ -425,6 +437,8 @@ public class PlayerMovement : MonoBehaviour
         Destroy(pungPlay.gameObject, pungAniPlayTime);
 
     }
+
+
 
     //public void onDamageforChange() // 다른 스크립트에서 이 스크립트 내 코루틴 메서드 실행하는 것을 도와줌
     //{

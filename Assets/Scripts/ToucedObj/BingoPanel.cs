@@ -17,19 +17,6 @@ public class BingoPanel : MonoBehaviour
     }
 
 
-    private void OnDisable()
-    {
-        InputManager.instance.ExitITouchedObjPanel();
-        if (OnDisableEvent != null)
-        {
-            OnDisableEvent();
-            OnDisableEvent = null;
-
-        }
-
-
-    }
-
     public void getBingoCardsInfo(eBingoItem itemNameFromChest, int ItemNumFromChest, int index)
     {
         for(int n =0; n< myBingoCards.Length; n++)
@@ -43,11 +30,20 @@ public class BingoPanel : MonoBehaviour
 
     }
 
-    public void showDelegateEvent()
+    public void showDelegateEvent() // 
     {
         string value = OnDisableEvent.ToString();
         Debug.Log(value + "딜리게이트 이벤트가 제대로 담겼는지 확인하라.");
     }
 
+    public void DoOnDisableEvent() // Cancle 버튼이 눌릴 때 이 메소드가 작동되게 컴포넌트에서 등록해놓을 것이다. 
+    {
+        if (OnDisableEvent != null)
+        {
+            OnDisableEvent();
+            OnDisableEvent = null;
+
+        }
+    }
 
 }

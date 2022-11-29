@@ -38,10 +38,24 @@ public class InputManager : MonoBehaviour
 
     private Touch hasTouch;
     private Vector2 touchPos;
-    private bool touchOn;
+    public bool touchOn;
     float maxDisatance = 15f;
 
     eWhatTouched now_etouchedObj;
+
+
+    //게임창
+    [SerializeField] GameObject ChestPanelUI; // 빙고창
+
+
+    //InputManager에서 관리하는 창들의 리스트로 담아놓는다.
+    [SerializeField] GameObject myCanvas; // 컴포넌트 창에서 할당할 것이다. 
+    [SerializeField] List<GameObject> CancleButtonFam = new List<GameObject>(); // 컴포넌트 창에서 할당할 것이다. 
+
+    private void Awake()
+    {
+
+    }
 
     private void FixedUpdate()
     {
@@ -51,11 +65,11 @@ public class InputManager : MonoBehaviour
 
             mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mousePosition, transform.forward, maxDisatance);
-            ITouchedObj IhasTouchedObj = hit.collider.GetComponent<ITouchedObj>(); 
-            
 
-            if(IhasTouchedObj != null)
+
+            if (hit)
             {
+                ITouchedObj IhasTouchedObj = hit.collider.GetComponent<ITouchedObj>();
                 // Debug.Log("상자가 클릭되었다. HASITouche 찾음");
                 if (!touchOn) // 다른 ITouchedObj가 선택되어있는 상황이라면 다른 ITouchedObj작용이 일어나지 않도록 한다.
                 {
@@ -64,13 +78,38 @@ public class InputManager : MonoBehaviour
                     now_etouchedObj = IhasTouchedObj.Return_WhatTouched();
                     return;
                 }
+                else
+                {
+
+                    // ★ Cancle 버튼을 눌러도(=해당 게임창이 꺼져도) 
+                    // 계속 touchOn이 True로 남아있는 경우가 있어서 
+                    // 이런 경우도 창이 계속 켜질 수 있도록 코드를 추가.
+
+                    // ActiveSelf로 해당하는 게임 창들을 직접 검사한다.
+                    if (hit.collider.CompareTag("Chest")) // 게임창이 많아지면 이걸 Enum으로도 만들 수 있을 것 같다. 
+                    {
+                        if (!ChestPanelUI.activeSelf)
+                        {
+                            touchOn = false;
+                        }
+                    }
+                    
+
+                }
+
+
+
 
             }
+
+            // 
 
 
 
             if (touchOn)
             {
+
+
 
                 switch (now_etouchedObj)
                 {
@@ -132,17 +171,28 @@ public class InputManager : MonoBehaviour
 
     public void ExitITouchedObjPanel()
     {
-        if (touchOn)
-        {
+
             touchOn = false;
             now_etouchedObj = eWhatTouched.othersNoMeaning;
 
-        
-        }
 
     }
 
 
+    public void ClickAllCancleFamButton()
+    {
+        for(int i=0; i< CancleButtonFam.Count; i++)
+        {
+
+                CancleButtonFam[i].GetComponent<Button>().onClick.Invoke();
+
+        }
+
+        if (touchOn)
+        {
+            touchOn = false;
+        }
+    }
 
 
 }
