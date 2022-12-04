@@ -46,6 +46,8 @@ public class InputManager : MonoBehaviour
 
     //게임창
     [SerializeField] GameObject ChestPanelUI; // 빙고창
+    [SerializeField] Image[] normalCoinButtons = new Image[3];
+    [SerializeField] GameObject ComboCoinButton;
 
 
     //InputManager에서 관리하는 창들의 리스트로 담아놓는다.
@@ -80,7 +82,6 @@ public class InputManager : MonoBehaviour
                 }
                 else
                 {
-
                     // ★ Cancle 버튼을 눌러도(=해당 게임창이 꺼져도) 
                     // 계속 touchOn이 True로 남아있는 경우가 있어서 
                     // 이런 경우도 창이 계속 켜질 수 있도록 코드를 추가.
@@ -106,15 +107,13 @@ public class InputManager : MonoBehaviour
 
 
 
-            if (touchOn)
+            if (touchOn) 
             {
-
-
 
                 switch (now_etouchedObj)
                 {
                     case eWhatTouched.chest: // 체스트가 선택되었을 때 
-                        
+
                         break;
                 }
 

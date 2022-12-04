@@ -20,12 +20,13 @@ public class BingoCard : MonoBehaviour
     [SerializeField] Image completedImage;
     eBingoItem myBingoItem;
     bool hasbingoItem; // 방고 아이템이 세팅 되었는가?
-    bool completed; // 빙고칸이 달성되었는가?
+    public bool completed; // 빙고칸이 달성되었는가?
 
     Button myButton;
     [SerializeField] GameObject CompletedStamp;
-
+    [SerializeField] BingoPanel myParentBigoPanel;
     [SerializeField] PlayerLife myPlayerInfo;
+    
 
     //빙고 아이템 인포
     string whatItem;
@@ -39,6 +40,7 @@ public class BingoCard : MonoBehaviour
     {
         CompletedStamp.SetActive(false);
         myPlayerInfo = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerLife>();
+        myParentBigoPanel = GetComponentInParent<BingoPanel>();
     }
 
     // Start is called before the first frame update
@@ -57,39 +59,39 @@ public class BingoCard : MonoBehaviour
     }
     
 
-    void SetBingoItem()
-    {
-        if (hasbingoItem) { return; }
+    //void SetBingoItem()
+    //{
+    //    if (hasbingoItem) { return; }
 
-        string itemName = "N";
-
-
-        int eBingoIndex = Random.Range(0, 5);
-        myBingoItem = (eBingoItem)eBingoIndex;
-
-        itemName = myBingoItem.ToString();
-        Debug.Log(itemName + "아이템 네임이 적용되었다.");
+    //    string itemName = "N";
 
 
-        if (itemName != "N")
-        {
-            //int ItemRandomNumber = Random.Range(5, 10);
+    //    int eBingoIndex = Random.Range(0, 5);
+    //    myBingoItem = (eBingoItem)eBingoIndex;
+
+    //    itemName = myBingoItem.ToString();
+    //    Debug.Log(itemName + "아이템 네임이 적용되었다.");
 
 
-            SetImage(itemName);
-            setInfoByEnum();
-            SetBingoInfoMessage(itemName, itemValueIndex);
-            SetBingoItemInfo(itemName, itemValueIndex);
-
-            hasbingoItem = true;
-
-        }
+    //    if (itemName != "N")
+    //    {
+    //        //int ItemRandomNumber = Random.Range(5, 10);
 
 
-    }
+    //        SetImage(itemName);
+    //        setInfoByEnum();
+    //        SetBingoInfoMessage(itemName, itemValueIndex);
+    //        SetBingoItemInfo(itemName, itemValueIndex);
+
+    //        hasbingoItem = true;
+
+    //    }
 
 
-    public void ShowBingoCardUI(eBingoItem whatItem, int ItemNum) //BingoPanel(부모)에서 쓰고 있는것.
+    //}
+
+
+    public void ShowBingoCardUI(eBingoItem whatItem, int ItemNum, bool isCompleted) //BingoPanel(부모)에서 쓰고 있는것.
     {
         string Name = whatItem.ToString();
         SetImage(Name); // 빙고 이미지 생성
@@ -97,7 +99,14 @@ public class BingoCard : MonoBehaviour
         SetBingoItemInfo(name, ItemNum);
 
         hasbingoItem = true;
-        
+
+
+        if (isCompleted)
+        {
+            SetCompletedStamp();
+        }
+        completed = isCompleted;
+
 
     }
 
@@ -105,18 +114,25 @@ public class BingoCard : MonoBehaviour
     public void OnClick()
     {
         // ★나중에 멀티플레이어 기능 추가될 때,
-        // 여기서 버튼을 클릭한 플레이어의 정보를 저장하는 오브젝트를 추가해야할 것 같다. 
+        // 여기서 버튼을 클릭한 플레이어의 정보를 저장해서 BingoPanel을 통해
+        // Chset에 저장하는 메소드를 추가해야할 것 같다. 
         if (!completed)
         {
+            SetCompletedStamp();
+            myParentBigoPanel.GetNewClick();
 
         }
-        SetCompletedStamp();
+
+       
+
+
     }
 
     public void SetCompletedStamp()
     {
         
         CompletedStamp.SetActive(true);
+        completed = true;
     }
 
     void setInfoByEnum()

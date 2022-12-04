@@ -153,10 +153,12 @@ public class Chest : MonoBehaviour,ITouchedObj
         if (serialziedbingGoUI != null) //여기가 작동이 안되어서 오류가 났던 것 같다. 
         {
             serialziedbingGoUI.OnDisableEvent += () => TouchNull();
+            serialziedbingGoUI.SetChset(this);
 
             for (int n = 0; n < myBingoChest.Length; n++) // Chest의 정보를  빙고판에 넘겨준다.
             {
-                serialziedbingGoUI.getBingoCardsInfo(myBingoChest[n].whatItem, myBingoChest[n].ItemNumber, n);
+                serialziedbingGoUI.getBingoCardsInfo(myBingoChest[n].whatItem, 
+                    myBingoChest[n].ItemNumber, myBingoChest[n].isComplted, n); // 여기다가 Completed 정보를 집어넣자!! 
             }
 
             touchOn = true;
@@ -246,7 +248,7 @@ public class Chest : MonoBehaviour,ITouchedObj
     {
         public eBingoItem whatItem;
         public int ItemNumber;
-        bool hasComplted { get;  set; } = false;
+        public bool isComplted  = false;
         PlayerMovement whoCliick = null;
 
         public bingoCardInfo()  // 생성자에서 빙고 아이템과 수를 정한다.
@@ -278,9 +280,9 @@ public class Chest : MonoBehaviour,ITouchedObj
         }
 
 
-        void SaveCompleteInfo()
+        public void SetCompleted() // 나중에 여기에 빙고판 클릭한 플레이어 정보 집어넣기
         {
-
+            isComplted = true;
         }
 
         public void getBingoInfo()
@@ -290,6 +292,14 @@ public class Chest : MonoBehaviour,ITouchedObj
         }
 
     }
+
+    public void GetCompletedinfoFromUI(int N)
+    {
+        myBingoChest[N].SetCompleted();
+    }
+
+    //빙고판이 다 완성되었을 때! 체스트가 잠시 정지되었다가 재활성화 되는 것을 해야한다!!
+
 }
 
 

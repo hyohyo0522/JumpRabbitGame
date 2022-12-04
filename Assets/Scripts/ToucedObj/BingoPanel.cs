@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
 public class BingoPanel : MonoBehaviour
 {
     public event Action OnDisableEvent;
     [SerializeField] BingoCard[] myBingoCards = new BingoCard[9];
+    [SerializeField] bool[] myBingoCompletedInfo = new bool[9];
+    [SerializeField] Chest theChsetTouched = null; // 클릭한 보물상자의 정보를 여기다가 저장한다. 
+
 
     // Start is called before the first frame update
 
@@ -17,18 +21,29 @@ public class BingoPanel : MonoBehaviour
     }
 
 
-    public void getBingoCardsInfo(eBingoItem itemNameFromChest, int ItemNumFromChest, int index)
+    // ★여기다가 클릭될때마다 빙고줄 완성 감지해서, 돈아이콘 활성화. 
+    private void Update()
     {
-        for(int n =0; n< myBingoCards.Length; n++)
-        {
-            if(index == n)
-            {
-                myBingoCards[n].ShowBingoCardUI(itemNameFromChest, ItemNumFromChest);
-            }
-        }
+        // ★ 배열에 잇는 빙고카드들의 클릭이벤트를 감지하는 기능을 구현하자.   
 
 
     }
+
+    //체스트의 정보를 가져온다. 
+    public void getBingoCardsInfo(eBingoItem itemNameFromChest, int ItemNumFromChest, bool isCompleted, int index)
+    {
+        for (int n = 0; n < myBingoCards.Length; n++)
+        {
+            if (index == n)
+            {
+                myBingoCards[n].ShowBingoCardUI(itemNameFromChest, ItemNumFromChest, isCompleted);
+                myBingoCompletedInfo[n] = isCompleted;// 기존 완료된 빙고의 정보를 저장한 후, 새로운 클릭과 비교한다.
+            }
+        }
+
+    }
+
+
 
     public void showDelegateEvent() // 
     {
@@ -46,4 +61,140 @@ public class BingoPanel : MonoBehaviour
         }
     }
 
+    public void GetNewClick()
+    {
+        for (int i = 0; i < myBingoCards.Length; i++) // 기존 빙고정보와 비교한다. 
+        {
+           if (myBingoCards[i].completed != myBingoCompletedInfo[i])
+            {
+                myBingoCompletedInfo[i] = myBingoCards[i].completed;
+                TryNewLineEnable(i);
+                theChsetTouched.GetCompletedinfoFromUI(i); // 클릭된 빙고판의 정보를 체스트에 넘겨준다.
+            }
+
+        }
+    }
+
+
+    public void TryNewLineEnable(int newBingoIndex)
+    {
+        int newLine = 0;
+        // [1] 가로줄 검사 >> 칸이 하나 완성될 때, 최대 가로줄 생성갯수는 1개  
+        switch (newBingoIndex/3)
+        {
+            case 0: //빙고 가로 첫번째줄
+                if (ChecBingoCount(0, 1, 2) == 2)
+                {
+                    newLine++;
+                }
+                break;
+            case 1://빙고 가로 두번째줄
+                if (ChecBingoCount(3, 4, 5) == 2)
+                {
+                    newLine++;
+                }
+                break;
+            case 2://빙고 가로 세번째줄
+                if (ChecBingoCount(6, 7, 8) == 2)
+                {
+                    newLine++;
+                }
+                break;
+        }
+        //[2] 세로줄 검사 >> 칸이 하나 완성될 때, 최대 세로줄 생성갯수는 1개
+        switch (newBingoIndex % 2)
+        {
+            case 0: //빙고 세로 첫번째줄
+                if (ChecBingoCount(0, 3, 6) == 2)
+                {
+                    newLine++;
+                }
+                break;
+            case 1://빙고 세로 두번째줄
+                if (ChecBingoCount(1, 4, 7) == 2)
+                {
+                    newLine++;
+                }
+                break;
+            case 2://빙고 세로 세번째줄
+                if (ChecBingoCount(2, 5, 8) == 2)
+                {
+                    newLine++;
+                }
+                break;
+        }
+        //[3] 대각선 검사 >> 칸이 하나 완성될 때, 최대 대각선 생성갯수는 2개 : newBingoIndex가 4일때 유일.
+
+        if (newBingoIndex%2 == 0) //대각선줄에 있으려면 인덱스 수가 짝수여야 한다. 
+        {
+            switch (newBingoIndex)
+            {
+                case 0:
+                case 8:
+                    if (ChecBingoCount(0, 4, 8) == 2)
+                    {
+                        newLine++;
+                    }
+                        break;
+                case 2:
+                case 6:
+                    if (ChecBingoCount(0, 2, 6) == 2)
+                    {
+                        newLine++;
+                    }
+                    break;
+                case 4:
+                    if (ChecBingoCount(0, 4, 8) == 2)
+                    {
+                        newLine++;
+                    }
+                    if (ChecBingoCount(0, 2, 6) == 2)
+                    {
+                        newLine++;
+                    }
+                    break;
+
+            }
+        }
+        myBingoCompletedInfo[newBingoIndex] = true;
+
+        //newLine 갯수에 따라 돈 먹는 아이콘 활성화
+    }
+
+    int ChecBingoCount(int a, int b, int c)
+    {
+        int completedCount = 0;
+        if (myBingoCompletedInfo[a])
+        {
+            completedCount++;
+        }
+
+        if (myBingoCompletedInfo[b])
+        {
+            completedCount++;
+        }
+
+        if (myBingoCompletedInfo[c])
+        {
+            completedCount++;
+        }
+
+        return completedCount;
+    }
+
+    void EnableMoneyButton()
+    {
+
+    }
+
+    public void SetChset(Chest Touched)
+    {
+        if(theChsetTouched != null)
+        {
+            theChsetTouched = null;
+
+        }
+
+        theChsetTouched = Touched;
+    }
 }
