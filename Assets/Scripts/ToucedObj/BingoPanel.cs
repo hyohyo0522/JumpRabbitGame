@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
+using Random = UnityEngine.Random;
 
 
 public class BingoPanel : MonoBehaviour
@@ -11,13 +13,31 @@ public class BingoPanel : MonoBehaviour
     [SerializeField] bool[] myBingoCompletedInfo = new bool[9];
     [SerializeField] Chest theChsetTouched = null; // 클릭한 보물상자의 정보를 여기다가 저장한다. 
 
+    //코인 버튼
+    [SerializeField] GameObject[] NormalButtons = new GameObject[3];
+    [SerializeField] List<GameObject> NotInteratctableNormal= new List<GameObject>(); 
+    [SerializeField] GameObject ComboCoin;
+
+    // 코인버튼 관련 값
+    [SerializeField] int ComboMoney;
+    Color ButtonColor;
+
+    
+    [SerializeField] Color UnEnableforNormal;
+    [SerializeField] Color EnableforNormal;
+    [SerializeField] Color UnEnableforCombo;
+    [SerializeField] Color EnableforCombo;
+
+
+
 
     // Start is called before the first frame update
 
     private void OnEnable()
     {
-        //클릭한  체스트의 빙고 정보를 가져와야 한다.
-        // 그걸 빙고판UI에 적용시켜야 한다. 
+
+
+
     }
 
 
@@ -75,6 +95,8 @@ public class BingoPanel : MonoBehaviour
         }
     }
 
+   
+
 
     public void TryNewLineEnable(int newBingoIndex)
     {
@@ -83,19 +105,19 @@ public class BingoPanel : MonoBehaviour
         switch (newBingoIndex/3)
         {
             case 0: //빙고 가로 첫번째줄
-                if (ChecBingoCount(0, 1, 2) == 2)
+                if (ChecKBingoCount(0, 1, 2) == 2)
                 {
                     newLine++;
                 }
                 break;
             case 1://빙고 가로 두번째줄
-                if (ChecBingoCount(3, 4, 5) == 2)
+                if (ChecKBingoCount(3, 4, 5) == 2)
                 {
                     newLine++;
                 }
                 break;
             case 2://빙고 가로 세번째줄
-                if (ChecBingoCount(6, 7, 8) == 2)
+                if (ChecKBingoCount(6, 7, 8) == 2)
                 {
                     newLine++;
                 }
@@ -105,19 +127,19 @@ public class BingoPanel : MonoBehaviour
         switch (newBingoIndex % 2)
         {
             case 0: //빙고 세로 첫번째줄
-                if (ChecBingoCount(0, 3, 6) == 2)
+                if (ChecKBingoCount(0, 3, 6) == 2)
                 {
                     newLine++;
                 }
                 break;
             case 1://빙고 세로 두번째줄
-                if (ChecBingoCount(1, 4, 7) == 2)
+                if (ChecKBingoCount(1, 4, 7) == 2)
                 {
                     newLine++;
                 }
                 break;
             case 2://빙고 세로 세번째줄
-                if (ChecBingoCount(2, 5, 8) == 2)
+                if (ChecKBingoCount(2, 5, 8) == 2)
                 {
                     newLine++;
                 }
@@ -131,24 +153,24 @@ public class BingoPanel : MonoBehaviour
             {
                 case 0:
                 case 8:
-                    if (ChecBingoCount(0, 4, 8) == 2)
+                    if (ChecKBingoCount(0, 4, 8) == 2)
                     {
                         newLine++;
                     }
                         break;
                 case 2:
                 case 6:
-                    if (ChecBingoCount(0, 2, 6) == 2)
+                    if (ChecKBingoCount(0, 2, 6) == 2)
                     {
                         newLine++;
                     }
                     break;
                 case 4:
-                    if (ChecBingoCount(0, 4, 8) == 2)
+                    if (ChecKBingoCount(0, 4, 8) == 2)
                     {
                         newLine++;
                     }
-                    if (ChecBingoCount(0, 2, 6) == 2)
+                    if (ChecKBingoCount(0, 2, 6) == 2)
                     {
                         newLine++;
                     }
@@ -159,9 +181,73 @@ public class BingoPanel : MonoBehaviour
         myBingoCompletedInfo[newBingoIndex] = true;
 
         //newLine 갯수에 따라 돈 먹는 아이콘 활성화
+        switch (newLine)
+        {
+            case 4:
+                ComboMoney = 1000;
+                ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
+                EnableMoneyButton(ComboCoin);
+                for (int i = 0; i < NormalButtons.Length; i++)
+                {
+                    if (NormalButtons[i].GetComponent<Button>().interactable == false)
+                    {
+                        EnableMoneyButton(NormalButtons[i]);
+                    }
+
+                }
+                break;
+            case 3:
+                ComboMoney = 500;
+                ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
+                EnableMoneyButton(ComboCoin);
+ 
+                for (int i = 0; i < NormalButtons.Length; i++)
+                {
+                    if (NormalButtons[i].GetComponent<Button>().interactable == false)
+                    {
+                        EnableMoneyButton(NormalButtons[i]);
+                    }
+
+                }
+                break;
+            case 2:
+                ComboMoney = 300;
+                ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
+                EnableMoneyButton(ComboCoin);
+
+
+                break;
+        }
+
+        if (newLine >= 2 )
+        {
+            //콤보코인 돈의 양을 다르게 한다. 
+            ComboMoney = 1000;
+            ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
+            EnableMoneyButton(ComboCoin);
+            for(int i=0; i< NormalButtons.Length; i++)
+            {
+                EnableMoneyButton(NormalButtons[i]);
+            }   
+        }else if (newLine == 3)
+        {
+            ComboMoney = 700;
+            ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
+            EnableMoneyButton(ComboCoin);
+            for (int i = 0; i < NormalButtons.Length; i++)
+            {
+                EnableMoneyButton(NormalButtons[i]);
+            }
+        }
+        else if (newLine == 2)
+        {
+            // ★리스트로 NotInteractabble 에 함수 추가 
+        }
+
+
     }
 
-    int ChecBingoCount(int a, int b, int c)
+    int ChecKBingoCount(int a, int b, int c)
     {
         int completedCount = 0;
         if (myBingoCompletedInfo[a])
@@ -182,8 +268,26 @@ public class BingoPanel : MonoBehaviour
         return completedCount;
     }
 
-    void EnableMoneyButton()
+    void EnableMoneyButton(GameObject CoinButtonObj)
     {
+        //버튼 컬러 활성화 컬러로 수정
+        if (CoinButtonObj.name.StartsWith("C")) // 콤보
+        {
+            ChangeButtonColor("00FF2D");
+        }
+        else
+        {
+            ChangeButtonColor("FF0000"); // 노멀
+        }
+        //콤보코인버튼이냐, 노멀버튼이냐에 따라 색깔을 다르게 지정한다. 
+
+        CoinButtonObj.GetComponent<Image>().color = ButtonColor;
+
+            
+        //버튼 활성화
+        Button myButton = CoinButtonObj.GetComponent<Button>();
+        myButton.interactable = true;
+
 
     }
 
@@ -196,5 +300,12 @@ public class BingoPanel : MonoBehaviour
         }
 
         theChsetTouched = Touched;
+    }
+
+    void ChangeButtonColor(string hexcod)
+    {
+        
+        ColorUtility.TryParseHtmlString(hexcod, out ButtonColor);
+
     }
 }
