@@ -87,8 +87,9 @@ public class BingoPanel : MonoBehaviour
         {
            if (myBingoCards[i].completed != myBingoCompletedInfo[i])
             {
-                myBingoCompletedInfo[i] = myBingoCards[i].completed;
+                Debug.Log("빙고 클릭 넘버 : " + i);
                 TryNewLineEnable(i);
+                myBingoCompletedInfo[i] = myBingoCards[i].completed;
                 theChsetTouched.GetCompletedinfoFromUI(i); // 클릭된 빙고판의 정보를 체스트에 넘겨준다.
             }
 
@@ -108,18 +109,21 @@ public class BingoPanel : MonoBehaviour
                 if (ChecKBingoCount(0, 1, 2) == 2)
                 {
                     newLine++;
+                    Debug.Log("빙고줄 가로 1 ");
                 }
                 break;
             case 1://빙고 가로 두번째줄
                 if (ChecKBingoCount(3, 4, 5) == 2)
                 {
                     newLine++;
+                    Debug.Log("빙고줄 가로 2 ");
                 }
                 break;
             case 2://빙고 가로 세번째줄
                 if (ChecKBingoCount(6, 7, 8) == 2)
                 {
                     newLine++;
+                    Debug.Log("빙고줄 가로 3 ");
                 }
                 break;
         }
@@ -130,18 +134,21 @@ public class BingoPanel : MonoBehaviour
                 if (ChecKBingoCount(0, 3, 6) == 2)
                 {
                     newLine++;
+                    Debug.Log("빙고줄 세로 1 ");
                 }
                 break;
             case 1://빙고 세로 두번째줄
                 if (ChecKBingoCount(1, 4, 7) == 2)
                 {
                     newLine++;
+                    Debug.Log("빙고줄 세로 2 ");
                 }
                 break;
             case 2://빙고 세로 세번째줄
                 if (ChecKBingoCount(2, 5, 8) == 2)
                 {
                     newLine++;
+                    Debug.Log("빙고줄 세로 3 ");
                 }
                 break;
         }
@@ -156,6 +163,7 @@ public class BingoPanel : MonoBehaviour
                     if (ChecKBingoCount(0, 4, 8) == 2)
                     {
                         newLine++;
+                        Debug.Log("빙고줄 대각선 1 ");
                     }
                         break;
                 case 2:
@@ -163,16 +171,19 @@ public class BingoPanel : MonoBehaviour
                     if (ChecKBingoCount(0, 2, 6) == 2)
                     {
                         newLine++;
+                        Debug.Log("빙고줄 대각선 2 ");
                     }
                     break;
                 case 4:
                     if (ChecKBingoCount(0, 4, 8) == 2)
                     {
                         newLine++;
+                        Debug.Log("빙고줄 대각선 3 ");
                     }
-                    if (ChecKBingoCount(0, 2, 6) == 2)
+                    if (ChecKBingoCount(2, 4, 6) == 2)
                     {
                         newLine++;
+                        Debug.Log("빙고줄 대각선 4 ");
                     }
                     break;
 
@@ -214,38 +225,39 @@ public class BingoPanel : MonoBehaviour
                 ComboMoney = 300;
                 ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
                 EnableMoneyButton(ComboCoin);
-
-
+                MakeNewListOfNotInteratctableNormal(2);
                 break;
+            case 1:
+                MakeNewListOfNotInteratctableNormal(1);
+                break;
+
         }
 
-        if (newLine >= 2 )
-        {
-            //콤보코인 돈의 양을 다르게 한다. 
-            ComboMoney = 1000;
-            ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
-            EnableMoneyButton(ComboCoin);
-            for(int i=0; i< NormalButtons.Length; i++)
-            {
-                EnableMoneyButton(NormalButtons[i]);
-            }   
-        }else if (newLine == 3)
-        {
-            ComboMoney = 700;
-            ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
-            EnableMoneyButton(ComboCoin);
-            for (int i = 0; i < NormalButtons.Length; i++)
-            {
-                EnableMoneyButton(NormalButtons[i]);
-            }
-        }
-        else if (newLine == 2)
-        {
-            // ★리스트로 NotInteractabble 에 함수 추가 
-        }
 
 
     }
+
+    void MakeNewListOfNotInteratctableNormal(int lineNum) //리스트를 이용해 아직 버튼활성화 안된 버튼을 램덤으로 활성화
+    {
+        for (int n = 0; n < lineNum; n++)
+        {
+            NotInteratctableNormal?.Clear();
+            for (int i = 0; i < NormalButtons.Length; i++)
+            {
+                if (NormalButtons[i].gameObject.GetComponent<Button>().interactable == false)
+                {
+                    NotInteratctableNormal.Add(NormalButtons[i]);
+                }
+            }
+
+            int a = Random.Range(0, NotInteratctableNormal.Count);
+            EnableMoneyButton(NotInteratctableNormal[a]);
+            //NotInteratctableNormal[a].gameObject.GetComponent<Button>().interactable = true;
+        }
+
+    }
+
+
 
     int ChecKBingoCount(int a, int b, int c)
     {
