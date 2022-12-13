@@ -19,7 +19,7 @@ public class BingoPanel : MonoBehaviour
     [SerializeField] GameObject ComboCoin;
 
     // 코인버튼 관련 값
-    [SerializeField] int ComboMoney;
+    public static int ComboMoney;
     Color ButtonColor;
 
     
@@ -28,6 +28,9 @@ public class BingoPanel : MonoBehaviour
     [SerializeField] Color UnEnableforCombo;
     [SerializeField] Color EnableforCombo;
 
+
+    //플레이어 정보 가져오기
+    PlayerLife Myplayer;
 
 
 
@@ -128,7 +131,7 @@ public class BingoPanel : MonoBehaviour
                 break;
         }
         //[2] 세로줄 검사 >> 칸이 하나 완성될 때, 최대 세로줄 생성갯수는 1개
-        switch (newBingoIndex % 2)
+        switch ((int)(newBingoIndex % 2))
         {
             case 0: //빙고 세로 첫번째줄
                 if (ChecKBingoCount(0, 3, 6) == 2)
@@ -137,7 +140,7 @@ public class BingoPanel : MonoBehaviour
                     Debug.Log("빙고줄 세로 1 ");
                 }
                 break;
-            case 1://빙고 세로 두번째줄
+            case 1://빙고 세로 두번째줄 // 세로줄 로직이 이상함.
                 if (ChecKBingoCount(1, 4, 7) == 2)
                 {
                     newLine++;
@@ -174,17 +177,28 @@ public class BingoPanel : MonoBehaviour
                         Debug.Log("빙고줄 대각선 2 ");
                     }
                     break;
-                case 4:
-                    if (ChecKBingoCount(0, 4, 8) == 2)
+                case 4: //여기를 손봐줘야함 .. 2개가 찍힐 수 있도록 해야함 
+                    if(myBingoCompletedInfo[0] && myBingoCompletedInfo[8])
                     {
                         newLine++;
                         Debug.Log("빙고줄 대각선 3 ");
                     }
-                    if (ChecKBingoCount(2, 4, 6) == 2)
+
+                    if (myBingoCompletedInfo[2] && myBingoCompletedInfo[6])
                     {
                         newLine++;
                         Debug.Log("빙고줄 대각선 4 ");
                     }
+                    //if (ChecKBingoCount(0, 4, 8) == 2)
+                    //{
+                    //    newLine++;
+
+                    //}
+                    //if (ChecKBingoCount(2, 4, 6) == 2)
+                    //{
+                    //    newLine++;
+                    //    Debug.Log("빙고줄 대각선 4 ");
+                    //}
                     break;
 
             }
@@ -196,7 +210,7 @@ public class BingoPanel : MonoBehaviour
         {
             case 4:
                 ComboMoney = 1000;
-                ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
+                ComboCoin.transform.GetChild(0).GetComponent<Text>().text = "Combo" + "\n" + "\n" + "\n" + "\n" + ComboMoney.ToString();
                 EnableMoneyButton(ComboCoin);
                 for (int i = 0; i < NormalButtons.Length; i++)
                 {
@@ -209,7 +223,7 @@ public class BingoPanel : MonoBehaviour
                 break;
             case 3:
                 ComboMoney = 500;
-                ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
+                ComboCoin.transform.GetChild(0).GetComponent<Text>().text = "Combo" + "\n" + "\n" + "\n" + "\n" + ComboMoney.ToString();
                 EnableMoneyButton(ComboCoin);
  
                 for (int i = 0; i < NormalButtons.Length; i++)
@@ -223,7 +237,7 @@ public class BingoPanel : MonoBehaviour
                 break;
             case 2:
                 ComboMoney = 300;
-                ComboCoin.GetComponentInChildren<Text>().text = "Combo" + "\n" + "\n" + "\n" + ComboMoney.ToString();
+                ComboCoin.transform.GetChild(0).GetComponent<Text>().text = "Combo" + "\n" + "\n" + "\n" + "\n" + ComboMoney.ToString();
                 EnableMoneyButton(ComboCoin);
                 MakeNewListOfNotInteratctableNormal(2);
                 break;
@@ -285,14 +299,15 @@ public class BingoPanel : MonoBehaviour
         //버튼 컬러 활성화 컬러로 수정
         if (CoinButtonObj.name.StartsWith("C")) // 콤보
         {
-            ChangeButtonColor("00FF2D");
+            ChangeButtonColor("#00FF2D"); // (!) 유니티 컬러팔레트에서 뽑은 hexadecimal에서 #을 붙여야 한다.
         }
         else
         {
-            ChangeButtonColor("FF0000"); // 노멀
+            ChangeButtonColor("#FF0000"); // 노멀
         }
         //콤보코인버튼이냐, 노멀버튼이냐에 따라 색깔을 다르게 지정한다. 
 
+        Debug.Log(ButtonColor);
         CoinButtonObj.GetComponent<Image>().color = ButtonColor;
 
             
@@ -319,5 +334,23 @@ public class BingoPanel : MonoBehaviour
         
         ColorUtility.TryParseHtmlString(hexcod, out ButtonColor);
 
+    }
+
+    public void OnBinggoButtonClick(int binggoIndex)
+    {
+        //플레이어 캐릭터의 돈먹는 기능은 컴포넌트 OnClick에서 직접 playerLife의 함수에 접근한다.
+        if(binggoIndex == 3)
+        {
+            ComboCoin.gameObject.GetComponent<Button>().interactable = false;
+            ChangeButtonColor("#002E08");
+            ComboCoin.GetComponent<Image>().color = ButtonColor;
+
+
+            return;
+        }
+
+        NormalButtons[binggoIndex].gameObject.GetComponent<Button>().interactable = false;
+        ChangeButtonColor("#4B0000");
+        NormalButtons[binggoIndex].GetComponent<Image>().color = ButtonColor;
     }
 }
