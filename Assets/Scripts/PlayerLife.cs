@@ -171,6 +171,10 @@ public class PlayerLife : LivingEntity
 
     public void UpdateMoney(int value) // 돈 관련 UI
     {
+        if(value ==3) // 콤보코인인지 확인
+        {
+            value = BingoPanel.ComboMoney;
+        }
         if(_myMoney <= maxMoneyAndScore)
         {
             _myMoney += value;

@@ -314,6 +314,18 @@ MonoBehaviour:
           m_StringArgument: 2
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 123444948}
+        m_TargetAssemblyTypeName: PlayerLife, Assembly-CSharp
+        m_MethodName: UpdateMoney
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 100
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &25744490
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14137,6 +14149,18 @@ MonoBehaviour:
           m_StringArgument: 0
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 123444948}
+        m_TargetAssemblyTypeName: PlayerLife, Assembly-CSharp
+        m_MethodName: UpdateMoney
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 100
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1079619895
 GameObject:
   m_ObjectHideFlags: 0
@@ -16518,6 +16542,18 @@ MonoBehaviour:
           m_StringArgument: 1
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 123444948}
+        m_TargetAssemblyTypeName: PlayerLife, Assembly-CSharp
+        m_MethodName: UpdateMoney
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 100
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1852326548
 GameObject:
   m_ObjectHideFlags: 0
@@ -17121,6 +17157,18 @@ MonoBehaviour:
           m_StringArgument: 3
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 123444948}
+        m_TargetAssemblyTypeName: PlayerLife, Assembly-CSharp
+        m_MethodName: UpdateMoney
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2006884053
 GameObject:
   m_ObjectHideFlags: 0
@@ -17327,7 +17375,6 @@ MonoBehaviour:
   - {fileID: 19037655}
   NotInteratctableNormal: []
   ComboCoin: {fileID: 2000679807}
-  ComboMoney: 0
   UnEnableforNormal: {r: 0, g: 0, b: 0, a: 0}
   EnableforNormal: {r: 0, g: 0, b: 0, a: 0}
   UnEnableforCombo: {r: 0, g: 0, b: 0, a: 0}
@@ -17591,10 +17638,30 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 363103457687877425, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 363103457687877426, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
+      propertyPath: pung
+      value: 
+      objectReference: {fileID: 7419763835651070386, guid: 1a1888bd427858d4aa5e3a2db8e8d8ac, type: 3}
     - target: {fileID: 363103457687877426, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
       propertyPath: bingGoUI
       value: 
       objectReference: {fileID: 396417869}
+    - target: {fileID: 363103457687877427, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 363103457687877427, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 363103457687877427, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 363103457687877580, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
       propertyPath: m_RootOrder
       value: 18
@@ -17637,6 +17704,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 363103457687877580, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 363103457687877581, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
+      propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

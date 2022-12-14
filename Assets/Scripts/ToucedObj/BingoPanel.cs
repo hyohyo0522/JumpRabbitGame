@@ -71,7 +71,6 @@ public class BingoPanel : MonoBehaviour
     public void showDelegateEvent() // 
     {
         string value = OnDisableEvent.ToString();
-        Debug.Log(value + "딜리게이트 이벤트가 제대로 담겼는지 확인하라.");
     }
 
     public void DoOnDisableEvent() // Cancle 버튼이 눌릴 때 이 메소드가 작동되게 컴포넌트에서 등록해놓을 것이다. 
@@ -91,9 +90,11 @@ public class BingoPanel : MonoBehaviour
            if (myBingoCards[i].completed != myBingoCompletedInfo[i])
             {
                 Debug.Log("빙고 클릭 넘버 : " + i);
+
                 TryNewLineEnable(i);
                 myBingoCompletedInfo[i] = myBingoCards[i].completed;
                 theChsetTouched.GetCompletedinfoFromUI(i); // 클릭된 빙고판의 정보를 체스트에 넘겨준다.
+
             }
 
         }
@@ -131,7 +132,7 @@ public class BingoPanel : MonoBehaviour
                 break;
         }
         //[2] 세로줄 검사 >> 칸이 하나 완성될 때, 최대 세로줄 생성갯수는 1개
-        switch ((int)(newBingoIndex % 2))
+        switch ((int)(newBingoIndex % 3))
         {
             case 0: //빙고 세로 첫번째줄
                 if (ChecKBingoCount(0, 3, 6) == 2)
@@ -140,7 +141,7 @@ public class BingoPanel : MonoBehaviour
                     Debug.Log("빙고줄 세로 1 ");
                 }
                 break;
-            case 1://빙고 세로 두번째줄 // 세로줄 로직이 이상함.
+            case 1://빙고 세로 두번째줄 /
                 if (ChecKBingoCount(1, 4, 7) == 2)
                 {
                     newLine++;

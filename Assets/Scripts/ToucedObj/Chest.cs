@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using Random = UnityEngine.Random;
 
 
 public class Chest : MonoBehaviour,ITouchedObj
@@ -24,12 +26,25 @@ public class Chest : MonoBehaviour,ITouchedObj
     [SerializeField] float openBouncePower = 2000f;
 
     //체스트 빙고 관련 정보
-    bingoCardInfo[] myBingoChest;  // 빙고판 관련 아이템 정보
+    bingoCardInfo[] myBingoChest = new bingoCardInfo[9];  // 빙고판 관련 아이템 정보
     bool hasBingoInfo;// 빙고판 관련 정보가 생성되었는지 확인
     GameObject bingoUI;
-    [SerializeField] GameObject bingGoUI; 
+    [SerializeField] GameObject bingGoUI;
+
 
     public bool touchOn; // 빙고UI가 열렸는가?
+
+    //빙고 다 완료될 때 필요한 변수,오브젝트들
+    [SerializeField] int completedBingoNum = 0;
+    public GameObject pung; // 죽을 때 펑 애니메이션 재생
+    string colorCodeUnEnable = "#477848";
+    string colorCodeEnable = "#FFFFFF";
+    private BoxCollider2D thisCollider;
+    [SerializeField] float reSetTime;
+    float maxResetTime = 20f;
+    float minResetTime = 7f;
+
+
 
 
 
@@ -57,6 +72,7 @@ public class Chest : MonoBehaviour,ITouchedObj
         isOpen = false;
         chestAnimator = GetComponent<Animator>();
         directIcon.gameObject.SetActive(false);
+        thisCollider = GetComponent<BoxCollider2D>();
 
 
     }
@@ -67,6 +83,29 @@ public class Chest : MonoBehaviour,ITouchedObj
 
         if (!isOpen)
         {
+            if (completedBingoNum == 9) // 빙고가 닫히면서, 빙고판이 다 완성 되었다면 일정시간이 지난 후, 새로운 빙고판을 만든다.
+            {
+                if (reSetTime >= 0)
+                {
+                    reSetTime -= Time.deltaTime;
+                    if (reSetTime <= 0)
+                    {
+                        SetNewBingoChest();
+                    }
+                    return; // 리턴을 넣어서 빙고가 비활성화상태일 경우, 플레이어를 튕기는 기능까지 접근하지 않도록 한다. 
+                }
+
+                //빙고판을 비활성화시키는 기능.
+                reSetTime = Random.Range(minResetTime, maxResetTime);
+                GameObject pungPlay = Instantiate(pung, this.transform.position, Quaternion.identity);
+                thisCollider.enabled = false;
+                Color whenUnenableColor;
+                ColorUtility.TryParseHtmlString(colorCodeUnEnable, out whenUnenableColor);
+                this.GetComponent<Image>().color = whenUnenableColor;
+
+            }
+
+
             if (this.GetComponent<BoxCollider2D>().IsTouchingLayers(1 << 8)) //상자
             {
                 Collider2D[] hasNearPlayer = Physics2D.OverlapCircleAll((Vector2)playerDetectPoint.position, playerDetectRadius, 1 << 8);
@@ -82,6 +121,8 @@ public class Chest : MonoBehaviour,ITouchedObj
                 }
                 openChest();
             }
+
+
 
         }
 
@@ -231,7 +272,9 @@ public class Chest : MonoBehaviour,ITouchedObj
 
     void SetNewBingoChest() //체스트가 가지고 있는 빙고판 정보. 
     {
-        myBingoChest = new bingoCardInfo[9];
+        completedBingoNum = 0;
+
+        Array.Clear(myBingoChest,0,9); // 빙고판 클리어 
         
         for(int n =0; n < myBingoChest.Length; n++) // 9개의 새로운 빙고카드를 생성.
         {
@@ -239,6 +282,15 @@ public class Chest : MonoBehaviour,ITouchedObj
         }
 
         hasBingoInfo = true;
+
+        if (thisCollider.enabled == false)
+        {
+            thisCollider.enabled = true; //클릭 가능한 상태로 만들기
+            Color whenEnableColor;
+            ColorUtility.TryParseHtmlString(colorCodeEnable, out whenEnableColor);
+            this.GetComponent<Image>().color = whenEnableColor;   // 샐깔 원래 상태로 되돌리기
+        }
+
 
     }
 
@@ -295,10 +347,13 @@ public class Chest : MonoBehaviour,ITouchedObj
 
     public void GetCompletedinfoFromUI(int N)
     {
+
         myBingoChest[N].SetCompleted();
+        completedBingoNum++;
+
     }
 
-    //빙고판이 다 완성되었을 때! 체스트가 잠시 정지되었다가 재활성화 되는 것을 해야한다!!
+
 
 }
 
