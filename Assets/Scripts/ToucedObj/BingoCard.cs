@@ -111,7 +111,7 @@ public class BingoCard : MonoBehaviour
     }
 
 
-    public void OnClick()
+    public void OnClick(int n)
     {
         // ★나중에 멀티플레이어 기능 추가될 때,
         // 여기서 버튼을 클릭한 플레이어의 정보를 저장해서 BingoPanel을 통해
@@ -119,7 +119,7 @@ public class BingoCard : MonoBehaviour
         if (!completed)
         {
             SetCompletedStamp();
-            myParentBigoPanel.GetNewClick();
+            myParentBigoPanel.GetNewClick(n);
 
         }
 

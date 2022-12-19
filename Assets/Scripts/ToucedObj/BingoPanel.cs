@@ -83,21 +83,26 @@ public class BingoPanel : MonoBehaviour
         }
     }
 
-    public void GetNewClick()
+    public void GetNewClick(int n )
     {
-        for (int i = 0; i < myBingoCards.Length; i++) // 기존 빙고정보와 비교한다. 
-        {
-           if (myBingoCards[i].completed != myBingoCompletedInfo[i])
-            {
-                Debug.Log("빙고 클릭 넘버 : " + i);
+        TryNewLineEnable(n); // 
+        myBingoCards[n].completed = true;
+        theChsetTouched.GetCompletedinfoFromUI(n);
 
-                TryNewLineEnable(i);
-                myBingoCompletedInfo[i] = myBingoCards[i].completed;
-                theChsetTouched.GetCompletedinfoFromUI(i); // 클릭된 빙고판의 정보를 체스트에 넘겨준다.
 
-            }
+        //for (int i = 0; i < myBingoCards.Length; i++) // 기존 빙고정보와 비교한다. 
+        //{
+        //   if (myBingoCards[n].completed != myBingoCompletedInfo[n])
+        //    {
+        //        Debug.Log("빙고 클릭 넘버 : " + i);
 
-        }
+        //        TryNewLineEnable(i);
+        //        myBingoCompletedInfo[i] = myBingoCards[i].completed;
+        //        theChsetTouched.GetCompletedinfoFromUI(i); // 클릭된 빙고판의 정보를 체스트에 넘겨준다.
+
+        //    }
+
+        //}
     }
 
    
