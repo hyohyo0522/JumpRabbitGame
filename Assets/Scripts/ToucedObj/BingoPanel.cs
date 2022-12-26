@@ -44,10 +44,9 @@ public class BingoPanel : MonoBehaviour
     }
 
 
-    // ★여기다가 클릭될때마다 빙고줄 완성 감지해서, 돈아이콘 활성화. 
     private void Update()
     {
-        // ★ 배열에 잇는 빙고카드들의 클릭이벤트를 감지하는 기능을 구현하자.   
+       
 
 
     }
@@ -270,9 +269,12 @@ public class BingoPanel : MonoBehaviour
                 }
             }
 
-            int a = Random.Range(0, NotInteratctableNormal.Count);
-            EnableMoneyButton(NotInteratctableNormal[a]);
-            //NotInteratctableNormal[a].gameObject.GetComponent<Button>().interactable = true;
+            if (NotInteratctableNormal.Count > 0) //버튼활성화 안된 버튼이 하나라도 있는지 확인.
+            {
+                int a = Random.Range(0, NotInteratctableNormal.Count);
+                EnableMoneyButton(NotInteratctableNormal[a]);
+            }
+
         }
 
     }

@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     //점프 카운트 관련 변수
-    private int jumpCount = 0;
+    private int jumpCount = 0;  //당근 먹어서 생긴 점프 카운트
     private int jumpMaxCount = 1;
     private int enableJumpCount = 10;
 
@@ -99,7 +99,12 @@ public class PlayerMovement : MonoBehaviour
             Physics2D.IgnoreLayerCollision(maskPlayer, maskMonFlying, false); // 플라잉몬스터 레이어 감지한다.
             playerRigidbody.gravityScale = gravityY;
             GroundCheck();
-            Jump();
+
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                Jump();
+
+            }
             Walk();
 
             if (!InputManager.instance.touchOn) // InputManger에서 관리하는 창들이 열려있을 때에는 아이템을 먹지 않는다. 
@@ -214,7 +219,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (notRevive) return;
         //좌우이동
-        m_HorizontalMovement = Input.GetAxis("Horizontal");
+
+
+        //m_HorizontalMovement = Input.GetAxis("Horizontal");
+        m_HorizontalMovement = UIManager.instance.GetHorizontalValue();
         playerRigidbody.velocity = new Vector2(speed * m_HorizontalMovement, playerRigidbody.velocity.y);
 
         //걷기 애니메이션
@@ -228,29 +236,29 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    void Jump()
+    public void Jump()
     {
+        InputManager.instance.ClickAllCancleFamButton(); // 띄워진 UI창이 있다면 Cancle버튼을 누른 효과
+
+        if (LadderCheck()) return; // 모바일용 버튼을 만들면서 추가한 코드.
         if (notRevive) return;
+        if (!isGrounded) return;
+        if (!JumpEnable) return;
 
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            InputManager.instance.ClickAllCancleFamButton();
-            if (!isGrounded) return;
+        //점프 최대 횟수 제한
+        if (jumpCount >= jumpMaxCount) return;
+        if (enableJumpCount <= 0) return;
 
-            if (!JumpEnable) return;
-            //점프 최대 횟수 제한
-            if (jumpCount >= jumpMaxCount) return;
+        float jumpForce = 2000f;
+        playerRigidbody.velocity = Vector2.zero;
+        playerRigidbody.AddForce(new Vector2(0, jumpForce));
+        jumpCount++;
+        enableJumpCount--;
+        UIManager.instance.UpdateCarrotText(enableJumpCount); // UI갱신
+        Debug.Log("점프카운트는 1이 되었다.");
 
-            if (enableJumpCount <= 0) return;
 
-            float jumpForce = 2000f;
-            playerRigidbody.velocity = Vector2.zero;
-            playerRigidbody.AddForce(new Vector2(0, jumpForce));
-            jumpCount++;
-            enableJumpCount--;
-            UIManager.instance.UpdateCarrotText(enableJumpCount); // UI갱신
-            Debug.Log("점프카운트는 1이 되었다.");
-        }
+
 
     }
 
@@ -268,6 +276,17 @@ public class PlayerMovement : MonoBehaviour
         //먹는 소리도 추가하자.
     }
 
+    //당근 빙고에 썼을 때, 점프카운트 내려가는 효과
+    public void JumpCountDown(int value) // PlayerLife에서 사용함
+    {
+        if (enableJumpCount >= value)
+        {
+            enableJumpCount -= value;
+            UIManager.instance.UpdateCarrotText(enableJumpCount); //UI 갱신 
+        }
+
+    }
+
 
 
     void MoveInLadder()
@@ -279,7 +298,8 @@ public class PlayerMovement : MonoBehaviour
         playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, speedup * m_VerticalMovement);
 
 
-        m_HorizontalMovement = Input.GetAxisRaw("Horizontal");
+        // m_HorizontalMovement = Input.GetAxisRaw("Horizontal");
+        m_HorizontalMovement = UIManager.instance.GetHorizontalValue();
         if (m_HorizontalMovement != 0)
         {
             Collider2D[] groundedTouched = Physics2D.OverlapCircleAll((Vector2)ladderColliderCheck1.position, 0.7f, groundMask);

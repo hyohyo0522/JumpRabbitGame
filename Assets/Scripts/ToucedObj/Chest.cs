@@ -21,6 +21,8 @@ public class Chest : MonoBehaviour,ITouchedObj
 
     // 플레이어가 점프하여 상자를 오픈함
     bool isOpen; // 상자를 오픈했는가?
+    [SerializeField] float maxOpenTime = 5f;
+    float realOpenTime = 0;
     [SerializeField] Transform playerDetectPoint;
     [SerializeField] float playerDetectRadius = 1.5f;
     [SerializeField] float openBouncePower = 2000f;
@@ -57,11 +59,7 @@ public class Chest : MonoBehaviour,ITouchedObj
             bingoUI.SetActive(false);
         }
 
-        if (!hasBingoInfo)
-        {
-            SetNewBingoChest();
 
-        }
 
     }
 
@@ -74,6 +72,12 @@ public class Chest : MonoBehaviour,ITouchedObj
         chestAnimator = GetComponent<Animator>();
         directIcon.gameObject.SetActive(false);
         thisCollider = GetComponent<BoxCollider2D>();
+
+        if (!hasBingoInfo)
+        {
+            SetNewBingoChest();
+
+        }
 
 
     }
@@ -138,7 +142,16 @@ public class Chest : MonoBehaviour,ITouchedObj
 
         if (isOpen)
         {
+
             DirectIconMove();
+
+            if (touchOn) return; // 상자가 클릭해서 오픈된 상태이면 뒤의 내용 실행x 
+
+            realOpenTime += Time.deltaTime; // 최대 오픈 시간이 지나면 자동으로 잠기게 한다. 
+            if (realOpenTime >= maxOpenTime)
+            {
+                closeChest();
+            }
 
         }
 
@@ -160,6 +173,7 @@ public class Chest : MonoBehaviour,ITouchedObj
         isOpen = false;
         chestAnimator.SetBool("open", false);
         directIcon.gameObject.SetActive(false);
+        realOpenTime = 0f;
     }
 
     public void Touch() // 상자를 클릭했을 때 기능 정리
@@ -216,11 +230,6 @@ public class Chest : MonoBehaviour,ITouchedObj
         }
 
 
-
-
-
-
-
     }
 
     void TouchNull() // 상자가 클릭된 상태로 다른 것을 클릭했을 때/ 빙고판을 닫는다. 
@@ -242,9 +251,10 @@ public class Chest : MonoBehaviour,ITouchedObj
 
     
     
-    public eWhatTouched Return_WhatTouched()
+    public void SetInputManagerWhatEtoucedObj()
     {
-        return eWhatTouched.chest;
+        InputManager.instance.SetNoweTouchedObj(eWhatTouched.chest);
+
     }
 
     void DirectIconMove()

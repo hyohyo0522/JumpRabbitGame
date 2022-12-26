@@ -136,4 +136,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 30
   destroyDelayTime: 5
-  delayForUse: 0.5
+  delayForUse: 0.2

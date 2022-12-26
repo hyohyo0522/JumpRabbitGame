@@ -84,7 +84,7 @@ public class PlayerLife : LivingEntity
         UIManager.instance._moneyTxt.text = _myMoney.ToString();
         UIManager.instance._scoreTxt.text = _myScore.ToString();
         UIManager.instance._slugText.text = _mySlug.ToString();
-        UIManager.instance._flowerKill.text = _killPlayer.ToString();
+        UIManager.instance._flowerKill.text = _killFlowers.ToString();
 
 
 
@@ -198,13 +198,68 @@ public class PlayerLife : LivingEntity
         UIManager.instance._flowerKill.text = GetThousandCommaText(_killFlowers).ToString();
     }
 
+    public void UpdatePlayerKillUI(int value)
+    {
+        _killPlayer -= value;
+        UIManager.instance._playerKill.text = GetThousandCommaText(_killPlayer).ToString();
+    }
+
+    public bool HasEnuoughItem(eBingoItem item, int value)
+    {
+        bool result = false;
+        switch (item)
+        {
+            case eBingoItem.carrot:
+                if (UIManager.instance.myCarrotValue >= value)
+                {
+                    _myMovement.JumpCountDown(value);
+                    result = true;
+                }
+                break;
+            case eBingoItem.star:
+                if (_myScore >= value)
+                {
+                    UpdateScore(-value);
+                    result = true;
+                }
+                break;
+            case eBingoItem.flower:
+                if (_killFlowers >= value)
+                {
+                    _killFlowers -= value;
+                    UIManager.instance._flowerKill.text = GetThousandCommaText(_killFlowers).ToString();
+                    result = true;
+                }
+                break;
+            case eBingoItem.slug:
+                if (_mySlug >= value)
+                {
+                    UpdateSlugUI(-value);
+                    result = true;
+                }
+                break;
+            case eBingoItem.player:
+                if (_killPlayer >= value)
+                {
+                    UpdatePlayerKillUI(value);
+                    result = true;
+                }
+                break;
+        }
+
+        return result;
+    }
+
     
 
-    // 숫자 1전형적인 사기꾼패턴000마다 콤마찍기
+    // 숫자 1전형적인 패턴000마다 콤마찍기
     string GetThousandCommaText(int data)
     {
         return string.Format("{0:#,###}", data);
     }
+
+    
+
 
 }
 

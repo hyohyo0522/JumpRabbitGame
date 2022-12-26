@@ -75,9 +75,9 @@ public class InputManager : MonoBehaviour
                 // Debug.Log("상자가 클릭되었다. HASITouche 찾음");
                 if (!touchOn) // 다른 ITouchedObj가 선택되어있는 상황이라면 다른 ITouchedObj작용이 일어나지 않도록 한다.
                 {
-                    IhasTouchedObj.Touch();
+                    IhasTouchedObj?.Touch();
                     touchOn = true;
-                    now_etouchedObj = IhasTouchedObj.Return_WhatTouched();
+
                     return;
                 }
                 else
@@ -177,6 +177,7 @@ public class InputManager : MonoBehaviour
 
     }
 
+    
 
     public void ClickAllCancleFamButton()
     {
@@ -193,5 +194,9 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public void SetNoweTouchedObj(eWhatTouched obj)
+    {
+        now_etouchedObj = obj;
+    }
 
 }

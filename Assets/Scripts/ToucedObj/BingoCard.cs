@@ -18,7 +18,7 @@ public class BingoCard : MonoBehaviour
     [SerializeField] Image itemImage;
     [SerializeField] Text bingoInfo;
     [SerializeField] Image completedImage;
-    eBingoItem myBingoItem;
+
     bool hasbingoItem; // 방고 아이템이 세팅 되었는가?
     public bool completed; // 빙고칸이 달성되었는가?
 
@@ -31,6 +31,7 @@ public class BingoCard : MonoBehaviour
     //빙고 아이템 인포
     string whatItem;
     int ItemNumber;
+    eBingoItem myBingoItem;
 
     // 빙고 아이템수 인덱스, 여기에 *n해서 아이템수를 정할 것이다.
     int itemValueIndex;
@@ -57,7 +58,7 @@ public class BingoCard : MonoBehaviour
     {
         //SetBingoItem();
     }
-    
+
 
     //void SetBingoItem()
     //{
@@ -90,10 +91,11 @@ public class BingoCard : MonoBehaviour
 
     //}
 
-
-    public void ShowBingoCardUI(eBingoItem whatItem, int ItemNum, bool isCompleted) //BingoPanel(부모)에서 쓰고 있는것.
+    //BingoPanel(부모)에서 쓰고 있는것.
+    public void ShowBingoCardUI(eBingoItem whatItem, int ItemNum, bool isCompleted) 
     {
         string Name = whatItem.ToString();
+        myBingoItem = whatItem;
         SetImage(Name); // 빙고 이미지 생성
         SetBingoInfoMessage(Name, ItemNum);
         SetBingoItemInfo(name, ItemNum);
@@ -116,6 +118,13 @@ public class BingoCard : MonoBehaviour
         // ★나중에 멀티플레이어 기능 추가될 때,
         // 여기서 버튼을 클릭한 플레이어의 정보를 저장해서 BingoPanel을 통해
         // Chset에 저장하는 메소드를 추가해야할 것 같다. 
+
+        if (myPlayerInfo.HasEnuoughItem(myBingoItem, ItemNumber) == false)
+        {
+            return;
+        }
+
+
         if (!completed)
         {
             SetCompletedStamp();

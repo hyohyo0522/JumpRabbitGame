@@ -7,6 +7,6 @@ public interface ITouchedObj
 {
 
     void Touch();
-    eWhatTouched Return_WhatTouched();
+    void SetInputManagerWhatEtoucedObj();
 
 }

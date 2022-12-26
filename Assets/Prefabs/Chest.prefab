@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 363103456960341500}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerDetect
   m_TagString: Untagged
   m_Icon: {fileID: 7422848464349959988, guid: 0000000000000000d000000000000000, type: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 363103457061106782}
   - component: {fileID: 363103457061106776}
   - component: {fileID: 363103457061106783}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: directIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 363103457687877581}
   - component: {fileID: 363103457687877583}
   - component: {fileID: 363103457687877576}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Chest
   m_TagString: Chest
   m_Icon: {fileID: 0}
@@ -259,6 +259,9 @@ MonoBehaviour:
   openBouncePower: 2000
   bingGoUI: {fileID: 0}
   touchOn: 0
+  completedBingoNum: 0
+  pung: {fileID: 7419763835651070386, guid: 1a1888bd427858d4aa5e3a2db8e8d8ac, type: 3}
+  reSetTime: 0
 --- !u!50 &363103457687877582
 Rigidbody2D:
   serializedVersion: 4

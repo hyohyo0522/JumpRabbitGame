@@ -155,5 +155,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyDelayTime: 5
-  scoreValue: 100
-  delayForUse: 0.5
+  starValue: 1
+  delayForUse: 0.2
