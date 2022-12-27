@@ -132,7 +132,7 @@ public class ItemBee : MonoBehaviour
         //RaycastHit2D hitInfo = Physics2D.Raycast(rainPoint.position, -Vector2.up, 10f, GroundMask);
 
         //땅 속에 있을 때에는 아이템을 발사하지 않는다. Collider로 검사한다.
-        Collider2D[] buriedInGround = Physics2D.OverlapCircleAll((Vector2)rainPoint.position, 2f, GroundMask);
+        Collider2D[] buriedInGround = Physics2D.OverlapCircleAll((Vector2)rainPoint.position, 3f, GroundMask);
 
 
 

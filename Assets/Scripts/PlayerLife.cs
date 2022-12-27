@@ -169,7 +169,7 @@ public class PlayerLife : LivingEntity
 
     }
 
-    public void UpdateMoney(int value) // 돈 관련 UI
+    public void UpdateMoney(int value) // 빙고판 눌러서 돈 올릴 때
     {
         if(value ==3) // 콤보코인인지 확인
         {
@@ -204,7 +204,7 @@ public class PlayerLife : LivingEntity
         UIManager.instance._playerKill.text = GetThousandCommaText(_killPlayer).ToString();
     }
 
-    public bool HasEnuoughItem(eBingoItem item, int value)
+    public bool HasEnuoughItem(eBingoItem item, int value) //빙고판 버튼 클릭시 호출
     {
         bool result = false;
         switch (item)
@@ -249,6 +249,25 @@ public class PlayerLife : LivingEntity
 
         return result;
     }
+
+    public bool UseMoney(int payMoney) //열쇠 먹을 때 돈 있는지 확인
+    {
+        bool hasPaid = false;
+        if (_myMoney >= payMoney)
+        {
+            _myMoney -= payMoney;
+            hasPaid = true;
+            UIManager.instance._moneyTxt.text = GetThousandCommaText(_myMoney).ToString();
+
+            // ★돈 지불되는 소리 재생시키자!!!!
+            return hasPaid;
+
+        }
+
+        // ★ 돈 못 먹고 버려지는 소리 재생시키자!!
+        return hasPaid;
+    }
+
 
     
 

@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public enum eWhatTouched
 {
     chest                   =0,
-
+    houseDoor               =1,
 
     othersNoMeaning        =99
 }
