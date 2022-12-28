@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HouseDoor : MonoBehaviour
+public class HouseDoor : MonoBehaviour, ITouchedObj
 {
     [SerializeField] GameObject clodedDoor;
     [SerializeField] GameObject openDoor;
@@ -17,6 +17,10 @@ public class HouseDoor : MonoBehaviour
     float moveTimeCycle = 1f;
     bool iconmoveUp = false;
 
+    // 터치 관련
+    [SerializeField] GameObject houseUIMsg; //UI 메시지 창
+    [SerializeField] bool touchOn;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +30,11 @@ public class HouseDoor : MonoBehaviour
         originalDirectIcon = directIcon.transform;
 
         openDoor.SetActive(false);
+
+        if (houseUIMsg.activeSelf)
+        {
+            houseUIMsg.SetActive(false);
+        }
         
     }
 
@@ -104,5 +113,24 @@ public class HouseDoor : MonoBehaviour
                 moveTimeCycle = MaxTimeCycle;
             }
         }
+    }
+
+    public void Touch()
+    {
+        if (!isOpen) return;
+
+        houseUIMsg.SetActive(true);
+        touchOn = true;
+    }
+
+    public void TouchExit()
+    {
+        CloseMyDoor();
+        InputManager.instance.ExitITouchedObjPanel();
+    }
+
+    public void SetInputManagerWhatEtoucedObj()
+    {
+        InputManager.instance.SetNoweTouchedObj(eWhatTouched.houseDoor);
     }
 }

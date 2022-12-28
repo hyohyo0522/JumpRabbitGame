@@ -254,6 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   directIcon: {fileID: 363103457061106783}
   MaxTimeCycle: 1
+  maxOpenTime: 3.5
   playerDetectPoint: {fileID: 363103456960341500}
   playerDetectRadius: 2
   openBouncePower: 2000

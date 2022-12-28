@@ -30,7 +30,6 @@ public class Chest : MonoBehaviour,ITouchedObj
     //체스트 빙고 관련 정보
     bingoCardInfo[] myBingoChest = new bingoCardInfo[9];  // 빙고판 관련 아이템 정보
     bool hasBingoInfo;// 빙고판 관련 정보가 생성되었는지 확인
-    GameObject bingoUI;
     [SerializeField] GameObject bingGoUI;
 
 
@@ -53,12 +52,11 @@ public class Chest : MonoBehaviour,ITouchedObj
 
     private void OnEnable()
     {
-        bingoUI = GameObject.FindGameObjectWithTag("BINGOCHEST");
-        if (bingoUI.activeSelf)
-        {
-            bingoUI.SetActive(false);
-        }
 
+        if (bingGoUI.activeSelf)
+        {
+            bingGoUI.SetActive(false);
+        }
 
 
     }
@@ -217,6 +215,7 @@ public class Chest : MonoBehaviour,ITouchedObj
         if (serialziedbingGoUI != null) //여기가 작동이 안되어서 오류가 났던 것 같다. 
         {
             serialziedbingGoUI.OnDisableEvent += () => TouchNull();
+            serialziedbingGoUI.OnDisableEvent += () => InputManager.instance.ExitITouchedObjPanel();
             serialziedbingGoUI.SetChset(this);
 
             for (int n = 0; n < myBingoChest.Length; n++) // Chest의 정보를  빙고판에 넘겨준다.

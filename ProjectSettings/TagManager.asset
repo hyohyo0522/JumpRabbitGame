@@ -10,6 +10,7 @@ TagManager:
   - Chest
   - BINGOCHEST
   - Cancle
+  - HouseDoor
   layers:
   - Default
   - TransparentFX

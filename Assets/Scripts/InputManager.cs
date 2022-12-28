@@ -36,8 +36,6 @@ public class InputManager : MonoBehaviour
     private static InputManager m_instance; // 싱글톤이 할당될 변수
 
 
-    private Touch hasTouch;
-    private Vector2 touchPos;
     public bool touchOn;
     float maxDisatance = 15f;
 
@@ -46,6 +44,7 @@ public class InputManager : MonoBehaviour
 
     //게임창
     [SerializeField] GameObject ChestPanelUI; // 빙고창
+    [SerializeField] GameObject HouseMsgUI; // 하우스 메시지창
     [SerializeField] Image[] normalCoinButtons = new Image[3];
     [SerializeField] GameObject ComboCoinButton;
 
@@ -94,7 +93,14 @@ public class InputManager : MonoBehaviour
                             touchOn = false;
                         }
                     }
-                    
+
+                    if (hit.collider.CompareTag("HouseDoor"))
+                    {
+                        if (!HouseMsgUI.activeSelf)
+                        {
+                            touchOn = false;
+                        }
+                    }
 
                 }
 
@@ -113,7 +119,14 @@ public class InputManager : MonoBehaviour
                 switch (now_etouchedObj)
                 {
                     case eWhatTouched.chest: // 체스트가 선택되었을 때 
-
+                        break;
+                    case eWhatTouched.houseDoor:
+                        break;
+                    case eWhatTouched.othersNoMeaning:
+                        if (touchOn)
+                        {
+                            touchOn = false;
+                        }
                         break;
                 }
 
