@@ -30,6 +30,7 @@ public class  UIManager : MonoBehaviour
     public Text _slugText; // 슬러그 겟 관련 UI
     public Text _flowerKill;    //플라워몬 Kill UI 관련
     public Text _playerKill;    // 플레이어킬 UI관련
+    public Text _KeyNum;
 
 
     // 체력표시 UI
@@ -49,6 +50,13 @@ public class  UIManager : MonoBehaviour
     {
         myCarrotValue = value;
         _myCarrotCount.text = value.ToString();
+    }
+
+    public void UpdateKeyNumUI(int value)
+    {
+        int KeyNumber = value;
+        _KeyNum.text = KeyNumber.ToString();
+
     }
 
     public void LeftBtnDown() //왼쪽 버튼 눌렸을 때

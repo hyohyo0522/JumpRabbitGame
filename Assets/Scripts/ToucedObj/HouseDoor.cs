@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HouseDoor : MonoBehaviour, ITouchedObj
 {
@@ -19,7 +20,13 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 
     // 터치 관련
     [SerializeField] GameObject houseUIMsg; //UI 메시지 창
+    Transform YesBtnOriginTransform; // Yes 버튼(UI) 원위치 저장
+    Transform NoBtnOriginTranform;  // No 버튼(UI) 원위치 저장
     [SerializeField] bool touchOn;
+
+    // 트리거감지를 통해 플레이어 정보를 저장할 변수
+    [SerializeField] PlayerLife whoknocked;
+    [SerializeField] int NeededKeyNumForHouse = 10;//집을 구매하기 위한 키 넘버
 
     // Start is called before the first frame update
     void Start()
@@ -28,12 +35,17 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
         openDoor = this.transform.GetChild(1).gameObject;
         directIcon = openDoor.transform.GetChild(0).GetComponent<Collider2D>();
         originalDirectIcon = directIcon.transform;
+        maxOpenTime = 5f;
+        isOpen = false;
 
         openDoor.SetActive(false);
 
         if (houseUIMsg.activeSelf)
         {
+            YesBtnOriginTransform = houseUIMsg.transform.GetChild(1).GetComponent<Transform>();
+            NoBtnOriginTranform = houseUIMsg.transform.GetChild(2).GetComponent<Transform>();
             houseUIMsg.SetActive(false);
+            touchOn = false;
         }
         
     }
@@ -44,9 +56,11 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
         if (isOpen)
         {
             maxOpenTime -= Time.deltaTime;
+            DirectIconMove();
             if (maxOpenTime <= 0)
             {
                 CloseMyDoor();
+                
             }
         }
     }
@@ -58,6 +72,18 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
             if (!isOpen)
             {
                 OpenMyDoor();
+                whoknocked = collision.gameObject.GetComponent<PlayerLife>();
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Player") // 플레이어가 문에 닿았을 때.
+        {
+            if (!isOpen)
+            {
+            maxOpenTime = 5f;
             }
         }
     }
@@ -67,15 +93,16 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 
         clodedDoor.SetActive(false);
         openDoor.SetActive(true);
-        DirectIconMove();
         isOpen = true;
     }
 
 
     void CloseMyDoor()
     {
+        Debug.Log("닫혔다!!");
         if (isOpen) { isOpen = false; }
         directIcon.transform.position = originalDirectIcon.position;
+        directIcon.gameObject.SetActive(false);
         openDoor.SetActive(false);
         clodedDoor.SetActive(true);
 
@@ -119,18 +146,57 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
     {
         if (!isOpen) return;
 
+        HouseMsgSetting();
         houseUIMsg.SetActive(true);
         touchOn = true;
     }
 
     public void TouchExit()
     {
-        CloseMyDoor();
-        InputManager.instance.ExitITouchedObjPanel();
+
+        if (touchOn)
+        {
+            houseUIMsg.SetActive(false);
+        }
     }
 
     public void SetInputManagerWhatEtoucedObj()
     {
         InputManager.instance.SetNoweTouchedObj(eWhatTouched.houseDoor);
+    }
+
+    void HouseMsgSetting() // 여기서 메시지 수정.
+    {
+        Text EndingMsg = houseUIMsg.transform.GetChild(0).GetComponent<Text>(); // 엔딩 메시지
+        GameObject YesBtn = houseUIMsg.transform.GetChild(1).gameObject; // Yes 버튼
+        GameObject NoBtn = houseUIMsg.transform.GetChild(2).gameObject; // No 버튼(Cancle)
+
+        //플레이어에게 충분한 열쇠가 있는지 확인해서 메시지를 수정하자.
+        if (whoknocked.CheckKeyNumForHouseMsg(NeededKeyNumForHouse))
+        {
+            EndingMsg.text = "열쇠가 충분합니다!" + "\n" + "집의 주인이 되어 게임에 승리할까요?";
+
+            YesBtn.transform.GetChild(0).GetComponent<Text>().text = "YES";
+            YesBtn.transform.position = YesBtnOriginTransform.position;
+            YesBtn.SetActive(true);
+
+            NoBtn.transform.GetChild(0).GetComponent<Text>().text = "NO";
+            NoBtn.transform.position = NoBtnOriginTranform.position;
+            NoBtn.SetActive(true); // 예스와 노 버튼 모두 활성화
+
+        }
+        else
+        {
+            EndingMsg.text = "열쇠가 부족합니다." + "\n" + "필요한 열쇠 갯수는 총 " + NeededKeyNumForHouse.ToString() + "개입니다.";
+
+            YesBtn?.SetActive(false);
+
+            NoBtn.transform.GetChild(0).GetComponent<Text>().text = "CLOSE";
+            Vector3 OnlyNoBtnPosition = NoBtnOriginTranform.position;
+            OnlyNoBtnPosition.x = 345; // 노 버튼 위치 가운데로 조정
+            NoBtn.transform.position = OnlyNoBtnPosition;
+            NoBtn.SetActive(true); // 노 버튼만 활성화
+        }
+        
     }
 }

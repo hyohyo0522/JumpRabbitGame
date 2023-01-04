@@ -9,7 +9,10 @@ public class PlayerLife : LivingEntity
     float MaxHealth = 50f;
     float timeBetattack = 1f;
 
-    //점수UI 관련
+    //열쇠 UI관련
+    int _myKeyNum = 0;
+
+    //스타(점수)UI 관련
     int _myScore = 0; //점수
     //public Text _scoreTxt;
 
@@ -78,9 +81,9 @@ public class PlayerLife : LivingEntity
 
         UIManager.instance._myHeathSlider.maxValue = MaxHealth; // 체력 슬라이더의 최댓값을 기본 체력값으로 변경
         UIManager.instance._myHeathSlider.value = hp; // 체력 슬라이더 값을 현재값으로 변경
-
-
         UIManager.instance._myHealthValue.text = hp.ToString();
+
+        UIManager.instance.UpdateKeyNumUI(_myKeyNum);
         UIManager.instance._moneyTxt.text = _myMoney.ToString();
         UIManager.instance._scoreTxt.text = _myScore.ToString();
         UIManager.instance._slugText.text = _mySlug.ToString();
@@ -155,6 +158,12 @@ public class PlayerLife : LivingEntity
             isFull = false;
         }
         return isFull;
+    }
+
+    public void UpdateMyKeyNum(int value)
+    {
+        _myKeyNum += value;
+        UIManager.instance.UpdateKeyNumUI(_myKeyNum);
     }
 
     // UI 관련 
@@ -250,7 +259,7 @@ public class PlayerLife : LivingEntity
         return result;
     }
 
-    public bool UseMoney(int payMoney) //열쇠 먹을 때 돈 있는지 확인
+    public bool UseMoneyForKey(int payMoney) //열쇠 먹을 때 돈 있는지 확인
     {
         bool hasPaid = false;
         if (_myMoney >= payMoney)
@@ -258,6 +267,7 @@ public class PlayerLife : LivingEntity
             _myMoney -= payMoney;
             hasPaid = true;
             UIManager.instance._moneyTxt.text = GetThousandCommaText(_myMoney).ToString();
+            UpdateMyKeyNum(1); // 열쇠 넘버 1 올라감
 
             // ★돈 지불되는 소리 재생시키자!!!!
             return hasPaid;
@@ -268,7 +278,15 @@ public class PlayerLife : LivingEntity
         return hasPaid;
     }
 
-
+    public bool CheckKeyNumForHouseMsg(int NeededKeyNumForEnding)
+    {
+        bool hasEnoughKey = false;
+        if (_myKeyNum >= NeededKeyNumForEnding)
+        {
+            hasEnoughKey = true;
+        }
+        return hasEnoughKey;
+    }
     
 
     // 숫자 1전형적인 패턴000마다 콤마찍기

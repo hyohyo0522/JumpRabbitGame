@@ -31,7 +31,7 @@ public class HouseKeyItem : MonoBehaviour,IItem
     {
 
         PlayerLife playerLife = target.GetComponent<PlayerLife>();
-        if (playerLife.UseMoney(payMoney))
+        if (playerLife.UseMoneyForKey(payMoney))
         {
             Destroy(this.gameObject);
         }
