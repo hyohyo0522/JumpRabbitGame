@@ -4,6 +4,7 @@ using System.Linq;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class PlayerMovement : MonoBehaviour
     SpriteRenderer playerSprite;
     Rigidbody2D playerRigidbody;
     Collider2D playerCollider;
+
+    // 내 아이디 정보
+    string _myNick;
 
     private float speed = 10f; // 좌우스피드값
 
@@ -69,9 +73,10 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-
     void Start()
     {
+        _myNick = PlayerPrefs.GetString("_myNick");
+        this.transform.GetChild(0).GetChild(0).GetComponentInChildren<Text>().text = _myNick; // 닉네임 설정
         playerAnimator = GetComponent<Animator>();
         playerSprite = GetComponent<SpriteRenderer>();
         playerRigidbody = GetComponent<Rigidbody2D>();
@@ -79,11 +84,9 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-
         //점프 카운트 리셋을 위한 이벤트 등록 
         //Ground ground = FindObjectOfType<Ground>();
         //ground.playerTouched += resetJumpCount;
-
 
 
     }
@@ -458,7 +461,12 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-
+    public void SetEnding()
+    {
+        // 나중에 여기서 내가 위너인지? 체크하는 기능 if문으로 추가한다.
+        PlayerPrefs.SetString("Winner", _myNick);
+        SceneManager.LoadScene("EndingScene");
+    }
 
     //public void onDamageforChange() // 다른 스크립트에서 이 스크립트 내 코루틴 메서드 실행하는 것을 도와줌
     //{

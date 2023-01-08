@@ -193,7 +193,9 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 
             NoBtn.transform.GetChild(0).GetComponent<Text>().text = "CLOSE";
             Vector3 OnlyNoBtnPosition = NoBtnOriginTranform.position;
-            OnlyNoBtnPosition.x = 345; // 노 버튼 위치 가운데로 조정
+
+            //OnlyNoBtnPosition.x = 345f; // 노 버튼 위치 가운데로 조정
+            OnlyNoBtnPosition.x = houseUIMsg.transform.position.x;
             NoBtn.transform.position = OnlyNoBtnPosition;
             NoBtn.SetActive(true); // 노 버튼만 활성화
         }

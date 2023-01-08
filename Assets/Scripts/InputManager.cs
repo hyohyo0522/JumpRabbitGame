@@ -212,4 +212,6 @@ public class InputManager : MonoBehaviour
         now_etouchedObj = obj;
     }
 
+
+
 }

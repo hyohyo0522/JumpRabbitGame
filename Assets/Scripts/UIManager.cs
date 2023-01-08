@@ -38,11 +38,10 @@ public class  UIManager : MonoBehaviour
     public Text _myHealthValue;
 
     //모바일버튼 플레이어이동관련 
-    bool LeftMove;
-    bool RightMove;
-    bool isMoving;
+
+
     float movePower;
-    [SerializeField] float moveSpeed;
+    [SerializeField] float moveSpeed = 5f;
 
 
 
@@ -63,28 +62,28 @@ public class  UIManager : MonoBehaviour
     {
         //isMoving = true;
         movePower = -1;
-        LeftMove = true;
+
     }
 
     public void LeftBtnUp() //왼쪽 버튼에서 손 떼졌을 때
     {
         //isMoving = false;
         movePower = 0;
-        LeftMove = false;
+
     }
 
     public void RightBtnDown() //오른쪽 버튼 눌렸을 때
     {
         //isMoving = true;
         movePower = 1;
-        RightMove = true;
+
     }
 
     public void RightBtnUp() //오른쪽 버튼에서 손 떼졌을 때 
     {
         //isMoving = false;
         movePower = 0;
-        RightMove = false;
+
     }
 
     public float GetHorizontalValue()
