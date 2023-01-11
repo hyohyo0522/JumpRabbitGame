@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+
 public class PlayerMovement : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -252,9 +253,14 @@ public class PlayerMovement : MonoBehaviour
         if (jumpCount >= jumpMaxCount) return;
         if (enableJumpCount <= 0) return;
 
+        // 점프구현방법 1. 
         float jumpForce = 2000f;
         playerRigidbody.velocity = Vector2.zero;
         playerRigidbody.AddForce(new Vector2(0, jumpForce));
+
+        // 점프구현방법 2. >> 1을 선택했으므로 주석처리함
+        // playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, 40f); 
+
         jumpCount++;
         enableJumpCount--;
         UIManager.instance.UpdateCarrotText(enableJumpCount); // UI갱신

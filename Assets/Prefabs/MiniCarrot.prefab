@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1998135705108596302}
   - component: {fileID: 1229493562087024984}
   - component: {fileID: 2743253398955993749}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: MiniCarrot
   m_TagString: Item
   m_Icon: {fileID: 0}

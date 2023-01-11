@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 682386337800695408}
   - component: {fileID: 682386337800695409}
   - component: {fileID: 682386337800695411}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SlugMon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
