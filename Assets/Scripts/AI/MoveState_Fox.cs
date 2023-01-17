@@ -4,21 +4,22 @@ using UnityEngine;
 
 public class MoveState_Fox : State<AIFoxController>
 {
-    [SerializeField] float _speed = 10f;
+
 
     private Animator _animator;
-    private Rigidbody2D _rigidBody;
     private SpriteRenderer _spriteRenderer;
 
 
     private int hasWalk = Animator.StringToHash("fxWalk");
-    private int hasClimb = Animator.StringToHash("fxClimb");
+
+
 
 
     public override void OnInitialized()
     {
         _animator = context.GetComponent<Animator>();
-        _rigidBody = context.GetComponent<Rigidbody2D>();
+
+
     }
 
 
@@ -26,6 +27,8 @@ public class MoveState_Fox : State<AIFoxController>
     {
 
         _animator?.SetBool(hasWalk, true);
+
+
 
     }
 
@@ -37,16 +40,14 @@ public class MoveState_Fox : State<AIFoxController>
         Transform _target = context.target;
         if (_target)
         {
-            if (context.MoveLadder()) //사다리 이동을 우선한다. 
+            if (context.isMoveLadderRight()) //사다리 이동을 우선한다. 
             {
-                _animator.SetBool(hasWalk, false); // 일단 움직여야
-                _animator.SetBool(hasClimb, true); // 일단 움직여야
+                
+                stateMachine.ChangeState<LadderMoveState_Fox>();
             }
             else
             {
-                _animator.SetBool(hasClimb, false);
-                _animator.SetBool(hasWalk, true); // 일단 움직여야
-                context.Walk(context.target.position); // 좌우이동
+                context.Walk(); // 좌우이동
             }
 
             return;
@@ -59,7 +60,7 @@ public class MoveState_Fox : State<AIFoxController>
 
     public virtual void OnExit()
     {
-        _animator.SetBool("DoWalk", false);
+        _animator.SetBool(hasWalk, false);
     }
 
 

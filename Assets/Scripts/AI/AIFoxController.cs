@@ -10,17 +10,17 @@ public class AIFoxController : MonoBehaviour
 
     //플레이와 아이템 탐지 관련
     int maskground = 1 >> 6; // 땅 레이어 마스크
-    int maskLadder = 1 >> 7; // 사다리 레이어 마스크
-    int maskPlayer = 1 >> 8; // 플레이어 레이어 마스크 
-    int maskItem = 1 >> 11; // 아이템 레이어 마스크
+    public LayerMask maskLadder;// 사다리 레이어 마스크
+    public LayerMask targetMask;
 
     [SerializeField] public Transform target; // 최종목표지점
-   // [SerializeField] public Transform wayPoint; // 최종 목표로 가기 위한 중간 목표지점
-    [SerializeField] float detectRadius = 50f; // 탐지거리, 아이템과 플레이어 탐지
+    [SerializeField] public Vector2 MiddlewayPoint; // 최종 목표로 가기 위한 중간 목표지점
+    public float detectRadius = 300f; // 탐지거리, 아이템과 플레이어 탐지
     [SerializeField] float attackRadius = 0.5f; //플레이어 공격범위이자, 플레이어에게 도착했다고 감지하는 범위값
     [SerializeField] float ladderDetectRange = 0.5f;
-    [SerializeField] float _speed = 10f;
-    [SerializeField] float _ladderSpeed = 7f;
+    [SerializeField] float _speed = 4f;
+    [SerializeField] float _ladderSpeed = 10f;
+
 
 
     private Rigidbody2D _rigidBody;
@@ -33,9 +33,20 @@ public class AIFoxController : MonoBehaviour
         stateMachine = new StateMachine<AIFoxController>(this, new IdleState_Fox());
         stateMachine.AddState(new MoveState_Fox());
         stateMachine.AddState(new AttackState_Fox());
+        stateMachine.AddState(new LadderMoveState_Fox());
+
+        _rigidBody = GetComponent<Rigidbody2D>();
 
     }
 
+    private void Update()
+    {
+        stateMachine.Update(Time.deltaTime);
+
+        Debug.Log(stateMachine.CurrentState);
+
+
+    }
 
 
 
@@ -49,7 +60,7 @@ public class AIFoxController : MonoBehaviour
             }
 
             //도착했다고 가정한다.
-            return (target.position.x - transform.position.x < attackRadius && target.position.y - transform.position.y < attackRadius);
+            return (HasArrived(target.position, attackRadius));
         }
 
     }
@@ -58,9 +69,10 @@ public class AIFoxController : MonoBehaviour
     {
         target = null;
 
-        Collider2D[] playerInDetectRange = Physics2D.OverlapCircleAll(transform.position, detectRadius, maskPlayer);
+        Collider2D[] playerInDetectRange = Physics2D.OverlapCircleAll(transform.position, detectRadius, targetMask);
         if (playerInDetectRange.Length > 0) // 가장먼저 플레이어를 감지하고(플레이어 공격우선)
         {
+            Debug.Log("여우가 플레이어를 배열에 담았다");
             target = playerInDetectRange[0].transform;
         }
         //else // 일단 플레이어만 쫓게 만들자. 
@@ -90,33 +102,35 @@ public class AIFoxController : MonoBehaviour
 
     //워크와 무브 함수구현해서 states들에서 쓸 수 있게 하자!!!
 
-    public void Walk(Vector2 arriveSpot) // 좌우이동
+    public void Walk() // 좌우이동
     {
+        float m_HorizontalMovement = (target.position.x - transform.position.x > 0) ? 1 : -1;
 
-        float m_HorizontalMovement = (arriveSpot.x - transform.position.x > 0) ? 1 : -1;
-
+        _rigidBody.gravityScale = 9.81f;
         _rigidBody.velocity = new Vector2(_speed * m_HorizontalMovement, _rigidBody.velocity.y);
     }
 
 
 
 
-    public bool MoveLadder() // 사다리 오르는 함수
+    public bool isMoveLadderRight() // 사다리 오르는 함수
     {
         bool MovingLadder = false;
         Collider2D[] ladderDetect = Physics2D.OverlapCircleAll(transform.position, ladderDetectRange, maskLadder);
 
         if (ladderDetect.Length > 0)
         {
+
             Transform ladderPosition = ladderDetect[0].transform.GetChild(0).transform; // 사다리 위치 가져오기
 
             if (CompareYDirection(target.position, ladderPosition.position) == 0) return MovingLadder; // 일치 안하면 함수 나오기.
 
-            float yDirection = CompareYDirection(target.position, ladderPosition.position);
+            MiddlewayPoint = (ladderPosition.position - transform.position) * 2;
+            MiddlewayPoint.x = ladderPosition.position.x;
 
-
-            //사다리 위를 움직이는 물리함수
-            _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, _ladderSpeed * yDirection);
+            ////사다리 위를 움직이는 물리함수
+            //_rigidBody.gravityScale = 0f;
+            //_rigidBody.velocity = new Vector2(0, _ladderSpeed * yDirection);
             MovingLadder = true;
 
         }
@@ -125,6 +139,17 @@ public class AIFoxController : MonoBehaviour
 
     }
 
+    public void MovingLadder(float _moveY)
+    {
+        Debug.Log("여우가 사다리 위를 오르려고 시도하고 있다."+ _moveY);
+        
+        _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, _ladderSpeed * _moveY);
+    }
+
+    public void ChageGavity(float value)
+    {
+        _rigidBody.gravityScale = value;
+    }
 
 
     // 사다리 이동할지 유무와 사다리 다 올라왔는지(target과의 Y값 검사)를 검사할 때 사용할 함수
@@ -150,13 +175,19 @@ public class AIFoxController : MonoBehaviour
 
     }
 
-    private void OnDrawGizmos2D()
+    public bool HasArrived(Vector2 destination, float minDestinationRadius)
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectRadius);
+        bool arrived = false;
+        if(destination.x-transform.position.x<minDestinationRadius &&
+            destination.y - transform.position.y < minDestinationRadius)
+        {
+            arrived = true;
+        }
 
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, attackRadius);
+        return arrived;
+           
     }
+
+
 
 }
