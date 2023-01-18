@@ -23,7 +23,7 @@ public class MoveState_Fox : State<AIFoxController>
     }
 
 
-    public virtual void OnEnter()
+    public override void OnEnter()
     {
 
         _animator?.SetBool(hasWalk, true);
@@ -42,12 +42,18 @@ public class MoveState_Fox : State<AIFoxController>
         {
             if (context.isMoveLadderRight()) //사다리 이동을 우선한다. 
             {
-                
+                if (!context.CompareXDistance(context.MiddlewayPoint.x, 0.1f)){ // 이동해야할 사다리 위치로 좌우이동한다.
+                    context.Walk(context.MiddlewayPoint);
+                    Debug.Log("여우는 사다리를 오려고 합니다. ");
+                    return;
+                } 
+               
                 stateMachine.ChangeState<LadderMoveState_Fox>();
+
             }
             else
             {
-                context.Walk(); // 좌우이동
+                context.Walk(_target.position); // 좌우이동
             }
 
             return;
@@ -58,7 +64,7 @@ public class MoveState_Fox : State<AIFoxController>
 
     }
 
-    public virtual void OnExit()
+    public override void OnExit()
     {
         _animator.SetBool(hasWalk, false);
     }
