@@ -11,7 +11,8 @@ public class Flowerfield : MonoBehaviour
     void Start()
     {
         flowerSpot.position = this.transform.position + new Vector3(0, 1, 0);
-        FlowerEnemySpawner.allflowerFields.Add(this);
+        //FlowerEnemySpawner.allflowerFields.Add(this);
+        FlowerEnemySpawner.instance.AddFlowerFields(this.gameObject);
     }
 
 

@@ -7,7 +7,6 @@ public class MoveState_Fox : State<AIFoxController>
 
 
     private Animator _animator;
-    private SpriteRenderer _spriteRenderer;
 
 
     private int hasWalk = Animator.StringToHash("fxWalk");
@@ -49,14 +48,17 @@ public class MoveState_Fox : State<AIFoxController>
                 } 
                
                 stateMachine.ChangeState<LadderMoveState_Fox>();
-
+                
             }
-            else
+            if (!context.IsAvailableAttack)
             {
                 context.Walk(_target.position); // 좌우이동
+                return;
             }
-
-            return;
+            else // 공격가능범위에 있다면 Idle상태로 전환한다.
+            {
+                stateMachine.ChangeState<IdleState_Fox>();
+            }
         }
 
         //타겟이 없으면 Idle상태로 돌아간다.

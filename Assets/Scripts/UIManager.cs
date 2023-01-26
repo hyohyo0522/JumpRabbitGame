@@ -30,6 +30,7 @@ public class  UIManager : MonoBehaviour
     public Text _slugText; // 슬러그 겟 관련 UI
     public Text _flowerKill;    //플라워몬 Kill UI 관련
     public Text _playerKill;    // 플레이어킬 UI관련
+    public GameObject _playerKillUI;
     public Text _KeyNum;
 
 
@@ -43,6 +44,29 @@ public class  UIManager : MonoBehaviour
     float movePower;
     [SerializeField] float moveSpeed = 5f;
 
+
+    private void OnEnable() 
+    {
+
+        //솔로플레이 모드인지, 멀티플레이어 모드인지에 따라 _playerKill 이미지 다르게 하자! 
+        GameObject _IconImageForMultiPlay = _playerKillUI.transform.GetChild(1).gameObject;
+        GameObject _IconImageForSinglePlay = _playerKillUI.transform.GetChild(2).gameObject;
+
+        string _myGameMode = PlayerPrefs.GetString("Mode");
+
+        if(_myGameMode == "Single") //게임모드가 싱글일때 설정
+        {
+            _IconImageForMultiPlay.SetActive(false);
+            _IconImageForSinglePlay.SetActive(true);
+        }
+        if(_myGameMode == "Multi") //게임모드가 멀티일 때 설정
+        {
+            _IconImageForMultiPlay.SetActive(true);
+            _IconImageForSinglePlay.SetActive(false);
+        }
+
+
+    }
 
 
     public void UpdateCarrotText(int value)

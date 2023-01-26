@@ -34,22 +34,6 @@ public class BingoPanel : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
-
-    private void OnEnable()
-    {
-
-
-
-    }
-
-
-    private void Update()
-    {
-       
-
-
-    }
 
     //체스트의 정보를 가져온다. 
     public void getBingoCardsInfo(eBingoItem itemNameFromChest, int ItemNumFromChest, bool isCompleted, int index)

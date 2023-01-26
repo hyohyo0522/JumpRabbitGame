@@ -107,6 +107,8 @@ public class PlayerLife : LivingEntity
 
     public override void OnDamage(float value)
     {
+        if (attacked) return;
+        //여기 attacked 감지를 여기서 하면 좋을 것 같다!!
         base.OnDamage(value);
 
         //헬스 슬라이더 UI갱신
@@ -207,11 +209,13 @@ public class PlayerLife : LivingEntity
         UIManager.instance._flowerKill.text = GetThousandCommaText(_killFlowers).ToString();
     }
 
+    //
     public void UpdatePlayerKillUI(int value)
     {
-        _killPlayer -= value;
+        _killPlayer += value;
         UIManager.instance._playerKill.text = GetThousandCommaText(_killPlayer).ToString();
     }
+    
 
     public bool HasEnuoughItem(eBingoItem item, int value) //빙고판 버튼 클릭시 호출
     {
@@ -250,7 +254,7 @@ public class PlayerLife : LivingEntity
             case eBingoItem.player:
                 if (_killPlayer >= value)
                 {
-                    UpdatePlayerKillUI(value);
+                    UpdatePlayerKillUI(-value);
                     result = true;
                 }
                 break;

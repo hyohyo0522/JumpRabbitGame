@@ -21,18 +21,19 @@ public class LadderMoveState_Fox : State<AIFoxController> // 사다리 수직이동
 
     public override void OnEnter()
     {
-        Physics2D.IgnoreCollision(_collider, context.groundCollider,true);
+        //Physics2D.IgnoreCollision(_collider, context.groundCollider,true); >> context에서 initialTouchingurrentLadder 가 true가 되는 시점에 바꾸는 걸로 변경
         LadderDestination = context.MiddlewayPoint;
         Debug.Log("올라가야할 높이 LadderDestination: " + LadderDestination);
 
-        _animator.SetBool(hasClimb, true);
+        //_animator.SetBool(hasClimb, true); >> context에서 initialTouchingurrentLadder 가 true가 되는 시점에 바꾸는 걸로 변경
         _moveYDirection =context.MiddlewayPoint.y > 0 ? 1f : -1f;
-        context.ChageGavity(0f); //상하이동때에는 중력적용 x 
+        //context.ChageGavity(0f); //상하이동때에는 중력적용 x >> context에서 initialTouchingurrentLadder 가 true가 되는 시점에 바꾸는 걸로 변경
 
 
     }
     public override void Update(float deltaTime)
     {
+
         if (context.HasArrived(LadderDestination, 0.8f)) // 사다리를 이용해 상하 이동으로 원하는 위치에 도달헀다면 좌우이동하는 MoveState로 전환한다.
         {
 
@@ -50,6 +51,11 @@ public class LadderMoveState_Fox : State<AIFoxController> // 사다리 수직이동
                 stateMachine.ChangeState<MoveState_Fox>();
             }
 
+        }
+
+        if (!context.SearchTarget()) // 타겟이 없어지면 IdleState로 전환한다.
+        {
+            stateMachine.ChangeState<IdleState_Fox>();
         }
     }
 

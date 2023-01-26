@@ -169,12 +169,15 @@ public class FlowerEnemy : LivingEntity
                 for (int n = 0; n < PlayerisRight.Length; n++)
                 {
                     PlayerLife attackPlayers = PlayerisRight[n].GetComponent<PlayerLife>();
-                    if (!attackPlayers.attacked) // 플레이어가 공격당해서 빨간 색으로 변했을 때에는 공격하지 않는다. 
-                    {
-                        attackPlayers.OnDamage(damage);
-                        // 플레이어 공격
-                        //Debug.Log("플레이가 공격당했다.");
-                    }
+                    attackPlayers?.OnDamage(damage);
+
+                    // 아래는 PlayerLife 의  OnDamage에 if (attacked) return; 한줄 추가하며 삭제함
+                    //if (!attackPlayers.attacked) // 플레이어가 공격당해서 빨간 색으로 변했을 때에는 공격하지 않는다. 
+                    //{
+                    //    attackPlayers.OnDamage(damage);
+                    //    // 플레이어 공격
+                    //    //Debug.Log("플레이가 공격당했다.");
+                    //}
 
                 }
             }

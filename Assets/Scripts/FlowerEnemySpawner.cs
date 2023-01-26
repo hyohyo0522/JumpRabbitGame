@@ -7,10 +7,25 @@ using Random = UnityEngine.Random;
 public class FlowerEnemySpawner : MonoBehaviour
 {
 
-     // ★ 이거 싱글톤 패턴으로 만들어야함 
+    public static FlowerEnemySpawner instance
+    {
+        get
+        {
+            if (m_instance == null)
+            {
+                m_instance = FindObjectOfType<FlowerEnemySpawner>();
+            }
+
+            return m_instance;
+        }
+    }
+
+    private static FlowerEnemySpawner m_instance; // 싱글톤이 할당될 변수
+
+    // ★ 이거 싱글톤 패턴으로 만들어야함 
 
     public GameObject flowerPrefab;
-    public static List<Flowerfield> allflowerFields = new List<Flowerfield>(); // 모든 플라워몬스터 필드 담을 리스터
+    private static List<Flowerfield> allflowerFields = new List<Flowerfield>(); // 모든 플라워몬스터 필드 담을 리스터
     private static List<Flowerfield> emptyFileds = new List<Flowerfield>(); // 플라워 몬스터가 생성 안된 플라워 필드를 담을 리스트
     private static List<FlowerEnemy> enemies = new List<FlowerEnemy>(); // 생성된 플라워 몬스터들을 담는 리스트
     
@@ -58,7 +73,6 @@ public class FlowerEnemySpawner : MonoBehaviour
         enemies.Add(flowrEnemy);
 
         spot.hasFlowerMon = true;
-        Debug.Log(spot.hasFlowerMon);
         //Flowerfield thisFlowerSpot = spot.GetComponent<Flowerfield>();
         //thisFlowerSpot.hasFlowerMon = true;
 
@@ -71,7 +85,7 @@ public class FlowerEnemySpawner : MonoBehaviour
 
     }
 
-    private Flowerfield randomEmptyFileds()    // 플라워 몬스터가 없는 필드를 랜덤으로 하나 뽑는다.
+    public Flowerfield randomEmptyFileds()    // 플라워 몬스터가 없는 필드를 랜덤으로 하나 뽑는다.
     {
         emptyFileds.Clear();
         currentNum = 0; //  현재 플라워 몬스터 수를 0으로 초기화한다. 
@@ -95,11 +109,22 @@ public class FlowerEnemySpawner : MonoBehaviour
 
     }
 
+    //플라워몬스터필드 배열에 플라워 필드를 추가한다
+    public void AddFlowerFields(GameObject newObj)
+    {
+        Flowerfield newFlowerField = newObj.GetComponent<Flowerfield>();
+
+        allflowerFields.Add(newFlowerField);
+    }
+
+
     //최대 플라워 몬스터 수 갱신
     private void updateMaxFlowers()
     {
         maxFlower = Mathf.RoundToInt(percentForFlowers * allflowerFields.Count);
     }
+
+    
 
 
 

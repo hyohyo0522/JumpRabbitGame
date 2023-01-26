@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
+
 
 public class AIFoxController : MonoBehaviour
 {
@@ -8,12 +11,12 @@ public class AIFoxController : MonoBehaviour
     public StateMachine<AIFoxController> StateMachine => stateMachine;
 
 
-    //플레이와 아이템 탐지 관련
 
     public LayerMask maskLadder;// 사다리 레이어 마스크
     public LayerMask targetMask;
     public Collider2D groundCollider;
 
+    
     [SerializeField] public Transform target; // 최종목표지점
     [SerializeField] public Vector2 MiddlewayPoint; // 최종 목표로 가기 위한 중간 목표지점
 
@@ -22,18 +25,49 @@ public class AIFoxController : MonoBehaviour
 
 
     public float detectRadius = 300f; // 탐지거리, 아이템과 플레이어 탐지
-    [SerializeField] float attackRadius = 0.5f; //플레이어 공격범위이자, 플레이어에게 도착했다고 감지하는 범위값
+     float attackRadius = 2f; //플레이어 공격범위이자, 플레이어에게 도착했다고 감지하는 범위값
     [SerializeField] float ladderDetectRange = 3f;
-    [SerializeField] float _speed = 4f;
+    [SerializeField] float _speed = 2f;
     [SerializeField] float _ladderSpeed = 7f;
+    public float damagePower = 10f;
+    float velocityX; // Rigidbody2D에서 x속도를 가져와서 FlipX를 적용할 것이다.
 
+
+    // 여우몬스터 라이프 관련 
+    float hpFox;
+    float maxhpFox = 50;
+    bool beDamaged = false;
+    float timebetGetDamage = 0.5f;
+    [SerializeField] Transform headShotPoint_fox;
+    [SerializeField] PlayerLife whoAttacking;
+    public GameObject pung; // 죽을 때 펑 애니메이션 재생
+    float pungAniPlayTime = 0.55f;
+    public event Action OnDeath; // 죽을 때 이벤트
+
+    //여우몬스터 UI관련
+    public Slider _healthSlider;
+    private int getHeadShot = Animator.StringToHash("fxHurt");
 
 
     private Rigidbody2D _rigidBody;
     private SpriteRenderer _spriteRenderer;
     private Collider2D _collider;
+    private Animator _animator;
+
+    private void OnEnable()
+    {
+
+        headShotPoint_fox = this.transform.GetChild(0).transform; // 헤드샷 포인트콜라이더 가져오기
 
 
+        //여우몬스터 UI관련
+        _healthSlider.maxValue = maxhpFox;
+        hpFox = maxhpFox;
+        _healthSlider.value = hpFox;
+
+
+
+    }
 
     private void Start()
     {
@@ -44,6 +78,8 @@ public class AIFoxController : MonoBehaviour
 
         _rigidBody = GetComponent<Rigidbody2D>();
         _collider = GetComponent<Collider2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
 
     }
 
@@ -53,6 +89,15 @@ public class AIFoxController : MonoBehaviour
 
         Debug.Log(stateMachine.CurrentState);
 
+
+        velocityX = _rigidBody.velocity.x;
+        if(_rigidBody.velocity.x != 0)
+        {
+            _spriteRenderer.flipX=
+            ((target?.position.x-transform.position.x ) < 0.1f) ? true : false;
+        }
+
+        GetHeadShot();
 
     }
 
@@ -68,7 +113,7 @@ public class AIFoxController : MonoBehaviour
             }
 
             //도착했다고 가정한다.
-            return (HasArrived(target.position, attackRadius));
+            return (HasArrived(target.transform.position, attackRadius));
         }
 
     }
@@ -101,6 +146,70 @@ public class AIFoxController : MonoBehaviour
 
     }
 
+    public void GetHeadShot() //헤드샷 공격당했을 때 
+    {
+
+        float damage = 10f;
+
+        Collider2D[] getHeadShotByPlayer = Physics2D.OverlapCircleAll((Vector2)headShotPoint_fox.position, 0.5f, targetMask);
+
+        if (getHeadShotByPlayer.Length > 0)
+        {
+            whoAttacking = getHeadShotByPlayer[0].GetComponent<PlayerLife>();
+            PlayerMovement whoAttackingMove = whoAttacking.GetComponent<PlayerMovement>();
+            //whoAttackingMove.AddForcetoBounce(new Vector2(0, 500f));
+
+
+            Vector2 cp = getHeadShotByPlayer[0].transform.position;
+            Vector2 dir = cp - (Vector2)transform.position; // 플레이어가 튕겨야하므로, 플레이어방향 - 현재 몬스터 방향으로 함 
+                                                            //rigidbody.AddForce((dir).normalized * 300f);
+
+            whoAttackingMove.AddForcetoBounce((dir).normalized * 500f);
+
+
+
+            if (!beDamaged)
+            {
+                hpFox -= damage; // 체력 깍임.
+                _healthSlider.value = hpFox; // 체력 UI 표시
+                //_animator.SetTrigger("fxHurt");
+                _animator.SetTrigger(getHeadShot);
+
+
+                if (hpFox <= 0) // 공격을 당해서 체력이 다 쓰임
+                {
+                    whoAttacking.UpdatePlayerKillUI(1); // 공격한 플레이어의 playerKillUI 올리기.
+                    Vector2 DisappearPosition = this.transform.position;
+                    GameObject pungPlay = Instantiate(pung, DisappearPosition, Quaternion.identity);
+                    Destroy(pungPlay.gameObject, pungAniPlayTime);
+                    Destroy(this.gameObject);
+                    if(OnDeath != null)
+                    {
+                        OnDeath();
+                    }
+                    return;
+                }
+
+                StartCoroutine(onDamageEffect());
+            }
+        }
+
+
+    }
+
+    private IEnumerator onDamageEffect()
+    {
+       // if (!dead)
+       // {
+            _spriteRenderer.color = Color.gray;
+            beDamaged = true;
+            yield return new WaitForSeconds(timebetGetDamage);
+            _spriteRenderer.color = Color.white;
+            beDamaged = false;
+       // }
+
+    }
+
     public Vector2 getDistance()
     {
         Vector2 distance = target.position - transform.position;
@@ -130,8 +239,9 @@ public class AIFoxController : MonoBehaviour
         if (ladderDetect.Length > 0)
         {
 
-            Transform ladderPosition = ladderDetect[0].transform.GetChild(0).transform; // 사다리 위치 가져오기
-
+            Transform ladderPosition = ladderDetect[0].transform.GetChild(0).GetComponent<Transform>() ; // 사다리 위치 가져오기
+            Debug.Log("가고자 하는 사다리 위치 " + ladderPosition.transform.position);
+            
             if (CompareYDirection(target.position, ladderPosition.position) == 0) return MovingLadder; // 일치 안하면 함수 나오기.
 
 
@@ -153,13 +263,36 @@ public class AIFoxController : MonoBehaviour
     public void MovingLadder(float _moveY)
     {
         Debug.Log("여우가 사다리 위를 오르려고 시도하고 있다."+ _moveY);
-        
-        _rigidBody.velocity = new Vector2(0, _ladderSpeed * _moveY);
 
-        if (!initialTouchingurrentLadder && _collider.IsTouching(currentLadder))
+
+        if (_collider.IsTouching(currentLadder))
         {
-            initialTouchingurrentLadder = true;
+            _animator.SetBool("fxClimb", true);
+            _rigidBody.velocity = new Vector2(0, _ladderSpeed * _moveY);
+
+            if (!initialTouchingurrentLadder)
+            {
+                initialTouchingurrentLadder = true;
+                Physics2D.IgnoreCollision(_collider, groundCollider, true);
+                ChageGavity(0f);
+            }
         }
+
+        if (!initialTouchingurrentLadder)
+        {
+            if(_moveY == 1)
+            {
+                _rigidBody.velocity = new Vector2(0, _ladderSpeed * _moveY);
+            }
+
+            if(_moveY == -1)
+            {
+                Physics2D.IgnoreCollision(_collider, groundCollider, true);
+                _rigidBody.velocity = new Vector2(0, _ladderSpeed * _moveY);
+            }
+
+        }
+
     }
 
 
@@ -193,12 +326,12 @@ public class AIFoxController : MonoBehaviour
 
 
         // 내 위치와 타겟의 위치가 일정범위이하일 때 0 도출
-        // (== 사다리위치는 당연히 일정범위이상이고, 일정범위 안에 있다면 플레이어가 같은 Floor에 있다고 생각하고 0을 반환하도록 한다.)
-        //if (target.y - comparePosition.y < 0.1f) 
-        //{
-        //    return YDirection;
+         //(== 사다리위치는 당연히 일정범위이상이고, 일정범위 안에 있다면 플레이어가 같은 Floor에 있다고 생각하고 0을 반환하도록 한다.)
+        if (target.y - comparePosition.y < 0.5f) 
+        {
+           return YDirection;
         
-        //}
+        }
 
         // 사다리 오르내릴 때의 Y방향 도출
         if(target.y-transform.position.y<0 && comparePosition.y - transform.position.y < 0) { YDirection=-1; }
@@ -212,7 +345,8 @@ public class AIFoxController : MonoBehaviour
     public bool CompareXDistance(float dest, float range)
     {
         bool result = false;
-        if (transform.position.x - dest < range)
+        float XDistance = Mathf.Abs(dest - transform.position.x);
+        if (XDistance < range)
         {
             result = true;
         }
@@ -222,7 +356,10 @@ public class AIFoxController : MonoBehaviour
     public bool HasArrived(Vector2 destination, float minDestinationRadius)
     {
         bool arrived = false;
-        if(transform.position.x - destination.x< minDestinationRadius&& transform.position.y - destination.y < minDestinationRadius)
+        float Xresult = Mathf.Abs(destination.x - transform.position.x);
+        float Yresult = Mathf.Abs(destination.y - transform.position.y);
+
+        if (Xresult < minDestinationRadius && Yresult < minDestinationRadius)
         {
             arrived = true;
         }
@@ -236,6 +373,17 @@ public class AIFoxController : MonoBehaviour
         Debug.Log("도착하였나요? " + arrived);
         return arrived;
            
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    { //여기서 콜라이더 무시하는 함수 만들자.
+    }
+
+    public void MakeIgnoreCollision(GameObject newIgnore)
+    {
+        Collider2D colli = newIgnore.GetComponent<Collider2D>();
+
+        Physics2D.IgnoreCollision(_collider, colli, true);
     }
 
     private void OnDrawGizmos()
