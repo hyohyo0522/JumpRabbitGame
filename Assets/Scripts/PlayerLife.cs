@@ -88,6 +88,7 @@ public class PlayerLife : LivingEntity
         UIManager.instance._scoreTxt.text = _myScore.ToString();
         UIManager.instance._slugText.text = _mySlug.ToString();
         UIManager.instance._flowerKill.text = _killFlowers.ToString();
+        UIManager.instance._playerKill.text = _killPlayer.ToString();
 
 
 

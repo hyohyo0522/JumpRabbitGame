@@ -12,8 +12,9 @@ public class AIFoxController : MonoBehaviour
 
 
 
-    public LayerMask maskLadder;// 사다리 레이어 마스크
+    public LayerMask ladderMask;// 사다리 레이어 마스크
     public LayerMask targetMask;
+    public LayerMask ItemMask;
     public Collider2D groundCollider;
 
     
@@ -98,6 +99,7 @@ public class AIFoxController : MonoBehaviour
         }
 
         GetHeadShot();
+        EatItems();
 
     }
 
@@ -234,7 +236,7 @@ public class AIFoxController : MonoBehaviour
     {
 
         bool MovingLadder = false;
-        Collider2D[] ladderDetect = Physics2D.OverlapCircleAll(transform.position, ladderDetectRange, maskLadder);
+        Collider2D[] ladderDetect = Physics2D.OverlapCircleAll(transform.position, ladderDetectRange, ladderMask);
 
         if (ladderDetect.Length > 0)
         {
@@ -375,15 +377,18 @@ public class AIFoxController : MonoBehaviour
            
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    { //여기서 콜라이더 무시하는 함수 만들자.
-    }
-
-    public void MakeIgnoreCollision(GameObject newIgnore)
+    private void EatItems()
     {
-        Collider2D colli = newIgnore.GetComponent<Collider2D>();
+        Collider2D[] nearItems= Physics2D.OverlapCircleAll(transform.position, 1.0f, ItemMask);
+        if (nearItems.Length>0)
+        {
+            IItem touchedItem = nearItems[0].GetComponent<IItem>();
+            touchedItem?.DestoySelf();
 
-        Physics2D.IgnoreCollision(_collider, colli, true);
+            SlugMon touchedslug = nearItems[0].GetComponent<SlugMon>();
+            touchedslug?.DetroySelf();
+        }
+
     }
 
     private void OnDrawGizmos()

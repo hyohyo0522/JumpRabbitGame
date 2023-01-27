@@ -25,7 +25,7 @@ public class FoxMonSpawner : MonoBehaviour
     public Collider2D groundCollider; // 땅콜라이더를 할당해서 foxMonPrefab에 할당해주도록 한다.
     [SerializeField] List<AIFoxController> foxMonsEnabled = new List<AIFoxController>(); //생성된 여우몬들을 담을 리스트
 
-    float timeBetFoxInstantiate = 4.5f; // 생성주기
+    float timeBetFoxInstantiate = 10f; // 생성주기
     public int maxFoxNum; // 최대 여우 몬스터 생성 수
     private int currentNumOfFox; // 현재 폭스몬스터생성수
 

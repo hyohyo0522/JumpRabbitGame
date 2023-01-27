@@ -41,4 +41,9 @@ public class StarItem : MonoBehaviour, IItem
 
         }
     }
+
+    public void DestoySelf()
+    {
+        Destroy(this.gameObject);
+    }
 }

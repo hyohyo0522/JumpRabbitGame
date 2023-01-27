@@ -48,5 +48,10 @@ public class Mushroom_RestoreHealth : MonoBehaviour,IItem
         }
 
     }
+
+    public void DestoySelf()
+    {
+        Destroy(this.gameObject);
+    }
 }
 

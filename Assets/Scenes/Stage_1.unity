@@ -13681,7 +13681,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &360952966
 GameObject:
@@ -18871,10 +18871,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foxMonPrefab: {fileID: 1217445028935477949, guid: 96c50ebda463dd04a90793835192a15f, type: 3}
   groundCollider: {fileID: 290391378}
-  IgnoreColliders:
-  - {fileID: 6050642099150298768, guid: 18f2da95e275444419cf31e8b56bd6d5, type: 3}
-  - {fileID: 7201988557336316969, guid: 569d6e8646089174b80ffac5c121c76f, type: 3}
-  - {fileID: 363103457687877425, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
+  foxMonsEnabled: []
   maxFoxNum: 0
 --- !u!4 &773481977
 Transform:
@@ -21110,7 +21107,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1303360564
 GameObject:
@@ -21286,7 +21283,7 @@ PrefabInstance:
       objectReference: {fileID: 396417869}
     - target: {fileID: 363103457687877580, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
       propertyPath: m_RootOrder
-      value: 17
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 363103457687877580, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -24939,7 +24936,7 @@ PrefabInstance:
       objectReference: {fileID: 396417869}
     - target: {fileID: 363103457687877580, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 363103457687877580, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
       propertyPath: m_LocalPosition.x

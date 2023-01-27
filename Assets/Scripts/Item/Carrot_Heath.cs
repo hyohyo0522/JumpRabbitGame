@@ -25,6 +25,9 @@ public class Carrot_Heath : MonoBehaviour,IItem
             //PhotonNetwork.Destroy(gameObject);
         }
     }
-
+    public void DestoySelf()
+    {
+        Destroy(this.gameObject);
+    }
 
 }

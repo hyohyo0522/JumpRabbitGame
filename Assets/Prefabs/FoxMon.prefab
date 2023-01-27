@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 1217445028935477937}
   - component: {fileID: 1217445028935477936}
   - component: {fileID: 1217445028935477939}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FoxMon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,18 +208,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94224d8c0edda0d48b7696c72b04b2c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maskLadder:
+  ladderMask:
     serializedVersion: 2
     m_Bits: 128
   targetMask:
     serializedVersion: 2
     m_Bits: 256
+  ItemMask:
+    serializedVersion: 2
+    m_Bits: 2048
   groundCollider: {fileID: 0}
-  IgnoreColliders:
-  - {fileID: 6050642099150298768, guid: 18f2da95e275444419cf31e8b56bd6d5, type: 3}
-  - {fileID: 7201988557336316969, guid: 569d6e8646089174b80ffac5c121c76f, type: 3}
-  - {fileID: 363103457687877425, guid: ff4bc765738e91849a0cb2bfd194d6e4, type: 3}
-  - {fileID: 1217445028935477949}
   target: {fileID: 0}
   MiddlewayPoint: {x: 0, y: 0}
   currentLadder: {fileID: 0}

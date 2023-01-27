@@ -20,4 +20,9 @@ public class Carrot : MonoBehaviour,IItem
             //PhotonNetwork.Destroy(gameObject);
         }
     }
+
+    public void DestoySelf()
+    {
+        Destroy(this.gameObject);
+    }
 }

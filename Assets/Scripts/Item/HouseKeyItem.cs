@@ -40,4 +40,9 @@ public class HouseKeyItem : MonoBehaviour,IItem
 
     }
 
+    public void DestoySelf()
+    {
+        Destroy(this.gameObject);
+    }
+
 }

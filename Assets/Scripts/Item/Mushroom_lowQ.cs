@@ -24,4 +24,9 @@ public class Mushroom_lowQ : MonoBehaviour, IItem
 
         }
     }
+
+    public void DestoySelf()
+    {
+        Destroy(this.gameObject);
+    }
 }

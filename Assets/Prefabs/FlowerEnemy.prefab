@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 7201988556040894217}
   - component: {fileID: 1111472896}
   - component: {fileID: 1111472898}
-  m_Layer: 0
+  - component: {fileID: 7816745055938525358}
+  m_Layer: 10
   m_Name: HeadPoint
   m_TagString: Untagged
   m_Icon: {fileID: 7148428337604731935, guid: 0000000000000000d000000000000000, type: 0}
@@ -43,7 +44,7 @@ CircleCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
@@ -60,6 +61,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51b7b0d2ff40d124f87675a2388c6b22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!251 &7816745055938525358
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7201988556040894216}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 256
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 180
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1 &7201988556299545627
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,7 +183,7 @@ GameObject:
   - component: {fileID: 7201988557336316970}
   - component: {fileID: 7201988557336316982}
   - component: {fileID: 910659744}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FlowerEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}

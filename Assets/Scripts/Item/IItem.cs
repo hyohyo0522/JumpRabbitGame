@@ -8,6 +8,8 @@ public interface IItem
 
     void Use(GameObject target);
 
+    void DestoySelf();
+
 }
 
 

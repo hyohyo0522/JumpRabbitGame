@@ -51,5 +51,9 @@ public class Carrot_JumpUp : MonoBehaviour,IItem
 
     }
 
+    public void DestoySelf()
+    {
+        Destroy(this.gameObject);
+    }
 
 }

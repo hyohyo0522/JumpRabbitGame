@@ -174,5 +174,11 @@ public class SlugMon : MonoBehaviour
         }
     }
 
+
+    public void DetroySelf()
+    {
+        Destroy(this.gameObject);
+    }
+
 }
 
