@@ -63,6 +63,9 @@ public class PlayerMovement : MonoBehaviour
 
     //펑 이펙트 가져오기
     public GameObject pung; // 펑폭발 애니메이션 재생될 게임오브젝트파일
+    public GameObject pungSmall;
+    public GameObject pungStartObj; // 아이템 먹으면 재생될 펑 오브젝트 파일
+    public GameObject pungBigStar; // 열쇠 먹을 때 재생될 펑 오브젝트 파일 
     float pungAniPlayTime = 0.55f;
     private Vector2 pungDisapperPosition;
     private Vector2 pungRevivePosition;
@@ -104,11 +107,15 @@ public class PlayerMovement : MonoBehaviour
             playerRigidbody.gravityScale = gravityY;
             GroundCheck();
 
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                Jump();
 
-            }
+            // 모바일 말고, 키보드로 할 때.
+            //if (Input.GetKey(KeyCode.UpArrow))
+            //{
+            //    Jump();
+
+            //}
+
+
             Walk();
 
             if (!InputManager.instance.touchOn) // InputManger에서 관리하는 창들이 열려있을 때에는 아이템을 먹지 않는다. 
@@ -122,9 +129,9 @@ public class PlayerMovement : MonoBehaviour
             playerAnimator.SetFloat("yvelocity", playerRigidbody.velocity.y);
             playerAnimator.SetBool("DoJump", !isGrounded);
         }
-        else
+        else //사다리에 있는 경우! 
         {
-
+            
             Physics2D.IgnoreCollision(playerCollider, platformCollider, true); // 사다리 있는 동안은 Ground Collider 무시 
             Physics2D.IgnoreLayerCollision(maskPlayer, maskMonFlying, true); // 사다리에 있는 동안은 플라잉몬스터 레이어 무시 
             playerRigidbody.gravityScale = 0f;
@@ -240,11 +247,21 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    public void TouchUpBtnAndChageVerticalValue(bool pressBtn)
+    {
+        m_VerticalMovement = pressBtn ? 1 : 0;
+        Jump();
+    }
+
     public void Jump()
     {
         InputManager.instance.ClickAllCancleFamButton(); // 띄워진 UI창이 있다면 Cancle버튼을 누른 효과
 
-        if (LadderCheck()) return; // 모바일용 버튼을 만들면서 추가한 코드.
+        if (LadderCheck()) // 모바일용 버튼을 만들면서 추가한 코드.
+        {
+            return;
+        }
+
         if (notRevive) return;
         if (!isGrounded) return;
         if (!JumpEnable) return;
@@ -265,9 +282,6 @@ public class PlayerMovement : MonoBehaviour
         enableJumpCount--;
         UIManager.instance.UpdateCarrotText(enableJumpCount); // UI갱신
         Debug.Log("점프카운트는 1이 되었다.");
-
-
-
 
     }
 
@@ -298,18 +312,21 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
     void MoveInLadder()
     {
 
         float speedup = 7f; // 사다리 오르는 속도
-        float speedJumpInLadder = -7f;
-        m_VerticalMovement = Input.GetAxisRaw("Vertical");
-        playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, speedup * m_VerticalMovement);
+        float speedJumpInLadder = -7f; // 사다리에서 좌우키 눌렀을 때, 사다리를 벗어나면서 아래로 떨어지게 만드는 속도이다.
+        //m_VerticalMovement = Input.GetAxisRaw("Vertical");
+       // playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, speedup * m_VerticalMovement);
 
 
         // m_HorizontalMovement = Input.GetAxisRaw("Horizontal");
         m_HorizontalMovement = UIManager.instance.GetHorizontalValue();
-        if (m_HorizontalMovement != 0)
+        playerRigidbody.velocity = new Vector2(m_HorizontalMovement*speed, speedup * m_VerticalMovement);
+
+        if (m_HorizontalMovement != 0) // 땅에 도착하지 않고, 사다리에서 좌우키 눌렀을 때 떨어지게 만든다.
         {
             Collider2D[] groundedTouched = Physics2D.OverlapCircleAll((Vector2)ladderColliderCheck1.position, 0.7f, groundMask);
             if (groundedTouched.Length <= 0)
@@ -317,6 +334,7 @@ public class PlayerMovement : MonoBehaviour
                 playerRigidbody.velocity = new Vector2(speed * m_HorizontalMovement, speedJumpInLadder);
             }
         }
+
 
     }
 
@@ -345,15 +363,31 @@ public class PlayerMovement : MonoBehaviour
         if (nearItem[0].CompareTag("Item"))
         {
             IItem item = nearItem[0].GetComponent<IItem>();
+            HouseKeyItem isKey = nearItem[0].GetComponent<HouseKeyItem>();
             if (item != null)
             {
-
+                Vector2 DisappearItemPosition = nearItem[0].transform.position;
                 ////호스트만 아이템 직접 사용가능
                 ////호스트에서는 아이템 사용 후사용된 아이템이의 효과를 모든 클라이언트에 동기화시킴
                 //if (PhotonNetwork.IsMasterClient)
                 //{
                 //    //Use매서드를 실행하여 아이템사용
-                    item.Use(gameObject);
+                item.Use(gameObject);
+
+
+                if(isKey == null) 
+                {
+                    GameObject pungItemPlay = Instantiate(pungStartObj, DisappearItemPosition, Quaternion.identity);
+                    Destroy(pungItemPlay.gameObject, pungAniPlayTime);
+                }
+                else // 키 아이템이 맞으면?
+                {
+                    GameObject pungKeyPlay = isKey.isPaid ? Instantiate(pungBigStar, DisappearItemPosition, Quaternion.identity) : Instantiate(pungSmall, DisappearItemPosition, Quaternion.identity);
+                    Destroy(pungKeyPlay.gameObject, pungAniPlayTime);
+                }
+
+
+
                 //}
 
                 ////아이템 습득 소리 재생

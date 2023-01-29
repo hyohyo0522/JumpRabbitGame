@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc345f9bd57a2c74ba0aba0ede14764f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pung: {fileID: 7419763835651070386, guid: 1a1888bd427858d4aa5e3a2db8e8d8ac, type: 3}
+  pung: {fileID: 7419763835651070386, guid: bf066885cda3f114f892bda79aeb80fd, type: 3}
   slugKillPlus: 1
   destroyDelayTime: 10
   delayForUse: 0.2

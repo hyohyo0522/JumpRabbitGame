@@ -20,8 +20,17 @@ public class AttackState_Fox : State<AIFoxController>
 
         if (context.IsAvailableAttack)
         {
-            _animator?.SetTrigger(hasAttack);
-            targetPlayerLife?.OnDamage(context.damagePower);
+            if (!targetPlayerLife.attacked)
+            {
+                _animator?.SetTrigger(hasAttack);
+                targetPlayerLife?.OnDamage(context.damagePower);
+                float xPos = Random.Range(context.transform.position.x, context.target.transform.position.x);
+                float yPos = Random.Range(context.transform.position.y, context.target.transform.position.y);
+                Vector2 effectPosition = new Vector2(xPos, yPos);
+
+                GameObject pungItemPlay = MonoBehaviour.Instantiate(context.pung, effectPosition, Quaternion.identity);
+                MonoBehaviour.Destroy(pungItemPlay.gameObject, 0.55f);
+            }
 
         }
         else

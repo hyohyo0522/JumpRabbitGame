@@ -8,6 +8,8 @@ public class HouseKeyItem : MonoBehaviour,IItem
     int payMoney = 1000;
     public float delayForUse = 0.5f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
     bool afterDelay = false;
+    public bool isPaid;
+
 
     private void OnEnable()
     {
@@ -31,10 +33,10 @@ public class HouseKeyItem : MonoBehaviour,IItem
     {
 
         PlayerLife playerLife = target.GetComponent<PlayerLife>();
-        if (playerLife.UseMoneyForKey(payMoney))
-        {
-            Destroy(this.gameObject);
-        }
+        isPaid = playerLife.UseMoneyForKey(payMoney);
+
+        Destroy(this.gameObject);
+
 
 
 

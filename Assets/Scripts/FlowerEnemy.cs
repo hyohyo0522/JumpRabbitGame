@@ -186,7 +186,7 @@ public class FlowerEnemy : LivingEntity
         else
         {
             //Debug.Log("플레이가 왼쪽에 있다.");
-            Collider2D[] PlayerisLeft = Physics2D.OverlapCircleAll((Vector2)_leftattackpoint.position, 0.6f, PlayerMask); ; 
+            Collider2D[] PlayerisLeft = Physics2D.OverlapCircleAll((Vector2)_leftattackpoint.position, 0.8f, PlayerMask); ; 
             if(PlayerisLeft.Length > 0)
             {
                 //Debug.Log("플레이어와 접촉했다."); // 점검완료

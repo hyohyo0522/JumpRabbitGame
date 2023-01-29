@@ -7,7 +7,7 @@ public class PlayerLife : LivingEntity
 {
 
     float MaxHealth = 50f;
-    float timeBetattack = 1f;
+    float timeBetattack = 0.5f;
 
     //¿­¼è UI°ü·Ã
     int _myKeyNum = 0;

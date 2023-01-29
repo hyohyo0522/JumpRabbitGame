@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 1217445028935477937}
   - component: {fileID: 1217445028935477936}
   - component: {fileID: 1217445028935477939}
+  - component: {fileID: 3621205925109210380}
   m_Layer: 10
   m_Name: FoxMon
   m_TagString: Untagged
@@ -122,6 +123,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1217445030117762068}
+  - {fileID: 1942916927007462330}
   - {fileID: 1217445029271057079}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -217,6 +219,9 @@ MonoBehaviour:
   ItemMask:
     serializedVersion: 2
     m_Bits: 2048
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 64
   groundCollider: {fileID: 0}
   target: {fileID: 0}
   MiddlewayPoint: {x: 0, y: 0}
@@ -227,9 +232,12 @@ MonoBehaviour:
   _speed: 10
   _ladderSpeed: 7
   damagePower: 10
-  headShotPoint_fox: {fileID: 0}
+  powerMakingAttackingPlayerToBounce: 600
+  groundCheckCollider_fox: {fileID: 0}
+  headShotPoint_fox: {fileID: 1217445030117762068}
   whoAttacking: {fileID: 0}
   pung: {fileID: 7419763835651070386, guid: 1a1888bd427858d4aa5e3a2db8e8d8ac, type: 3}
+  pungSmall: {fileID: 7419763835651070386, guid: 857c428a17dbed94684a20ea450872fb, type: 3}
   _healthSlider: {fileID: 1217445028654175857}
 --- !u!50 &1217445028935477936
 Rigidbody2D:
@@ -263,11 +271,30 @@ CircleCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_UsedByComposite: 0
   m_Offset: {x: -0.1, y: -0.4}
   serializedVersion: 2
-  m_Radius: 0.8
+  m_Radius: 1.1
+--- !u!251 &3621205925109210380
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217445028935477949}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 448
+  m_RotationalOffset: 0
+  m_UseOneWay: 0
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 180
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1 &1217445029123767683
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,7 +477,7 @@ RectTransform:
   m_Children:
   - {fileID: 1217445028654175870}
   m_Father: {fileID: 1217445028935477951}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -583,4 +610,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1217445028935477951}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8902772976731150303
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1942916927007462330}
+  m_Layer: 10
+  m_Name: GroundCheckCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: -5938655980376293919, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1942916927007462330
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8902772976731150303}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1217445028935477951}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
