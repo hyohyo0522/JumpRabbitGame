@@ -38,7 +38,8 @@ public class  UIManager : MonoBehaviour
     public Slider _myHeathSlider;
     public Text _myHealthValue;
 
-    //모바일버튼 플레이어이동관련 
+    //환경설정관련
+    public GameObject SettingPanel;
 
 
     float movePower;
@@ -66,6 +67,11 @@ public class  UIManager : MonoBehaviour
         }
 
 
+    }
+
+    private void Start()
+    {
+        IsOpenSettingPanel(false);
     }
 
 
@@ -113,6 +119,15 @@ public class  UIManager : MonoBehaviour
     public float GetHorizontalValue()
     {
         return movePower;
+    }
+
+    public void IsOpenSettingPanel(bool isOn)
+    {
+        if(SettingPanel.gameObject.activeSelf != isOn)
+        {
+            SettingPanel.SetActive(isOn);
+        }
+
     }
 
 }

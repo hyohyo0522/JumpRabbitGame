@@ -35,6 +35,7 @@ public class StarItem : MonoBehaviour, IItem
 
             if (!_myPlayer.dead)
             {
+                AudioManager.instance.PlaySFX("PlayerGetItem");
                 _myPlayer.UpdateScore(starValue);
                 Destroy(this.gameObject);
             }

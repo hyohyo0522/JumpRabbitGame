@@ -16,6 +16,7 @@ public class Carrot_Heath : MonoBehaviour,IItem
         PlayerLife playerLife = target.GetComponent<PlayerLife>();
         if (playerLife != null && !playerLife.dead)
         {
+            AudioManager.instance.PlaySFX("PlayerGetHeal");
             playerLife.RestoreHealth(health);
 
             Destroy(this.gameObject);

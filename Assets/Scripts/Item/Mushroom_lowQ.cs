@@ -13,6 +13,7 @@ public class Mushroom_lowQ : MonoBehaviour, IItem
         {
             if (!playerLife.isFullHeath())
             {
+                AudioManager.instance.PlaySFX("PlayerGetHeal");
                 playerLife.RestoreHealth(health);
 
                 Destroy(this.gameObject);

@@ -111,6 +111,7 @@ public class PlayerLife : LivingEntity
         if (attacked) return;
         //여기 attacked 감지를 여기서 하면 좋을 것 같다!!
         base.OnDamage(value);
+        AudioManager.instance.PlaySFX("PlayeDamaged");
 
         //헬스 슬라이더 UI갱신
         UIManager.instance._myHeathSlider.value = hp;

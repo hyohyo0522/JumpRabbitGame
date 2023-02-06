@@ -35,6 +35,7 @@ public class Mushroom_RestoreHealth : MonoBehaviour,IItem
             {
                 if (!playerLife.isFullHeath())
                 {
+                    AudioManager.instance.PlaySFX("PlayerGetHeal");
                     playerLife.RestoreHealth(health);
 
                     Destroy(this.gameObject);

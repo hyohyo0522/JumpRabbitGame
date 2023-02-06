@@ -33,7 +33,18 @@ public class HouseKeyItem : MonoBehaviour,IItem
     {
 
         PlayerLife playerLife = target.GetComponent<PlayerLife>();
-        isPaid = playerLife.UseMoneyForKey(payMoney);
+        if (playerLife.UseMoneyForKey(payMoney)) // ø≠ºË ∏‘¿ª µ∑¿Ã ¿÷¥Ÿ.
+        {
+            AudioManager.instance.PlaySFX("PlayerGeKey");
+            isPaid = true;
+        }
+        else //ø≠ºË ∏‘¿ª µ∑¿Ã æ¯¥Ÿ. 
+        {
+            AudioManager.instance.PlaySFX("PlayerNoKey");
+            isPaid = false;
+        }
+
+
 
         Destroy(this.gameObject);
 

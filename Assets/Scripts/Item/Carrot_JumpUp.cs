@@ -38,7 +38,7 @@ public class Carrot_JumpUp : MonoBehaviour,IItem
 
             if (playerMove != null && !PlayerLife.dead)
             {
-
+                AudioManager.instance.PlaySFX("PlayerGetItem");
                 // 플레이어 점프 횟수 증가시킨다. 
                 playerMove.JumpCountUp(jumpUpValue);
                 Destroy(this.gameObject);

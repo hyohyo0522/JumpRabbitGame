@@ -271,6 +271,7 @@ public class PlayerMovement : MonoBehaviour
         if (enableJumpCount <= 0) return;
 
         // 점프구현방법 1. 
+        AudioManager.instance.PlaySFX("PlayerJump");
         float jumpForce = 2000f;
         playerRigidbody.velocity = Vector2.zero;
         playerRigidbody.AddForce(new Vector2(0, jumpForce));
@@ -349,6 +350,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void AddForcetoBounce(Vector2 power)
     {
+        AudioManager.instance.PlaySFX("PlayerJump");
         playerRigidbody.velocity = Vector2.zero;
         playerRigidbody.AddForce(power);
 
@@ -374,11 +376,13 @@ public class PlayerMovement : MonoBehaviour
                 //    //Use매서드를 실행하여 아이템사용
                 item.Use(gameObject);
 
+                // ★ 사운드는 아이템 스크립트 별로 적용함 
 
-                if(isKey == null) 
+                if (isKey == null)  // 아이템이 키가 아닐경우
                 {
                     GameObject pungItemPlay = Instantiate(pungStartObj, DisappearItemPosition, Quaternion.identity);
                     Destroy(pungItemPlay.gameObject, pungAniPlayTime);
+
                 }
                 else // 키 아이템이 맞으면?
                 {
@@ -386,13 +390,9 @@ public class PlayerMovement : MonoBehaviour
                     Destroy(pungKeyPlay.gameObject, pungAniPlayTime);
                 }
 
-
-
-                //}
-
-                ////아이템 습득 소리 재생
-                //playerAudioPlayer.PlayOneShot(itemPickupClip); //효과음은 모든 클라이언트에서 실행된다. 
             }
+
+
         }
 
         // 아이템과 충돌한 경우 해당 아이템을 사용하는 처리
@@ -434,7 +434,7 @@ public class PlayerMovement : MonoBehaviour
 
         // 죽을 때 효과재생
         playerAnimator.SetTrigger("Die");
-
+        AudioManager.instance.PlaySFX("PlayerDie");
 
         //만약 사다리 안에 있으면 떨어뜨리기
         if (isLadder)
