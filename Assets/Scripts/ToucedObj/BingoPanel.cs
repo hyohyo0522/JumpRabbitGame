@@ -77,8 +77,7 @@ public class BingoPanel : MonoBehaviour
         //{
         //   if (myBingoCards[n].completed != myBingoCompletedInfo[n])
         //    {
-        //        Debug.Log("빙고 클릭 넘버 : " + i);
-
+        //        Debug.Log("빙고 클릭 넘버 : " + i);ShowBingoCardUI
         //        TryNewLineEnable(i);
         //        myBingoCompletedInfo[i] = myBingoCards[i].completed;
         //        theChsetTouched.GetCompletedinfoFromUI(i); // 클릭된 빙고판의 정보를 체스트에 넘겨준다.
@@ -88,7 +87,7 @@ public class BingoPanel : MonoBehaviour
         //}
     }
 
-   
+
 
 
     public void TryNewLineEnable(int newBingoIndex)

@@ -161,3 +161,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+  ItemMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  pungSmall: {fileID: 7419763835651070386, guid: 857c428a17dbed94684a20ea450872fb, type: 3}

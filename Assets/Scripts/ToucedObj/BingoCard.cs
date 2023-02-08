@@ -60,7 +60,7 @@ public class BingoCard : MonoBehaviour
     }
 
 
-    //void SetBingoItem()
+    //void SetBingoItem( )
     //{
     //    if (hasbingoItem) { return; }
 
@@ -95,6 +95,8 @@ public class BingoCard : MonoBehaviour
     public void ShowBingoCardUI(eBingoItem whatItem, int ItemNum, bool isCompleted) 
     {
         string Name = whatItem.ToString();
+        Debug.Log("생성해야하는 빙고아이템은 : " + Name);
+
         myBingoItem = whatItem;
         SetImage(Name); // 빙고 이미지 생성
         SetBingoInfoMessage(Name, ItemNum);
@@ -170,9 +172,27 @@ public class BingoCard : MonoBehaviour
 
     void SetImage(string imageName) // 빙고 이미지 
     {
+        if(imageName == "player") 
+        {
+            string gameMode = PlayerPrefs.GetString("Mode");
+            if (gameMode == "Single") // 싱글게임모드  : 여우몬스터 이미지 빙고
+            {
+                Sprite imageFile = Resources.Load<Sprite>("fox") as Sprite;
+                itemImage.sprite = imageFile;
+            }
+            if(gameMode == "Multi") //멀티게임모드 : 플레이어 이미지 몬스터 빙고
+            {
+                Sprite imageFile = Resources.Load<Sprite>("player") as Sprite;
+                itemImage.sprite = imageFile;
+            }
 
-        Sprite imageFile = Resources.Load<Sprite>(imageName) as Sprite;
-        itemImage.sprite = imageFile;
+        }
+        else
+        {
+
+            Sprite imageFile = Resources.Load<Sprite>(imageName) as Sprite;
+            itemImage.sprite = imageFile;
+        }
 
     }
 

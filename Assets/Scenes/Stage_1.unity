@@ -20489,6 +20489,66 @@ Transform:
   m_Father: {fileID: 35790661}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &839261687
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 839261688}
+  - component: {fileID: 839261689}
+  m_Layer: 5
+  m_Name: HeartParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &839261688
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839261687}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1061154354}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -2, y: -1.3999939}
+  m_SizeDelta: {x: 76, y: 10}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &839261689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839261687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 8, y: 7}
+  m_Spacing: {x: 1, y: 1}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1 &848426840
 GameObject:
   m_ObjectHideFlags: 0
@@ -20829,7 +20889,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 859019518}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1372485171}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: GoBackStartScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &859019518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21861,6 +21933,7 @@ RectTransform:
   - {fileID: 1126903332}
   - {fileID: 1852326549}
   - {fileID: 596053066}
+  - {fileID: 839261688}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -22538,7 +22611,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1142208084}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1372485171}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: IsOpenSettingPanel
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1142208084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23598,8 +23683,13 @@ MonoBehaviour:
   _KeyNum: {fileID: 1725789280}
   _myHeathSlider: {fileID: 78183230}
   _myHealthValue: {fileID: 360952968}
-  SettingPanel: {fileID: 1591055892}
+  heartsParent: {fileID: 839261688}
+  heartContainerPrefab: {fileID: 1000013667988280, guid: 677e3f20f0ab76a45bd59d5b73b0b446, type: 3}
+  health: 3
+  maxHealth: 3
+  maxTotalHealth: 10
   moveSpeed: 5
+  SettingPanel: {fileID: 1591055892}
 --- !u!4 &1372485172
 Transform:
   m_ObjectHideFlags: 0
@@ -25790,7 +25880,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!114 &1828282731
 MonoBehaviour:
@@ -25806,7 +25896,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   touchOn: 0
   ChestPanelUI: {fileID: 396417869}
-  HouseMsgUI: {fileID: 0}
+  HouseMsgUI: {fileID: 1991877801}
   normalCoinButtons:
   - {fileID: 0}
   - {fileID: 0}
@@ -26849,7 +26939,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1988138674}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1372485171}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: QuitApplication
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1988138674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27214,13 +27316,13 @@ MonoBehaviour:
   - name: PlayerJump
     clip: {fileID: 8300000, guid: 7cc057bed53baf34799f52aab3c84800, type: 3}
   - name: PlayeDamaged
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 8b23b175a78d6b5458322e3a6c9905d0, type: 3}
   - name: PlayerDie
     clip: {fileID: 0}
   - name: PlayerGetItem
     clip: {fileID: 0}
   - name: PlayerGeKey
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: cfce0cea076109f478783201b2a9f57f, type: 3}
   - name: PlayerGetHeal
     clip: {fileID: 0}
   - name: PlayerNoKey
@@ -27232,25 +27334,27 @@ MonoBehaviour:
   - name: BingGoEnableMoney
     clip: {fileID: 0}
   - name: BingoGetMoney
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 333fd1d747506b44f9344a7dac7304e5, type: 3}
+  - name: BingoGetComboMoney
+    clip: {fileID: 8300000, guid: 21d63289f17de764ca8b62eaaa6d36e6, type: 3}
   - name: AttackFox
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: eaae8fe8d600e1f459f34aa5757fa3b8, type: 3}
   - name: FoxDie
     clip: {fileID: 0}
   - name: AttackFlower
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 2b21ef916f6943c439b71a7c74568878, type: 3}
   - name: FlowerDie
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: fd25a15f9797641458336cccfb445343, type: 3}
   - name: AttackSlug
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 7c47b20bb9874304a809dc5580d403ba, type: 3}
   - name: RidingOnItemBee
     clip: {fileID: 0}
   - name: OpenChest
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 234fe103b91726940af666ec972b7902, type: 3}
   - name: KnockSound
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 6a058dcfa7503fb4ebe072e097f97f6d, type: 3}
   - name: DoorClosed
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: ca466848baefea943a1f7b56f42a5f43, type: 3}
   - name: CancleBtn
     clip: {fileID: 0}
   - name: StartBtn
@@ -27258,7 +27362,7 @@ MonoBehaviour:
   - name: StartBtn
     clip: {fileID: 0}
   - name: SettingBtn
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: b83bf8726a7fac349a54389f0c57cda6, type: 3}
   bgm:
   - name: InGame_jumping
     clip: {fileID: 8300000, guid: 90eae78e8ce85a849b5b0ca11b2de641, type: 3}

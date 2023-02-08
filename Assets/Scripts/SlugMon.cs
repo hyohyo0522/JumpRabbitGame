@@ -38,6 +38,10 @@ public class SlugMon : MonoBehaviour
     float groundCheckRadius = 1f;
     public LayerMask groundMask;
 
+    //아이템 먹는 기능
+    public LayerMask ItemMask;
+    public GameObject pungSmall; // 아이템 먹었을 때 펑 애니메이션 재생
+
 
     private void OnEnable()
     {
@@ -72,6 +76,7 @@ public class SlugMon : MonoBehaviour
         if (isgrounded)
         {
             crawling();
+            EatItems();
         }
 
     }        
@@ -174,6 +179,26 @@ public class SlugMon : MonoBehaviour
         }
     }
 
+
+    private void EatItems()
+    {
+        Collider2D[] nearItems = Physics2D.OverlapCircleAll(transform.position, 1.0f, ItemMask);
+
+        if (nearItems.Length > 0)
+        {
+            Vector2 ItemPosition = nearItems[0].transform.position;
+            IItem touchedItem = nearItems[0].GetComponent<IItem>();
+            touchedItem?.DestoySelf();
+
+            SlugMon touchedslug = nearItems[0].GetComponent<SlugMon>();
+            touchedslug?.DetroySelf();
+
+            GameObject ItemDisappearPlay = Instantiate(pungSmall, ItemPosition, Quaternion.identity);
+            Destroy(ItemDisappearPlay.gameObject, pungAniPlayTime);
+
+        }
+
+    }
 
     public void DetroySelf()
     {
