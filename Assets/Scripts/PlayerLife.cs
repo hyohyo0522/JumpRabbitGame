@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerLife : LivingEntity
 {
 
-    float MaxHealth = 50f;
+    float MaxHealth = 100f;
     float timeBetattack = 0.5f;
 
     //열쇠 UI관련
@@ -108,6 +108,7 @@ public class PlayerLife : LivingEntity
 
     public override void OnDamage(float value)
     {
+
         if (attacked) return;
         //여기 attacked 감지를 여기서 하면 좋을 것 같다!!
         base.OnDamage(value);
@@ -126,6 +127,7 @@ public class PlayerLife : LivingEntity
 
     IEnumerator onDamageforChange()
     {
+        _myMovement.playerAnimator.SetTrigger("Damaged");
         playerSprite.color = Color.red;
         attacked = true;
         yield return new WaitForSeconds(timeBetattack);
@@ -298,7 +300,13 @@ public class PlayerLife : LivingEntity
     // 숫자 1전형적인 패턴000마다 콤마찍기
     string GetThousandCommaText(int data)
     {
-        return string.Format("{0:#,###}", data);
+        string result = data.ToString();
+        if (data != 0)
+        {
+            result = string.Format("{0:#,###}", data);
+        }
+
+            return result;
     }
 
     

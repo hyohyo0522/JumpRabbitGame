@@ -327,22 +327,23 @@ public class Chest : MonoBehaviour,ITouchedObj
             int eBingoIndex = Random.Range(0, 5);
             whatItem = (eBingoItem)eBingoIndex;
 
-            int itemValueIndex = Random.RandomRange(1, 6);
+            int itemValueIndex = Random.RandomRange(1, 3);
             switch (whatItem)
             {
                 case eBingoItem.carrot:
-                    itemValueIndex *= 5;
+                    itemValueIndex *= 4;
                     break;
                 case eBingoItem.flower:
-                    itemValueIndex *= 3;
+                    itemValueIndex *= 2;
                     break;
                 case eBingoItem.slug:
                     itemValueIndex *= 2;
                     break;
                 case eBingoItem.star:
-                    itemValueIndex *= 2;
+                    itemValueIndex *= 1;
                     break;
                 case eBingoItem.player:
+                    itemValueIndex *= 3;
                     break;
             }
 

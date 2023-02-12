@@ -36,8 +36,16 @@ public class InputManager : MonoBehaviour
     private static InputManager m_instance; // 싱글톤이 할당될 변수
 
 
+    #region Input.touch 사용관련
+
+    private Touch tempTouch;
+    private Vector3 touchPos;
+
+    #endregion Input.touch 사용관련
+
+
     public bool touchOn;
-    float maxDisatance = 15f;
+    float maxDisatance = 15;
 
     eWhatTouched now_etouchedObj;
 
@@ -60,96 +68,138 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Input.GetMouseButtonDown(0))
+        #region Input.touch 사용관련 
+        //>> GetMouseButtonDown(0)보다 훨씬 정교함
+
+        if (Input.touchCount > 0)
         {
-            Vector3 mousePosition = Input.mousePosition;
+            if (touchOn) return; //이미 무언가 Touch가 되었다면 나온다.
 
-            mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(mousePosition, transform.forward, maxDisatance);
-
-
-            if (hit)
+            for (int i=0; i < Input.touchCount; i++)
             {
-                ITouchedObj IhasTouchedObj = hit.collider.GetComponent<ITouchedObj>();
-                // Debug.Log("상자가 클릭되었다. HASITouche 찾음");
-                if (!touchOn) // 다른 ITouchedObj가 선택되어있는 상황이라면 다른 ITouchedObj작용이 일어나지 않도록 한다.
+                tempTouch = Input.GetTouch(i);
+                if(tempTouch.phase == TouchPhase.Began)
                 {
-                    IhasTouchedObj?.Touch();
-                    touchOn = true;
+                    touchPos = Camera.main.ScreenToWorldPoint(tempTouch.position);
 
-                    return;
-                }
-                else
-                {
-                    // ★ Cancle 버튼을 눌러도(=해당 게임창이 꺼져도) 
-                    // 계속 touchOn이 True로 남아있는 경우가 있어서 
-                    // 이런 경우도 창이 계속 켜질 수 있도록 코드를 추가.
+                    RaycastHit2D hit = Physics2D.Raycast(touchPos, transform.forward, maxDisatance);
 
-                    // ActiveSelf로 해당하는 게임 창들을 직접 검사한다.
-                    if (hit.collider.CompareTag("Chest")) // 게임창이 많아지면 이걸 Enum으로도 만들 수 있을 것 같다. 
+
+                    if (hit)
                     {
-                        if (!ChestPanelUI.activeSelf)
-                        {
-                            touchOn = false;
-                        }
+                        ITouchedObj IhasTouchedObj = hit.collider.GetComponent<ITouchedObj>();
+                        IhasTouchedObj?.Touch();
+                        touchOn = true;
                     }
 
-                    if (hit.collider.CompareTag("HouseDoor"))
-                    {
-                        if (!HouseMsgUI.activeSelf)
-                        {
-                            touchOn = false;
-                        }
-                    }
-
+                    break;
                 }
-
-
-
-
             }
-
-            // 
-
+        }
 
 
-            if (touchOn) 
-            {
 
-                switch (now_etouchedObj)
-                {
-                    case eWhatTouched.chest: // 체스트가 선택되었을 때 
-                        break;
-                    case eWhatTouched.houseDoor:
-                        break;
-                    case eWhatTouched.othersNoMeaning:
-                        if (touchOn)
-                        {
-                            touchOn = false;
-                        }
-                        break;
-                }
+        #endregion Input.touch 사용관련
 
-                }
+        #region GetMouseButtonDown 사용하여 만든 버전
 
-            }
-            //setClickObj(toucedObj); //클릭한 물체의 태그에 따라 기능을 실현한다.
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    Vector3 mousePosition = Input.mousePosition;
+
+        //    mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        //    RaycastHit2D hit = Physics2D.Raycast(mousePosition, transform.forward, maxDisatance);
 
 
-            //switch (toucedObj.tag)
-            //{
-            //    case "chest": // 여기서 eWhatTouched의 값을 바로 스트링으로 넣을 수는 없을까??
-            //        etouchedObj = eWhatTouched.chest;
-            //        Chest touchedChest = toucedObj.GetComponent<Chest>();
 
-            //        break;
-            //    //case "chest":
-            //    //    etouchedObj = eWhatTouched.chest;
-            //    //    break;
-            //    default:
-            //        etouchedObj = eWhatTouched.othersNoMeaning;
-            //        break;
-            //}
+        //    if (hit)
+        //    {
+        //        ITouchedObj IhasTouchedObj = hit.collider.GetComponent<ITouchedObj>();
+
+
+        //        if (IhasTouchedObj != null) Debug.Log("hit이 일어났다! " + IhasTouchedObj);
+        //        // Debug.Log("상자가 클릭되었다. HASITouche 찾음");
+        //        if (!touchOn) // 다른 ITouchedObj가 선택되어있는 상황이라면 다른 ITouchedObj작용이 일어나지 않도록 한다.
+        //        {
+
+        //            IhasTouchedObj?.Touch();
+        //            touchOn = true;
+
+        //            return;
+        //        }
+        //        else
+        //        {
+        //            // ★ Cancle 버튼을 눌러도(=해당 게임창이 꺼져도) 
+        //            // 계속 touchOn이 True로 남아있는 경우가 있어서 
+        //            // 이런 경우도 창이 계속 켜질 수 있도록 코드를 추가.
+
+        //            // ActiveSelf로 해당하는 게임 창들을 직접 검사한다.
+        //            if (hit.collider.CompareTag("Chest")) // 게임창이 많아지면 이걸 Enum으로도 만들 수 있을 것 같다. 
+        //            {
+        //                if (!ChestPanelUI.activeSelf)
+        //                {
+        //                    touchOn = false;
+        //                }
+        //            }
+
+        //            if (hit.collider.CompareTag("HouseDoor"))
+        //            {
+        //                if (!HouseMsgUI.activeSelf)
+        //                {
+        //                    touchOn = false;
+        //                }
+        //            }
+
+        //        }
+
+
+        //    }
+
+        //    // 
+
+
+
+        //    if (touchOn) 
+        //    {
+
+        //        switch (now_etouchedObj)
+        //        {
+        //            case eWhatTouched.chest: // 체스트가 선택되었을 때 
+        //                break;
+        //            case eWhatTouched.houseDoor:
+        //                break;
+        //            case eWhatTouched.othersNoMeaning:
+        //                if (touchOn)
+        //                {
+        //                    touchOn = false;
+        //                }
+        //                break;
+        //        }
+
+        //    }
+
+        //}
+
+        #endregion GetMouseButtonDown 사용하여 만든 버전 >> 멀티터치에는 문제가 있어서 쓰지 않는다.
+
+
+        //setClickObj(toucedObj); //클릭한 물체의 태그에 따라 기능을 실현한다.
+
+
+        //switch (toucedObj.tag)
+        //{
+        //    case "chest": // 여기서 eWhatTouched의 값을 바로 스트링으로 넣을 수는 없을까??
+        //        etouchedObj = eWhatTouched.chest;
+        //        Chest touchedChest = toucedObj.GetComponent<Chest>();
+
+        //        break;
+        //    //case "chest":
+        //    //    etouchedObj = eWhatTouched.chest;
+        //    //    break;
+        //    default:
+        //        etouchedObj = eWhatTouched.othersNoMeaning;
+        //        break;
+        //}
 
 
         //}

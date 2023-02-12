@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class HouseDoor : MonoBehaviour, ITouchedObj
 {
-    [SerializeField] GameObject clodedDoor;
-    [SerializeField] GameObject openDoor;
+    private GameObject clodedDoor;
+    private GameObject openDoor;
     [SerializeField] float maxOpenTime = 5f;
     [SerializeField] bool isOpen;
 
     //화살표 관련
-    [SerializeField] Collider2D directIcon;
-    Transform originalDirectIcon;
+    private GameObject directIcon;
+    public Transform originalDirectIcon;
     float iconSpeed = 1f;
     [SerializeField] float MaxTimeCycle = 1f;
     float moveTimeCycle = 1f;
@@ -26,24 +26,26 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 
     // 트리거감지를 통해 플레이어 정보를 저장할 변수
     [SerializeField] PlayerLife whoknocked;
-    [SerializeField] int NeededKeyNumForHouse = 10;//집을 구매하기 위한 키 넘버
+    int NeededKeyNumForHouse = 3;//집을 구매하기 위한 키 넘버
 
     // Start is called before the first frame update
     void Start()
     {
         clodedDoor = this.transform.GetChild(0).gameObject;
         openDoor = this.transform.GetChild(1).gameObject;
-        directIcon = openDoor.transform.GetChild(0).GetComponent<Collider2D>();
-        originalDirectIcon = directIcon.transform;
+        directIcon = this.transform.GetChild(2).gameObject;
+
         maxOpenTime = 5f;
         isOpen = false;
 
         openDoor.SetActive(false);
+        directIcon.SetActive(false);
+
 
         if (houseUIMsg.activeSelf)
         {
-            YesBtnOriginTransform = houseUIMsg.transform.GetChild(1).GetComponent<Transform>();
-            NoBtnOriginTranform = houseUIMsg.transform.GetChild(2).GetComponent<Transform>();
+            YesBtnOriginTransform = houseUIMsg.transform.GetChild(1).GetComponent<RectTransform>().transform;
+            NoBtnOriginTranform = houseUIMsg.transform.GetChild(2).GetComponent<RectTransform>().transform;
             houseUIMsg.SetActive(false);
             touchOn = false;
         }
@@ -93,6 +95,7 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 
         clodedDoor.SetActive(false);
         openDoor.SetActive(true);
+        directIcon.gameObject.SetActive(true);
         isOpen = true;
     }
 
@@ -201,4 +204,6 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
         }
         
     }
+
+
 }

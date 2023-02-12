@@ -38,16 +38,21 @@ public class LadderMoveState_Fox : State<AIFoxController> // 사다리 수직이동
         {
 
             stateMachine.ChangeState<MoveState_Fox>();
+            return;  // >> ★ 여기를 추가해주니 여우가 갑자기 땅 밑으로 콜라이더 무시하면서 사라지는 현상 개선된 것으로 보임!!
+                    //이 이후 context.MovingLadder(_moveYDirection); 가 실행되면서 콜라이더 무시가 된 것으로 보임!!
+
+
         }
 
         //사다리콜라이더와 접촉이 끊기면 바로 스테이트를 전환하도록 한다.
 
-        context.MovingLadder(_moveYDirection); //여기서 왜 0으로 넘어가는 걸까??
+        context.MovingLadder(_moveYDirection); 
 
         if (context.initialTouchingurrentLadder) // 사다리에 첫 접촉이 이루어졌는가?
         {
-            if (!context.InTheLadder()) // 사다리에 처음으로 접촉한 이후, 사다리 접촉이 끊어졌다면, MoveState로 전환한다.
+            if (!context.InTheLadder()) // 사다리에 처음으로 접촉한 이후, 사다리 접촉이 끊어졌다면(떨어졌다.), MoveState로 전환한다.
             {
+                context.IgnoreGround(false, "ladderMoveState,context.initialTouchingurrentLadder "); // 좀 더 확실하게 해주기 위해 추가함
                 stateMachine.ChangeState<MoveState_Fox>();
             }
 
@@ -61,7 +66,7 @@ public class LadderMoveState_Fox : State<AIFoxController> // 사다리 수직이동
 
     public override void OnExit()
     {
-        Physics2D.IgnoreCollision(_collider, context.groundCollider, false);
+        context.IgnoreGround(false, "ladderMoveState,context.OnExit");
         context.initialTouchingurrentLadder = false;
         context.ChageGavity(_gravity);
         _animator.SetBool(hasClimb, false); 

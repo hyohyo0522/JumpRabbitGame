@@ -5,6 +5,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 
 public class PlayerMovement : MonoBehaviour
@@ -12,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
 
     //컴포넌트 가져오기
-    Animator playerAnimator;
+    public Animator playerAnimator;
     SpriteRenderer playerSprite;
     Rigidbody2D playerRigidbody;
     Collider2D playerCollider;
@@ -42,9 +43,14 @@ public class PlayerMovement : MonoBehaviour
     //아이템 체크 
     [SerializeField] Transform ItemCheckCollider;
 
+    //헤드샷체크
+    [SerializeField] Transform HeadShotCollider;
+    float bouncePowerforOtherInMyHead = 1000f;
+
 
     public LayerMask groundMask;
     public LayerMask LadderMask;
+    public LayerMask ItemMask;
     const float groundCheckRadius = 0.6f;
     public bool isGrounded;
     static public bool isLadder = false;
@@ -120,10 +126,12 @@ public class PlayerMovement : MonoBehaviour
 
             if (!InputManager.instance.touchOn) // InputManger에서 관리하는 창들이 열려있을 때에는 아이템을 먹지 않는다. 
             {
+
+                if (notRevive) return; //캐릭터가 죽었을 때 아이템이 근처에 있으면 오류가 발생하는 것 같아 지금 이 코드 추가함
                 HasNearItem();
             }
             //CheckbeingFlying();
-
+            GetHeadShot();
 
             //점프가 아니라 떨어질 때에도 떨어지는 애니메이션이 적용되어야 한다. 
             playerAnimator.SetFloat("yvelocity", playerRigidbody.velocity.y);
@@ -351,6 +359,12 @@ public class PlayerMovement : MonoBehaviour
     public void AddForcetoBounce(Vector2 power)
     {
         AudioManager.instance.PlaySFX("PlayerJump");
+
+
+        if (playerRigidbody.velocity.y > 1000f)
+        {
+            return;
+        }
         playerRigidbody.velocity = Vector2.zero;
         playerRigidbody.AddForce(power);
 
@@ -360,10 +374,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void HasNearItem()
     {
-        Collider2D[] nearItem = Physics2D.OverlapCircleAll((Vector2)ItemCheckCollider.position, 1.4f);
+        Collider2D[] nearItem = Physics2D.OverlapCircleAll((Vector2)ItemCheckCollider.position, 1.4f,ItemMask);
 
-        if (nearItem[0].CompareTag("Item"))
+        if (nearItem.Length>0)
         {
+            //if (!nearItem[0].CompareTag("Item")) return; //아이템이 아니면 실행하지 않는다.
+
             IItem item = nearItem[0].GetComponent<IItem>();
             HouseKeyItem isKey = nearItem[0].GetComponent<HouseKeyItem>();
             if (item != null)
@@ -402,6 +418,29 @@ public class PlayerMovement : MonoBehaviour
             //충돌한 상대방으로부터 Item컴포넌트 가져오는 데 성공했다
     }
 
+    public void GetHeadShot()
+    {
+        Collider2D[] GetOthersInMyHead = Physics2D.OverlapCircleAll(HeadShotCollider.transform.position, 1f, 1 << 10);
+        if (GetOthersInMyHead.Length > 0)
+        {
+            for(int i=0;i< GetOthersInMyHead.Length; i++)
+            {
+                Rigidbody2D otherRigidBody = GetOthersInMyHead[i].GetComponent<Rigidbody2D>();
+                if (otherRigidBody)
+                {
+                    Vector2 cp = GetOthersInMyHead[i].transform.position;
+                    Vector2 dir = cp - (Vector2)transform.position;
+                    float randomX = Random.Range(1, 9);
+                    dir.x = dir.x * randomX;
+
+                    otherRigidBody.AddForce(dir * bouncePowerforOtherInMyHead);
+                }
+
+            }
+
+        }
+    }
+
 
     public void CheckbeingFlying()
     {
@@ -432,6 +471,7 @@ public class PlayerMovement : MonoBehaviour
     {
         float reviveTime = 1.2f;
 
+        notRevive = true;  //부활되기 전까지 못 움직이게 함.
         // 죽을 때 효과재생
         playerAnimator.SetTrigger("Die");
         AudioManager.instance.PlaySFX("PlayerDie");
@@ -445,8 +485,6 @@ public class PlayerMovement : MonoBehaviour
         
         //리지드바디 작동 끄기
         this.playerRigidbody.Sleep();
-        notRevive = true;  //부활되기 전까지 못 움직이게 함.
-
 
         //이펙트 애니메이션 재생 : 펑
         pungDisapperPosition = (Vector2)this.transform.position;

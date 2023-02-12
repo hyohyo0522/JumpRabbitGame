@@ -7235,7 +7235,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1987315606}
         m_TargetAssemblyTypeName: Ending_UIManager, Assembly-CSharp
-        m_MethodName: PressXbtn
+        m_MethodName: QuitApp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

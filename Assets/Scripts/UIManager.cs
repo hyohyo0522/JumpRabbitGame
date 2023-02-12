@@ -41,23 +41,23 @@ public class UIManager : MonoBehaviour
     public Text _myHealthValue;
 
     //하트콘테이너 관련(하트UI)
-    private GameObject[] heartContainers;
-    private Image[] heartFills;
-    public Transform heartsParent; // 하트위치
-    public GameObject heartContainerPrefab;
-    public delegate void OnHealthChangedDelegate();
-    public OnHealthChangedDelegate onHealthChangedCallback;
+    //private GameObject[] heartContainers;
+    //private Image[] heartFills;
+    //public Transform heartsParent; // 하트위치
+    //public GameObject heartContainerPrefab;
+    //public delegate void OnHealthChangedDelegate();
+    //public OnHealthChangedDelegate onHealthChangedCallback;
 
-    [SerializeField]
-    private float health;
-    [SerializeField]
-    private float maxHealth;
-    [SerializeField]
-    private float maxTotalHealth;
+    //[SerializeField]
+    //private float health;
+    //[SerializeField]
+    //private float maxHealth;
+    //[SerializeField]
+    //private float maxTotalHealth;
 
-    public float Health { get { return health; } }
-    public float MaxHealth { get { return maxHealth; } }
-    public float MaxTotalHealth { get { return maxTotalHealth; } }
+    //public float Health { get { return health; } }
+    //public float MaxHealth { get { return maxHealth; } }
+    //public float MaxTotalHealth { get { return maxTotalHealth; } }
 
 
 
@@ -106,12 +106,7 @@ public class UIManager : MonoBehaviour
 
         #region  HeartContainerUI StartSetting
 
-        heartContainers = new GameObject[(int)MaxTotalHealth];
-        heartFills = new Image[(int)MaxTotalHealth];
 
-        onHealthChangedCallback += UpdateHeartsHUD;
-        InstantiateHeartContainers();
-        UpdateHeartsHUD();
 
         #endregion HeartContainerUI StartSetting
     }
@@ -194,92 +189,16 @@ public class UIManager : MonoBehaviour
     #endregion SettingPanel : 환경설정창 관련
 
 
+    public void GameClear()
+    {
+        string WinnerName = PlayerPrefs.GetString("_myNick");
+        PlayerPrefs.SetString("Winner", WinnerName);
+        SceneManager.LoadScene("EndingScene");
+    }
+
+
     #region HeartContainerUI 
 
-    public void UpdateHeartsHUD()
-    {
-        SetHeartContainers();
-        SetFilledHearts();
-    }
-
-    void SetHeartContainers()
-    {
-        for (int i = 0; i < heartContainers.Length; i++)
-        {
-            if (i < MaxHealth)
-            {
-                heartContainers[i].SetActive(true);
-            }
-            else
-            {
-                heartContainers[i].SetActive(false);
-            }
-        }
-    }
-
-    void SetFilledHearts()
-    {
-        for (int i = 0; i < heartFills.Length; i++)
-        {
-            if (i < Health)
-            {
-                heartFills[i].fillAmount = 1;
-            }
-            else
-            {
-                heartFills[i].fillAmount = 0;
-            }
-        }
-
-        if (Health % 1 != 0)
-        {
-            int lastPos = Mathf.FloorToInt(Health);
-            heartFills[lastPos].fillAmount = Health % 1;
-        }
-    }
-
-    void InstantiateHeartContainers()
-    {
-        for (int i = 0; i < MaxTotalHealth; i++)
-        {
-            GameObject temp = Instantiate(heartContainerPrefab);
-            temp.transform.SetParent(heartsParent, false);
-            heartContainers[i] = temp;
-            heartFills[i] = temp.transform.Find("HeartFill").GetComponent<Image>();
-        }
-    }
-
-    public void Heal(float health)
-    {
-        this.health += health;
-        ClampHealth();
-    }
-
-    public void TakeDamage(float dmg)
-    {
-        health -= dmg;
-        ClampHealth();
-    }
-
-    public void AddHealth() //이건 필요없을듯?
-    {
-        if (maxHealth < maxTotalHealth)
-        {
-            maxHealth += 1;
-            health = maxHealth;
-
-            if (onHealthChangedCallback != null)
-                onHealthChangedCallback.Invoke();
-        }
-    }
-
-    void ClampHealth()
-    {
-        health = Mathf.Clamp(health, 0, maxHealth);
-
-        if (onHealthChangedCallback != null)
-            onHealthChangedCallback.Invoke();
-    }
 
 
     #endregion HeartContainerUI 

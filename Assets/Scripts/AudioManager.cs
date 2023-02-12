@@ -69,25 +69,25 @@ public class AudioManager : MonoBehaviour
         {
             if (p_sfxmName == sfx[i].name)
             {
-                Debug.Log("오디오 클립을 찾았다 : " + sfx[i].name);
+                // Debug.Log("오디오 클립을 찾았다 : " + sfx[i].name);
                 for(int x = 0; x < sfxPlayer.Length; x++)
                 {
                     if (!sfxPlayer[x].isPlaying)
                     {
-                        Debug.Log("재생중이지 않은 오디오를 찾았다! : " + p_sfxmName);
+                        // Debug.Log("재생중이지 않은 오디오를 찾았다! : " + p_sfxmName);
                         //sfx[x].clip = sfx[i].clip;
                         sfxPlayer[x].PlayOneShot(sfx[i].clip);
-                        Debug.Log("플레이하였다 " + sfx[i].name);
+                        //Debug.Log("플레이하였다 " + sfx[i].name);
                         return;
                     }
                 }
 
-                Debug.Log("모든 오디오 플레이어가 재생중입니다.");
+                //Debug.Log("모든 오디오 플레이어가 재생중입니다.");
                 return;
             }
         }
 
-        Debug.Log(p_sfxmName + "이름의 효과음이 없습니다.");
+        //Debug.Log(p_sfxmName + "이름의 효과음이 없습니다.");
     }
 
 

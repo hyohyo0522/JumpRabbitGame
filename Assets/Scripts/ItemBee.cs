@@ -57,7 +57,7 @@ public class ItemBee : MonoBehaviour
         }
         else
         {
-            Debug.Log("새로운 목표지점을 설정한다.");
+            // Debug.Log("새로운 목표지점을 설정한다.");
             SetDestination();
         }
 
@@ -85,7 +85,7 @@ public class ItemBee : MonoBehaviour
         Collider2D[] nearBorder = Physics2D.OverlapCircleAll((Vector2)beeCenter.position, 5f, BorderMask);
         if (nearBorder.Length > 0)
         {
-            Debug.Log("근처에 경계가 있다.");
+            // Debug.Log("근처에 경계가 있다.");
             // ★ 경계에 왔을 때 안쪽의 새로운 위치로 이동하게 한다. 
             // ★ 경계에 닿았을 때 안쪽으로 돌아갈 위치를 배열로 받아서 쓰자. 
             newDestination = Vector2.zero; 
@@ -132,7 +132,7 @@ public class ItemBee : MonoBehaviour
         //RaycastHit2D hitInfo = Physics2D.Raycast(rainPoint.position, -Vector2.up, 10f, GroundMask);
 
         //땅 속에 있을 때에는 아이템을 발사하지 않는다. Collider로 검사한다.
-        Collider2D[] buriedInGround = Physics2D.OverlapCircleAll((Vector2)rainPoint.position, 3f, GroundMask);
+        Collider2D[] buriedInGround = Physics2D.OverlapCircleAll((Vector2)rainPoint.position, 5f, GroundMask);
 
 
 

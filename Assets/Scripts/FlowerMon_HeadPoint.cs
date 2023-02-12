@@ -5,7 +5,7 @@ using UnityEngine;
 public class FlowerMon_HeadPoint : MonoBehaviour
 {
     Transform Tr;
-    float headShotBouncePower = 2500f;
+    float headShotBouncePower = 2000f;
 
     private void OnEnable()
     {

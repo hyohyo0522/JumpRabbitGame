@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Random = UnityEngine.Random;
 
 
 public class AIFoxController : MonoBehaviour
@@ -31,8 +32,10 @@ public class AIFoxController : MonoBehaviour
     [SerializeField] float ladderDetectRange = 3f;
     [SerializeField] float _speed = 2f;
     [SerializeField] float _ladderSpeed = 7f;
+    float powerMakingAttackingPlayerToBounce = 1500; //공격한 플레이어 점프시키는 기능
+
     public float damagePower = 10f;
-    public float powerMakingAttackingPlayerToBounce = 600f;
+
     float velocityX; // Rigidbody2D에서 x속도를 가져와서 FlipX를 적용할 것이다.
 
     //땅에 있는지 검사
@@ -43,8 +46,8 @@ public class AIFoxController : MonoBehaviour
     // 여우몬스터 라이프 관련 
     float hpFox;
     float maxhpFox = 50;
-    bool beDamaged = false;
-    float timebetGetDamage = 0.5f;
+    public bool beDamaged = false;
+    float timebetGetDamage = 1f;
     [SerializeField] Transform headShotPoint_fox;
     [SerializeField] PlayerLife whoAttacking;
     public GameObject pung; // 죽을 때 펑 애니메이션 재생
@@ -78,7 +81,12 @@ public class AIFoxController : MonoBehaviour
         hpFox = maxhpFox;
         _healthSlider.value = hpFox;
 
-
+        #region 고유랜덤값으로 고유의 스피드,사다리스피드,바운스파워를 가지게 한다. 
+        float uniqueRandomValue = Random.Range(0.7f, 1.5f);
+        _speed *= uniqueRandomValue;
+        _ladderSpeed *= uniqueRandomValue;
+        powerMakingAttackingPlayerToBounce *= uniqueRandomValue;
+        #endregion 고유랜덤값으로 고유의 스피드,사다리스피드,바운스파워를 가지게 한다. 
 
     }
 
@@ -94,9 +102,12 @@ public class AIFoxController : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
 
+
+
+
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         stateMachine.Update(Time.deltaTime);
 
@@ -140,7 +151,7 @@ public class AIFoxController : MonoBehaviour
         Collider2D[] playerInDetectRange = Physics2D.OverlapCircleAll(transform.position, detectRadius, targetMask);
         if (playerInDetectRange.Length > 0) // 가장먼저 플레이어를 감지하고(플레이어 공격우선)
         {
-            Debug.Log("여우가 플레이어를 배열에 담았다");
+            //Debug.Log("여우가 플레이어를 배열에 담았다");
             target = playerInDetectRange[0].transform;
         }
         //else // 일단 플레이어만 쫓게 만들자. 
@@ -166,7 +177,7 @@ public class AIFoxController : MonoBehaviour
 
         float damage = 10f;
 
-        Collider2D[] getHeadShotByPlayer = Physics2D.OverlapCircleAll((Vector2)headShotPoint_fox.position, 0.5f, targetMask);
+        Collider2D[] getHeadShotByPlayer = Physics2D.OverlapCircleAll((Vector2)headShotPoint_fox.position,1f, targetMask);
 
         if (getHeadShotByPlayer.Length > 0)
         {
@@ -176,12 +187,11 @@ public class AIFoxController : MonoBehaviour
 
 
             Vector2 cp = getHeadShotByPlayer[0].transform.position;
-            Vector2 dir = cp - (Vector2)transform.position; // 플레이어가 튕겨야하므로, 플레이어방향 - 현재 몬스터 방향으로 함 
+            Vector2 dir = cp-(Vector2)transform.position ; // 플레이어가 튕겨야하므로, 플레이어방향 - 현재 몬스터 방향으로 함 
                                                             //rigidbody.AddForce((dir).normalized * 300f);
 
             whoAttackingMove.AddForcetoBounce((dir).normalized * powerMakingAttackingPlayerToBounce);
-
-
+            Debug.Log("여우가 바운스해주는 파워는!!! " + (dir).normalized * powerMakingAttackingPlayerToBounce);
 
             if (!beDamaged)
             {
@@ -200,7 +210,7 @@ public class AIFoxController : MonoBehaviour
                     Destroy(this.gameObject);
                     if (OnDeath != null)
                     {
-                        OnDeath();
+                     OnDeath();
                     }
                     return;
                 }
@@ -255,7 +265,7 @@ public class AIFoxController : MonoBehaviour
         {
 
             Transform ladderPosition = ladderDetect[0].transform.GetChild(0).GetComponent<Transform>(); // 사다리 위치 가져오기
-            Debug.Log("가고자 하는 사다리 위치 " + ladderPosition.transform.position);
+            //Debug.Log("가고자 하는 사다리 위치 " + ladderPosition.transform.position);
 
             if (CompareYDirection(target.position, ladderPosition.position) == 0) return MovingLadder; // 일치 안하면 함수 나오기.
 
@@ -277,32 +287,40 @@ public class AIFoxController : MonoBehaviour
 
     public void MovingLadder(float _moveY)
     {
-        Debug.Log("여우가 사다리 위를 오르려고 시도하고 있다." + _moveY);
+        //Debug.Log("여우가 사다리 위를 오르려고 시도하고 있다." + _moveY);
 
 
-        if (_collider.IsTouching(currentLadder))
+        if (_collider.IsTouching(currentLadder)) // 사다리에 접촉을 성공한 경우이다. 
         {
             _animator.SetBool("fxClimb", true);
             _rigidBody.velocity = new Vector2(0, _ladderSpeed * _moveY);
 
-            if (!initialTouchingurrentLadder)
+            if (!initialTouchingurrentLadder) //사다리에 접촉도 하고 첫 접촉도 이뤄진 순간
             {
                 initialTouchingurrentLadder = true;
-                Physics2D.IgnoreCollision(_collider, groundCollider, true);
+                IgnoreGround(true, "MovingLadder"); // 땅 콜라이더 무시한다.
                 ChageGavity(0f);
             }
         }
 
-        if (!initialTouchingurrentLadder)
+        if (!initialTouchingurrentLadder) // 사다리에 터칭은 못했지만, 사다리에 오르려고 시도하고 있는 경우이다.
         {
-            if (_moveY == 1)
+            if (_moveY == 1) 
             {
                 _rigidBody.velocity = new Vector2(0, _ladderSpeed * _moveY);
             }
 
             if (_moveY == -1)
             {
-                Physics2D.IgnoreCollision(_collider, groundCollider, true);
+                 if(CompareXDistance(MiddlewayPoint.x, 0.1f))
+                 {
+                    IgnoreGround(true, "MovingLadder + -1");
+                }
+                else
+                {
+                    IgnoreGround(false, "MovingLadder + -1");
+                }
+
                 _rigidBody.velocity = new Vector2(0, _ladderSpeed * _moveY);
             }
 
@@ -321,9 +339,19 @@ public class AIFoxController : MonoBehaviour
         //기존에 접촉하고 있는 사다리와 끊어졌는지를 확인할 것이다.
         bool result = false;
         result = _collider.IsTouching(currentLadder);
+        if (!result)
+        {
+            IgnoreGround(false, "InTheLadder");
+        }
 
         return result;
 
+    }
+
+    public void IgnoreGround(bool value,string fromWhere =null)
+    {
+        Debug.Log("땅 그라운드를 지금 "+ value.ToString()+ fromWhere+ "체크체크체크체크!!!!!!!!!!!!!");
+        Physics2D.IgnoreCollision(_collider, groundCollider, value);
     }
 
 
@@ -417,9 +445,19 @@ public class AIFoxController : MonoBehaviour
         if (stateMachine.CurrentState.GetType() == typeof(LadderMoveState_Fox)) return; // 사다리 오르고 있을 때에는 땅 검사 하지 않는다.
         Collider2D[] touchedGrounded = Physics2D.OverlapCircleAll(groundCheckCollider_fox.position, 0.5f, groundMask);
 
-        if (touchedGrounded.Length <= 0) // 땅에 없다. 
+        if (touchedGrounded.Length > 0) // 땅에 닿았다. 
         {
+            //Debug.Log("여우가 땅에 닿았다!!!!");
+            if (!foxIsGrounded)
+            {
+                foxIsGrounded = true;
+                _animator.SetBool(isFalling, false);
+                stateMachine.ChangeState<IdleState_Fox>();
+            }
 
+        }
+        else // 땅에 닿았다.
+        {
             Debug.Log("여우가 땅에 닿지 않았다!!!!");
             if (foxIsGrounded)
             {
@@ -428,18 +466,6 @@ public class AIFoxController : MonoBehaviour
             }
 
             _animator.SetFloat(velocityY, _rigidBody.velocity.y);
-
-        }
-        else // 땅에 닿았다.
-        {
-
-            Debug.Log("여우가 땅에 닿았다!!!!");
-            if (!foxIsGrounded)
-            {
-                foxIsGrounded = true;
-                _animator.SetBool(isFalling, false);
-                stateMachine.ChangeState<IdleState_Fox>();
-            }
         }
     }
 

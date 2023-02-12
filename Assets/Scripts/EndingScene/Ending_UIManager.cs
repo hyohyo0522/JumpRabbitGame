@@ -72,7 +72,7 @@ public class Ending_UIManager : MonoBehaviour
     }
 
 
-    public void PressXbtn()
+    public void QuitApp()
     {
         Application.Quit();
     }

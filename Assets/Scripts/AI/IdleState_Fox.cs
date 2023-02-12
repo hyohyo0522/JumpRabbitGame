@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class IdleState_Fox : State<AIFoxController>
 {
-    private Animator animator;
 
     protected int hasMove = Animator.StringToHash("fxWalk");
 
     public override void OnInitialized()
     {
-        animator = context.GetComponent<Animator>();
 
     }
 

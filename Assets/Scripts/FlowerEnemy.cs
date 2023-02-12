@@ -50,39 +50,45 @@ public class FlowerEnemy : LivingEntity
 
     private void FixedUpdate()
     {
-        if(DetectPlayers()) //이렇게 코드를 짜면 DetectPlayers()메서드가 주기적으로 한번씩은 꼭 실행되는 걸까?
+        if (!dead)
         {
-            if (!stateInAttack) // 플레이어가 감지된 상태에서 공격상황으로 들어가게 함
+            if (DetectPlayers()) //이렇게 코드를 짜면 DetectPlayers()메서드가 주기적으로 한번씩은 꼭 실행되는 걸까?
             {
-                _flowerAni.SetBool("Attacking", true); //공격 애니메이션으로 변경
-                stateInAttack = true;
+                if (!stateInAttack) // 플레이어가 감지된 상태에서 공격상황으로 들어가게 함
+                {
+                    _flowerAni.SetBool("Attacking", true); //공격 애니메이션으로 변경
+                    stateInAttack = true;
+
+                }
+                else
+                {
+                    //GetHeadShot(); // 플레이어에게 공격받을 때 작용
+                    ActivateAttack(); // 공격 콜라이더를 활성화 
+                }
 
             }
             else
             {
-                //GetHeadShot(); // 플레이어에게 공격받을 때 작용
-                ActivateAttack(); // 공격 콜라이더를 활성화 
-            }
-              
-        }else
-        {
-            if (stateInAttack)
-            {
-                _flowerAni.SetBool("Attacking", false); //애니메이션 변경
-                stateInAttack = false;
+                if (stateInAttack)
+                {
+                    _flowerAni.SetBool("Attacking", false); //애니메이션 변경
+                    stateInAttack = false;
+                }
             }
         }
+
     }
 
 
     private bool DetectPlayers() //이걸 bool로 만드는게 좋은지가 늘 궁금하다.
     {
-        Collider2D[] hasPlayerClose = Physics2D.OverlapCircleAll((Vector2)_detectPoint.position, 10f, PlayerMask);
+        Collider2D[] hasPlayerClose = Physics2D.OverlapCircleAll(_detectPoint.position, 10f, PlayerMask);
         if (hasPlayerClose.Length > 0)
         {
-            int r = Random.Range(0, hasPlayerClose.Length); // 플레이어가 2명이상 감지될 경우 랜덤으로 한명의 위치를 받아온다.
-            playerPos = hasPlayerClose[r].GetComponent<Transform>().position;
+            //int r = Random.Range(0, hasPlayerClose.Length); // 플레이어가 2명이상 감지될 경우 랜덤으로 한명의 위치를 받아온다.
+            playerPos = hasPlayerClose[0].GetComponent<Transform>().position;
             StartCoroutine(UpdateXdirection());  // 플립X 코루틴 메서드 활성화
+            
             return true;
         }
         else 

@@ -52,6 +52,7 @@ public class MoveState_Fox : State<AIFoxController>
             }
             if (!context.IsAvailableAttack)
             {
+                if (context.beDamaged) return; //데미지 받는 중이면 움직이지 않는다. 
                 context.Walk(_target.position); // 좌우이동
                 return;
             }

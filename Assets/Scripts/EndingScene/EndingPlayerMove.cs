@@ -38,10 +38,10 @@ public class EndingPlayerMove : MonoBehaviour
     public Collider2D platformCollider;
 
     // 벌 위에 있을 때 플라잉 이벤트 발동
-    int maskPlayer = 1 >> 8; // 플레이어 레이어 마스크 
-    int maskGround = 1 >> 6; // Ground(사다리포함) 레이어 마스크
-    int maskMonFlying = 1 >> 10; // 날아다니는 플라잉 몬스터 마스크
-    bool nowFlying = false; // 날고 있는지를 체크하는 불린변수
+    //int maskPlayer = 1 >> 8; // 플레이어 레이어 마스크 
+    //int maskGround = 1 >> 6; // Ground(사다리포함) 레이어 마스크
+    //int maskMonFlying = 1 >> 10; // 날아다니는 플라잉 몬스터 마스크
+    //bool nowFlying = false; // 날고 있는지를 체크하는 불린변수
 
 
 
