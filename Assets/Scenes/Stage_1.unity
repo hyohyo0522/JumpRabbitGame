@@ -1469,6 +1469,7 @@ GameObject:
   - component: {fileID: 123444942}
   - component: {fileID: 123444947}
   - component: {fileID: 123444948}
+  - component: {fileID: 123444949}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -1651,6 +1652,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attacked: 0
+--- !u!114 &123444949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123444941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcf7fdd9c02c20f469625df3be24117e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &134503933
 GameObject:
   m_ObjectHideFlags: 0
@@ -20538,7 +20551,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -2, y: -1.3999939}
+  m_AnchoredPosition: {x: -1.6, y: -1.9000092}
   m_SizeDelta: {x: 76, y: 10}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &839261689
@@ -22549,7 +22562,6 @@ GameObject:
   - component: {fileID: 1142208085}
   - component: {fileID: 1142208084}
   - component: {fileID: 1142208083}
-  - component: {fileID: 1142208082}
   m_Layer: 5
   m_Name: ContiueBtn
   m_TagString: Untagged
@@ -22577,18 +22589,6 @@ RectTransform:
   m_AnchoredPosition: {x: 15, y: 19.999998}
   m_SizeDelta: {x: 30, y: 8}
   m_Pivot: {x: 0.4999998, y: 0.49999955}
---- !u!114 &1142208082
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1142208080}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34182e1b26d9a474dabce5ff9205546d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1142208083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23634,6 +23634,8 @@ MonoBehaviour:
   _KeyNum: {fileID: 1725789280}
   _myHeathSlider: {fileID: 78183230}
   _myHealthValue: {fileID: 360952968}
+  heartsParent: {fileID: 839261688}
+  heartContainerPrefab: {fileID: 1000013667988280, guid: 677e3f20f0ab76a45bd59d5b73b0b446, type: 3}
   moveSpeed: 5
   SettingPanel: {fileID: 1591055892}
 --- !u!4 &1372485172

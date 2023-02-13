@@ -26,8 +26,12 @@ public class Ending_UIManager : MonoBehaviour
     [SerializeField] string winnerNick;
     [SerializeField] Text houseOwner; // 인스펙터에서 할당한다.
 
-    //모바일버튼 플레이어이동관련 
+    //게임결과UI텍스트
+    [SerializeField] GameObject youWin;
+    [SerializeField] GameObject youLose;
+    [SerializeField] GameObject guideMsg;
 
+    //모바일버튼 플레이어이동관련 
     float movePower;
     [SerializeField] float moveSpeed = 5f;
 
@@ -37,6 +41,23 @@ public class Ending_UIManager : MonoBehaviour
     {
         winnerNick = PlayerPrefs.GetString("Winner"); // 우승자 이름 저장
         houseOwner.text = winnerNick;  // 우승자 이름을 집에 표시
+        Text endingGuideMsg = guideMsg.GetComponent<Text>();
+
+        if (winnerNick == PlayerPrefs.GetString("_myNick"))
+        {
+            youWin.SetActive(true);
+            youLose.SetActive(false);
+            endingGuideMsg.text = "축하합니다! 당신이 이겼습니다!" + "\n" + "게임을 플레이해주셔서 감사합니다." + "\n" + "게임을 다시 시작하거나 앱을 종료해주세요.";
+        }
+        else
+        {
+            youWin.SetActive(false);
+            youLose.SetActive(true);
+            endingGuideMsg.text = "아쉽습니다.. 당신은 졌습니다." + "\n" + "게임을 플레이해주셔서 감사합니다." + "\n" + "게임을 다시 시작하거나 앱을 종료해주세요.";
+        }
+
+
+
 
     }
 

@@ -102,6 +102,7 @@ public class PlayerLife : LivingEntity
         playerSprite = GetComponent<SpriteRenderer>();
         OnDeath += () => _myMovement.ImDead();
         _myMovement.ImRevie += () => RestoreHealth(MaxHealth/2f); // 부활시 체력의 반만 회복한다. 
+        _myMovement.ImRevie += () => UpdateHearthUI();
         _myMovement.ImRevie += () => dead=false;
 
     }
@@ -140,7 +141,7 @@ public class PlayerLife : LivingEntity
         if (hp < MaxHealth)
         {
             float addHealth = value;
-            if(addHealth >= (MaxHealth - hp))
+            if (addHealth >= (MaxHealth - hp))
             {
                 addHealth = (MaxHealth - hp);
             }
@@ -150,6 +151,12 @@ public class PlayerLife : LivingEntity
             UIManager.instance._myHeathSlider.value = hp;
             UIManager.instance._myHealthValue.text = hp.ToString();
         }
+    }
+
+    public void UpdateHearthUI()
+    {
+        PlayerHeartStat.Instance.ChangeFilledHeartNum(-1);
+        //부활소리 재생시키면 좋겠다.
     }
 
     public bool isFullHeath() // 체력회복 아이템 먹을 시 체력양이 풀이면 먹지 않도록 한다. 
@@ -313,7 +320,6 @@ public class PlayerLife : LivingEntity
 
 
 }
-
 
 
 

@@ -490,6 +490,12 @@ public class PlayerMovement : MonoBehaviour
         pungDisapperPosition = (Vector2)this.transform.position;
 
 
+        if (PlayerHeartStat.Instance.Health == 0) //하트가 다 떨어지면 
+        {
+            PlayerPrefs.SetString("Winner", "NotYours");
+            SceneManager.LoadScene("EndingScene");
+
+        }
 
 
         //부활 함수 작동 

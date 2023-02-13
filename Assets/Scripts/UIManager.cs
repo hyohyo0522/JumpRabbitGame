@@ -40,24 +40,14 @@ public class UIManager : MonoBehaviour
     public Slider _myHeathSlider;
     public Text _myHealthValue;
 
-    //하트콘테이너 관련(하트UI)
-    //private GameObject[] heartContainers;
-    //private Image[] heartFills;
-    //public Transform heartsParent; // 하트위치
-    //public GameObject heartContainerPrefab;
-    //public delegate void OnHealthChangedDelegate();
-    //public OnHealthChangedDelegate onHealthChangedCallback;
+    #region 하트콘테이너 관련(하트UI)
+    private GameObject[] heartContainers;
+    private Image[] heartFills;
+    public Transform heartsParent; // 하트위치
+    public GameObject heartContainerPrefab;
 
-    //[SerializeField]
-    //private float health;
-    //[SerializeField]
-    //private float maxHealth;
-    //[SerializeField]
-    //private float maxTotalHealth;
 
-    //public float Health { get { return health; } }
-    //public float MaxHealth { get { return maxHealth; } }
-    //public float MaxTotalHealth { get { return maxTotalHealth; } }
+    #endregion 하트콘테이너 관련(하트UI)
 
 
 
@@ -106,7 +96,13 @@ public class UIManager : MonoBehaviour
 
         #region  HeartContainerUI StartSetting
 
+        heartContainers = new GameObject[(int)PlayerHeartStat.Instance.MaxToTalHealth];
+        heartFills = new Image[(int)PlayerHeartStat.Instance.MaxToTalHealth];
 
+        PlayerHeartStat.Instance.onHeartChandedCallback += UpdateHeartsUI;
+        InstantiateHeartContainers();
+        UpdateHeartsUI();
+        
 
         #endregion HeartContainerUI StartSetting
     }
@@ -198,6 +194,61 @@ public class UIManager : MonoBehaviour
 
 
     #region HeartContainerUI 
+
+    public void UpdateHeartsUI()
+    {
+        SetHeartContainers();
+        SetFilledHearts();
+    }
+
+    void SetHeartContainers()
+    {
+        for (int i = 0; i < heartContainers.Length; i++)
+        {
+            if (i < PlayerHeartStat.Instance.MaxHealth)
+            {
+                heartContainers[i].SetActive(true);
+            }
+            else
+            {
+                heartContainers[i].SetActive(false);
+            }
+        }
+    }
+
+    void SetFilledHearts()
+    {
+        for(int i =0; i < heartFills.Length; i++)
+        {
+            if (i < PlayerHeartStat.Instance.Health)
+            {
+                heartFills[i].fillAmount = 1;
+            }
+            else
+            {
+                heartFills[i].fillAmount = 0;
+            }
+        }
+
+        #region WhenUsingHeartSystemByFloatUnit(NotUseNow)
+        //if (PlayerHeartStat.Instance.Health %1 != 0) //나머지를 계산하는 식
+        //{
+        //    int lastPos = Mathf.FloorToInt(PlayerHeartStat.Instance.Health);
+        //    heartFills[lastPos].fillAmount = PlayerHeartStat.Instance.Health % 1;
+        //}
+        #endregion WhenUsingHeartSystemByFloatUnit(NotUseNow)
+    }
+
+    void InstantiateHeartContainers()
+    {
+        for(int i =0; i < PlayerHeartStat.Instance.MaxToTalHealth; i++)
+        {
+            GameObject temp = Instantiate(heartContainerPrefab);
+            temp.transform.SetParent(heartsParent, false);
+            heartContainers[i] = temp;
+            heartFills[i] = temp.transform.Find("HeartFill").GetComponent<Image>();
+        }
+    }
 
 
 
