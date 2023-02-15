@@ -193,13 +193,17 @@ public class PlayerLife : LivingEntity
 
     public void UpdateMoney(int value) // 빙고판 눌러서 돈 올릴 때
     {
-        if(value ==3) // 콤보코인인지 확인
+        string audioClipName = "BingoGetMoney";
+
+        if (value ==3) // 콤보코인인지 확인
         {
             value = BingoPanel.ComboMoney;
+            audioClipName = "BingoGetComboMoney";
         }
         if(_myMoney <= maxMoneyAndScore)
         {
             _myMoney += value;
+            AudioManager.instance.PlaySFX(audioClipName);
         }
 
 

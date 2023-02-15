@@ -18,24 +18,26 @@ public class SlugMon : MonoBehaviour
 
 
     public int slugKillPlus = 1;
-    public float destroyDelayTime = 10f;
+    public float destroyDelayTime = 15f;
     public float delayForUse = 0.5f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
     bool afterDelay = false;
 
     // 스피드 관련 
-    float maxspeed = 800f;
-    float mInspeed = 500f;
+    float mInspeed = 3.5f;
+    float maxspeed = 5.5f;
+    [SerializeField] float realSpeed;
 
-    float maxCrawlTime = 8f;
-    float minCrawlTime = 5f;
+    float minCrawlTime = 3f;
+    float maxCrawlTime = 5f;
+
 
     float crawlTime;
 
     bool goingRight = false;
 
     //땅에 있는지 체크
-    bool isgrounded = false;
-    float groundCheckRadius = 1f;
+    [SerializeField] bool isgrounded = false;
+    float groundCheckRadius = 2f;
     public LayerMask groundMask;
 
     //아이템 먹는 기능
@@ -73,6 +75,7 @@ public class SlugMon : MonoBehaviour
 
     private void FixedUpdate()
     {
+        GroundCheck();
         if (isgrounded)
         {
             crawling();
@@ -83,11 +86,11 @@ public class SlugMon : MonoBehaviour
 
     void crawling()
     {
-        float realSpeed = Random.Range(mInspeed, maxspeed);
-        int direction = (goingRight)?1:-1;
+        int direction = (goingRight) ? 1 : -1;
 
-        slugRigid.velocity = Vector2.zero; 
-        slugRigid.AddForce(Vector2.right * realSpeed * direction * Time.deltaTime); ;
+        realSpeed = Random.Range(mInspeed, maxspeed); // 달팽이가 움직이는 양이 조금씩 다르면 더 생동감 넘칠 것 같아 이렇게 시시각각 변하게 설정
+        this.transform.rotation = Quaternion.identity;// 달팽이 뒤집어지는 것 방지.
+        slugRigid.AddForce(Vector2.right * realSpeed * direction * Time.deltaTime, ForceMode2D.Impulse);
 
     }
 
@@ -96,15 +99,22 @@ public class SlugMon : MonoBehaviour
         float choicePoint = Random.Range(0, 10);
         if (choicePoint > 0.5f)
         {
+            slugRigid.Sleep(); // 방향 바꿨을 때 이전 방향으로 이동하는 걸 방지하기 위해 Sleep - WakeUp 함
+            slugRigid.velocity = Vector2.zero; //방향 바꿀 때마다 속도 초기화
             goingRight = true;
             slugSprite.flipX = true;
+            slugRigid.WakeUp();
 
         }
         else
         {
+            slugRigid.Sleep(); // 방향 바꿨을 때 이전 방향으로 이동하는 걸 방지하기 위해 Sleep - WakeUp 함
+            slugRigid.velocity = Vector2.zero; //방향 바꿀 때마다 속도 초기화
             goingRight = false;
             slugSprite.flipX = true;
+            slugRigid.WakeUp();
         }
+
 
 
     }
@@ -117,10 +127,11 @@ public class SlugMon : MonoBehaviour
     //땅위에 있는지 검사 
     public void GroundCheck()
     {
+        if (isgrounded) return; // 처음으로 땅에 닿았다면 검사하지 않는다. 
         //땅출동 감지
         Collider2D[] colliders = Physics2D.OverlapCircleAll((Vector2)this.transform.position, groundCheckRadius, groundMask);
 
-        if (colliders.Length > 0) //땅에 닿았다.
+        if (colliders.Length > 0 && !isgrounded ) //땅에 닿았다.
         {
             isgrounded = true;
         }
@@ -146,6 +157,7 @@ public class SlugMon : MonoBehaviour
 
             if (!player.dead)
             {
+                AudioManager.instance.PlaySFX("AttackSlug");
                 player.UpdateSlugUI(slugKillPlus);
                 Vector2 DisappearPosition = this.transform.position;
                 GameObject pungPlay = Instantiate(pung, DisappearPosition, Quaternion.identity);

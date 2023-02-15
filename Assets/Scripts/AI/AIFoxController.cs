@@ -200,12 +200,18 @@ public class AIFoxController : MonoBehaviour
                 //_animator.SetTrigger("fxHurt");
                 _animator.SetTrigger(getHeadShot);
 
+                if (hpFox > 0)
+                {
+                    AudioManager.instance.PlaySFX("AttackFox");
+                }
+
 
                 if (hpFox <= 0) // 공격을 당해서 체력이 다 쓰임
                 {
                     whoAttacking.UpdatePlayerKillUI(1); // 공격한 플레이어의 playerKillUI 올리기.
                     Vector2 DisappearPosition = this.transform.position;
                     GameObject pungPlay = Instantiate(pung, DisappearPosition, Quaternion.identity);
+                    AudioManager.instance.PlaySFX("FoxDie");
                     Destroy(pungPlay.gameObject, pungAniPlayTime);
                     Destroy(this.gameObject);
                     if (OnDeath != null)

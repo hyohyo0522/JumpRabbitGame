@@ -123,6 +123,7 @@ public class BingoCard : MonoBehaviour
 
         if (myPlayerInfo.HasEnuoughItem(myBingoItem, ItemNumber) == false)
         {
+            AudioManager.instance.PlaySFX("BingoDisableClick");
             return;
         }
 

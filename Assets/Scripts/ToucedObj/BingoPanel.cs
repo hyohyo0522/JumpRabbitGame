@@ -73,18 +73,6 @@ public class BingoPanel : MonoBehaviour
         theChsetTouched.GetCompletedinfoFromUI(n);
 
 
-        //for (int i = 0; i < myBingoCards.Length; i++) // 기존 빙고정보와 비교한다. 
-        //{
-        //   if (myBingoCards[n].completed != myBingoCompletedInfo[n])
-        //    {
-        //        Debug.Log("빙고 클릭 넘버 : " + i);ShowBingoCardUI
-        //        TryNewLineEnable(i);
-        //        myBingoCompletedInfo[i] = myBingoCards[i].completed;
-        //        theChsetTouched.GetCompletedinfoFromUI(i); // 클릭된 빙고판의 정보를 체스트에 넘겨준다.
-
-        //    }
-
-        //}
     }
 
 
@@ -235,7 +223,12 @@ public class BingoPanel : MonoBehaviour
 
         }
 
-
+        string audioClip = "BingoEnableClick";
+        if (newLine > 0) //나중에 여기에 조건을 추가해서 콤보돈 머니버튼 활성화되면 그에 맞는 소리가 재생되게 해도 되겠다. 
+        {
+            audioClip = "BingGoEnableMoney";
+        }
+        AudioManager.instance.PlaySFX(audioClip);
 
     }
 
@@ -287,6 +280,7 @@ public class BingoPanel : MonoBehaviour
 
     void EnableMoneyButton(GameObject CoinButtonObj)
     {
+
         //버튼 컬러 활성화 컬러로 수정
         if (CoinButtonObj.name.StartsWith("C")) // 콤보
         {

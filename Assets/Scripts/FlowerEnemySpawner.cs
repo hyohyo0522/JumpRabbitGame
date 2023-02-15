@@ -67,20 +67,21 @@ public class FlowerEnemySpawner : MonoBehaviour
     private void CreateFlowers(Flowerfield spot)
     {
         Transform flowerSpot = spot.flowerSpot;
-        //GameObject enemyObject = PhotonNetwork.Instantiate(enemyPrefab.gameObject.name, enemypoint.position, enemypoint.rotation);
-        GameObject enemyObject = Instantiate(flowerPrefab, flowerSpot.position, Quaternion.identity);
-        FlowerEnemy flowrEnemy = enemyObject.GetComponent<FlowerEnemy>();
-        enemies.Add(flowrEnemy);
+        if(flowerSpot != null)
+        {
+            GameObject enemyObject = Instantiate(flowerPrefab, flowerSpot.position, Quaternion.identity);
+            FlowerEnemy flowrEnemy = enemyObject.GetComponent<FlowerEnemy>();
+            enemies.Add(flowrEnemy);
 
-        spot.hasFlowerMon = true;
-        //Flowerfield thisFlowerSpot = spot.GetComponent<Flowerfield>();
-        //thisFlowerSpot.hasFlowerMon = true;
+            spot.hasFlowerMon = true;
+            //Flowerfield thisFlowerSpot = spot.GetComponent<Flowerfield>();
+            //thisFlowerSpot.hasFlowerMon = true;
 
-        //죽을 때, 리스트에서 삭제
-        enemyObject.GetComponent<LivingEntity>().OnDeath += () => enemies.Remove(flowrEnemy);
-        //플라워몬스터를 만든 공간에 플라워가 지금 없다는 것을 표시
-        enemyObject.GetComponent<LivingEntity>().OnDeath += () => spot.hasFlowerMon = false;
-
+            //죽을 때, 리스트에서 삭제
+            enemyObject.GetComponent<LivingEntity>().OnDeath += () => enemies.Remove(flowrEnemy);
+            //플라워몬스터를 만든 공간에 플라워가 지금 없다는 것을 표시
+            enemyObject.GetComponent<LivingEntity>().OnDeath += () => spot.hasFlowerMon = false;
+        }
 
 
     }

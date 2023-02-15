@@ -101,32 +101,19 @@ public class FlowerEnemy : LivingEntity
     }
 
 
-    // 자식오브젝트-헤드샷에 있는 콜라이더 충돌을 감지한다?
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-
-        //_tfGenPos = transform.GetChild(0);??
-        //if (collision.gameObject.CompareTag("Player") && !beDamaged)
-        //{
-        //    Debug.Log(collision.gameObject.name);
-        //    PlayerMovement attackingPlayers = collision.gameObject.GetComponent<PlayerMovement>();
-        //    attackingPlayers.AddForcetoBounce(2500f);
-
-        //    //공격당했을때 아이템을 토해내는 메서드.
-        //    int r = Random.Range(0, items.Length);
-        //    GameObject selectedItem = Instantiate(items[r], _headShotPoint.position, Quaternion.identity);
-        //    float rdForceX = Random.Range(-200f, 200f);
-        //    selectedItem.GetComponent<Rigidbody2D>().AddForce((transform.right * rdForceX) + (transform.up * 700f)); // 아이템이 위로 솟도록 만든다. 
-        //}
-    }
 
     //머리 위에서 점프 공격 감지메서드
     public void GetHeadShot()
     {
         if (!beDamaged)
         {
-            OnDamage(35); 
+
+            OnDamage(35);
+            if (hp > 0)
+            {
+                AudioManager.instance.PlaySFX("AttackFlower");
+            }
+
             int r = Random.Range(0, items.Length);
             GameObject selectedItem = Instantiate(items[r], _headShotPoint.position, Quaternion.identity);
 
@@ -134,31 +121,7 @@ public class FlowerEnemy : LivingEntity
             float rdForceX = Random.Range(-300f, 300f);
             selectedItem.GetComponent<Rigidbody2D>().AddForce((transform.right * rdForceX) + (transform.up * 700f)); // 아이템이 위로 솟도록 만든다. 
         }
-        //원래 썼던 코드 ★
-        //Collider2D[] GetTreaded  = Physics2D.OverlapCircleAll((Vector2)_headShotPoint.position, 0.6f, PlayerMask);
-        //if(GetTreaded.Length>0 && GetTreaded[0].GetComponent<Rigidbody2D>().velocity.y < 0 && !beDamaged)
-        //{
 
-        //    // ★ 플레이어의 공격력 수치를 가져올 메서드를 여기에 추가한다. 
-        //    OnDamage(35); // 35데미지 만큼 공격을 당한다. 
-        //    Debug.Log("공격당했다.");
-
-
-        //    //Debug.Log("플레이어와 접촉했다."); // 점검완료
-
-        //    //헤드샷을 한 플레이어를 위로 바운스 시킨다. 
-        //    for (int n = 0; n < GetTreaded.Length; n++)
-        //    {
-        //        PlayerMovement attackingPlayers = GetTreaded[n].GetComponent<PlayerMovement>();
-        //        attackingPlayers.AddForcetoBounce(2500f);
-
-        //        // 공격당했을때 아이템을 토해내는 메서드.
-
-
-        //    }
-
-
-        //}
     }
 
     //공격 콜라이더를 활성화 하고 콜라이더에 접근한 플레이어에게 데미지를 입히는 메서드
@@ -233,6 +196,7 @@ public class FlowerEnemy : LivingEntity
 
     public override void Die()    // 죽었을 때 효과 추가. 
     {
+        AudioManager.instance.PlaySFX("FlowerDie");
         base.Die();
 
         //콜라이더 끄기

@@ -49,10 +49,6 @@ public class UIManager : MonoBehaviour
 
     #endregion 하트콘테이너 관련(하트UI)
 
-
-
-
-
     //플레이어무브관련
     float movePower;
     [SerializeField] float moveSpeed = 5f;
@@ -60,9 +56,15 @@ public class UIManager : MonoBehaviour
     //환경설정관련
     public GameObject SettingPanel;
 
+    //게임팁창 관련
+    bool isGameTipOn= true;
+    public Text gameTipTitle;
+    public Text gameTipMsg;
 
-
-
+    float timeBetGameTip = 7f; // 게임메시지간 텀간격
+    float timeOfGameMsg = 5f; // 게임메시지 띄워지는 시간
+    public readonly WaitForSeconds m_waitForSecondsForGameTip = new WaitForSeconds(7f);
+    [SerializeField] float realtimeForGameTip; 
 
 
 
@@ -167,6 +169,7 @@ public class UIManager : MonoBehaviour
     {
         if (SettingPanel.gameObject.activeSelf != isOn)
         {
+            AudioManager.instance.PlaySFX("SettingBtn");
             SettingPanel.SetActive(isOn);
         }
 
@@ -183,6 +186,55 @@ public class UIManager : MonoBehaviour
     }
 
     #endregion SettingPanel : 환경설정창 관련
+
+    #region 게임팁창
+
+    public void OnOffGameTip() //게임팁창 켜고끄는 기능
+    {
+        bool OnOff = !(gameTipTitle.IsActive());
+        isGameTipOn = OnOff;
+        gameTipTitle.gameObject.SetActive(isGameTipOn);
+        gameTipMsg.gameObject.SetActive(isGameTipOn);
+    }
+
+    private void ResetGameTip()
+    {
+        if (!isGameTipOn) return;
+        //Enum으로 랜덤 메시지 정하기
+
+        //랜덤메시지 추출
+
+        //랜덤메시지 바꾸고, 색깔 지정하고 Time리셋하기
+    }
+
+    
+    public void UrgentGameTip(string id) //Enum으로 게임팁 호출하도록 하자.
+    {
+        if (!isGameTipOn) return;
+        //Enum으로 지정된 게임팁 호출
+        //색깔 지정하기 
+        //랜덤메시지 추출해서 띄우기
+        //Time리셋하기
+
+    }
+
+    public void MakeTermBetGame()
+    {
+        if (!isGameTipOn) return;
+
+
+    }
+    // 코루틴 써서 만들자!!!
+
+    IEnumerator MakeTermBetGameTip()
+    {
+
+        //여기에 적어서 만들자!!!
+        yield return m_waitForSecondsForGameTip;
+    }
+
+    #endregion 게임팁창
+
 
 
     public void GameClear()

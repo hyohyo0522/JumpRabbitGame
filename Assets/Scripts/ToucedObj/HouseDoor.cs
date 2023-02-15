@@ -95,6 +95,7 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 
         clodedDoor.SetActive(false);
         openDoor.SetActive(true);
+        AudioManager.instance.PlaySFX("KnockSound");
         directIcon.gameObject.SetActive(true);
         isOpen = true;
     }
@@ -102,12 +103,13 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 
     void CloseMyDoor()
     {
-        Debug.Log("´ÝÇû´Ù!!");
         if (isOpen) { isOpen = false; }
         directIcon.transform.position = originalDirectIcon.position;
         directIcon.gameObject.SetActive(false);
         openDoor.SetActive(false);
         clodedDoor.SetActive(true);
+
+        AudioManager.instance.PlaySFX("DoorClosed");
 
         maxOpenTime = 5f; // ÃÖ´ë ¿ÀÇÂ ½Ã°£ 
 

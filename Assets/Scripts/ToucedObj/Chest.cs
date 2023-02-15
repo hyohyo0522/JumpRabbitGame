@@ -163,6 +163,7 @@ public class Chest : MonoBehaviour,ITouchedObj
     void openChest()
     {
         isOpen = true;
+        AudioManager.instance.PlaySFX("OpenChest");
         chestAnimator.SetBool("open", true);
     }
 
@@ -181,39 +182,19 @@ public class Chest : MonoBehaviour,ITouchedObj
         {
             return;
         }
-        //Debug.Log("ToucH까지 왔다.");
         if (!isOpen) return; // 플레이어가 상자를 점프해서 열어놓지 않으면 클릭이 되지x 
-        //Debug.Log("!isOpen도 통과했다.");
+
         touchOn = true;
         directIcon.gameObject.SetActive(false);
-       //Debug.Log("상자가 클릭되었다!!!!!! 인터페이스 터치 작동!!");
-
-        //해당 체스트의 아이템과 아이템갯수의 정보를 빙고판UI에 넘기고, 빙고UI를 연다. 
-
-        { 
-            //bingoUI.SetActive(true);
-            //BingoPanel bingoUISc = bingoUI.GetComponentInChildren<BingoPanel>();
-
-            //if (bingoUISc != null)
-            //{
-            //    bingoUISc.OnDisableEvent += () => TouchNull();
-
-            //    for (int n = 0; n < myBingoChest.Length; n++)
-            //    {
-            //        bingoUISc.getBingoCardsInfo(myBingoChest[n].whatItem, myBingoChest[n].ItemNumber, n);
-            //    }
-
-            //    touchOn = true;
-
-            //}
-        }
 
 
         bingGoUI.SetActive(true);
         BingoPanel serialziedbingGoUI = bingGoUI.GetComponentInChildren<BingoPanel>();
+        AudioManager.instance.PlayBGM("InGame_BINGO");
 
         if (serialziedbingGoUI != null) //여기가 작동이 안되어서 오류가 났던 것 같다. 
         {
+
             serialziedbingGoUI.OnDisableEvent += () => TouchNull();
             serialziedbingGoUI.OnDisableEvent += () => InputManager.instance.ExitITouchedObjPanel();
             serialziedbingGoUI.SetChset(this);
@@ -233,6 +214,7 @@ public class Chest : MonoBehaviour,ITouchedObj
 
     void TouchNull() // 상자가 클릭된 상태로 다른 것을 클릭했을 때/ 빙고판을 닫는다. 
     {
+        AudioManager.instance.PlayBGM("InGame_jumping");
         if (touchOn)
         {
             touchOn = false;
@@ -244,7 +226,6 @@ public class Chest : MonoBehaviour,ITouchedObj
             closeChest();
 
         }
-        // bingoUI.SetActive(false);  >>> UI의 X 버튼에서 처리한다.
 
     }
 
