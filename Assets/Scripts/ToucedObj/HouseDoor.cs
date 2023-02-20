@@ -26,7 +26,10 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 
     // 트리거감지를 통해 플레이어 정보를 저장할 변수
     [SerializeField] PlayerLife whoknocked;
-    int NeededKeyNumForHouse = 3;//집을 구매하기 위한 키 넘버
+    
+    private static int neededKeyNumForHouse = 3;//집을 구매하기 위한 키 갯수
+    public static int NeededKeyNumForHouse { get { return neededKeyNumForHouse; } }
+
 
     // Start is called before the first frame update
     void Start()
@@ -177,7 +180,7 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
         GameObject NoBtn = houseUIMsg.transform.GetChild(2).gameObject; // No 버튼(Cancle)
 
         //플레이어에게 충분한 열쇠가 있는지 확인해서 메시지를 수정하자.
-        if (whoknocked.CheckKeyNumForHouseMsg(NeededKeyNumForHouse))
+        if (whoknocked.CheckKeyNumForHouseMsg(neededKeyNumForHouse))
         {
             EndingMsg.text = "열쇠가 충분합니다!" + "\n" + "집의 주인이 되어 게임에 승리할까요?";
 
@@ -192,7 +195,7 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
         }
         else
         {
-            EndingMsg.text = "열쇠가 부족합니다." + "\n" + "필요한 열쇠 갯수는 총 " + NeededKeyNumForHouse.ToString() + "개입니다.";
+            EndingMsg.text = "열쇠가 부족합니다." + "\n" + "필요한 열쇠 갯수는 총 " + neededKeyNumForHouse.ToString() + "개입니다.";
 
             YesBtn?.SetActive(false);
 

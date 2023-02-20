@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
+
 public class UIManager : MonoBehaviour
 {
     // 필요한 UI에 즉시 접근하고 변경할 수 있도록 허용하는 UI 매니저
@@ -58,13 +59,27 @@ public class UIManager : MonoBehaviour
 
     //게임팁창 관련
     bool isGameTipOn= true;
-    public Text gameTipTitle;
-    public Text gameTipMsg;
+    public GameObject gameTipTitle;
+    public GameObject gameTipMsg;
+    Color normalTipColor = new Color(255f, 255f, 255f, 220f);
+    Color UrgentTipColor = Color.red;
 
-    float timeBetGameTip = 7f; // 게임메시지간 텀간격
-    float timeOfGameMsg = 5f; // 게임메시지 띄워지는 시간
-    public readonly WaitForSeconds m_waitForSecondsForGameTip = new WaitForSeconds(7f);
-    [SerializeField] float realtimeForGameTip; 
+    float UrgentGameTipTime = 5f; // 긴급게임메시지 띄워지는 시간 
+    public readonly WaitForSeconds m_waitForSecondsForGameTip = new WaitForSeconds(7f); //게임메시지 띄워지는 시간or게임메시지간 텀간격
+
+    [TextArea]
+    public string[] NormalGuideTips; //게임메시지 저장소(노멀)
+    [TextArea]
+    public string[] UrgentGuideTips; //게임메시지 저장소(Urgent)
+    #region UrgentGuideTips : 메시지별 키값 정리
+
+    public const int ZeroHeart = 0; //하트 0개일 때 메시지
+    public const int KeyDestroyed = 1; // 돈이 부족해서 키가 파괴될 때 메시지
+    public const int AllKeyGatherd = 2; // 열쇠 모두 모았을 때 메시지
+    public const int CarrotShortage = 3; // 당근이 부족할 때 메시지
+    public const int ZeroCarrot = 4; // 당근이 0개일 때 메시지
+
+    #endregion UrgentGuideTips : 키값 정리
 
 
 
@@ -79,7 +94,7 @@ public class UIManager : MonoBehaviour
 
         if (_myGameMode == "Single") //게임모드가 싱글일때 설정
         {
-            _IconImageForMultiPlay.SetActive(false);
+            _IconImageForMultiPlay.SetActive(false); 
             _IconImageForSinglePlay.SetActive(true);
         }
         if (_myGameMode == "Multi") //게임모드가 멀티일 때 설정
@@ -87,6 +102,8 @@ public class UIManager : MonoBehaviour
             _IconImageForMultiPlay.SetActive(true);
             _IconImageForSinglePlay.SetActive(false);
         }
+
+
 
 
     }
@@ -104,9 +121,19 @@ public class UIManager : MonoBehaviour
         PlayerHeartStat.Instance.onHeartChandedCallback += UpdateHeartsUI;
         InstantiateHeartContainers();
         UpdateHeartsUI();
-        
+
 
         #endregion HeartContainerUI StartSetting
+
+        #region GameTipSetUp
+
+        isGameTipOn = true;
+        gameTipTitle.gameObject.SetActive(isGameTipOn);
+        gameTipMsg.gameObject.SetActive(isGameTipOn);
+        StartCoroutine("GameTipUI");
+
+        #endregion GameTipSetUp
+
     }
 
     #region Item UI
@@ -163,7 +190,6 @@ public class UIManager : MonoBehaviour
 
     #endregion PlayerMove
 
-
     #region SettingPanel : 환경설정창 관련
     public void IsOpenSettingPanel(bool isOn)
     {
@@ -191,46 +217,92 @@ public class UIManager : MonoBehaviour
 
     public void OnOffGameTip() //게임팁창 켜고끄는 기능
     {
-        bool OnOff = !(gameTipTitle.IsActive());
-        isGameTipOn = OnOff;
+        isGameTipOn = !(gameTipTitle.activeSelf);
         gameTipTitle.gameObject.SetActive(isGameTipOn);
         gameTipMsg.gameObject.SetActive(isGameTipOn);
+
+        if (!isGameTipOn)
+        {
+            StopCoroutine("GameTipUI");
+        }
+        else
+        {
+            StartCoroutine("GameTipUI");
+        }
     }
+
 
     private void ResetGameTip()
     {
         if (!isGameTipOn) return;
-        //Enum으로 랜덤 메시지 정하기
+        //랜덤 메시지 추출
 
-        //랜덤메시지 추출
+        int index = Random.Range(0, NormalGuideTips.Length);
+        string selectedMsg = NormalGuideTips[index];
+        Debug.Log(selectedMsg);
+        gameTipMsg.GetComponent<Text>().text = selectedMsg;
+
+        // Debug.Log("메시지를 리셋했다!");
 
         //랜덤메시지 바꾸고, 색깔 지정하고 Time리셋하기
+        gameTipMsg.GetComponent<Text>().color = normalTipColor;
+
+
     }
 
     
-    public void UrgentGameTip(string id) //Enum으로 게임팁 호출하도록 하자.
+    public void UrgentGameTip(int MsgkeyId) //Enum으로 게임팁 호출하도록 하자.
     {
         if (!isGameTipOn) return;
         //Enum으로 지정된 게임팁 호출
+
+        //긴급메시지가 여러개 들어올 경우를 대비하여 위 함수에서 맨 아랫줄 Invoke된 함수를 취소처리한다. 
+        CancelInvoke("StartGameTipUICouroutine");
+
+        //코루틴 멈추기
+        StopCoroutine("GameTipUI");
+
         //색깔 지정하기 
-        //랜덤메시지 추출해서 띄우기
-        //Time리셋하기
+        gameTipMsg.GetComponent<Text>().color = UrgentTipColor;
 
+        //긴급메시지 텍스트 적용
+        string selectedMsg = UrgentGuideTips[MsgkeyId];
+        gameTipMsg.GetComponent<Text>().text = selectedMsg;
+
+
+        ////코루틴 멈춘 것 Invoke로 다시시작
+        Invoke("StartGameTipUICouroutine", UrgentGameTipTime);
     }
 
-    public void MakeTermBetGame()
+    public void MakeTermBetGameTip()
     {
-        if (!isGameTipOn) return;
-
+        gameTipMsg.GetComponent<Text>().text = "  ";
 
     }
+
+    public void StartGameTipUICouroutine() // Invoke로 지연시간 줘서 코루틴 시작하기 위해 만든 함수
+    {
+        StartCoroutine(" GameTipUI");
+    }
+
     // 코루틴 써서 만들자!!!
-
-    IEnumerator MakeTermBetGameTip()
+    IEnumerator GameTipUI()
     {
 
-        //여기에 적어서 만들자!!!
-        yield return m_waitForSecondsForGameTip;
+        while (isGameTipOn)
+        {
+            //if (realtimeForGameTip < timeOfGameMsg)
+            //{
+            //    realtimeForGameTip += Time.deltaTime;
+            //    realtimeForGameTip += Time.deltaTime;
+            //    continue;
+            //}
+
+            MakeTermBetGameTip();
+            yield return m_waitForSecondsForGameTip;
+            ResetGameTip();
+            yield return m_waitForSecondsForGameTip;
+        }
     }
 
     #endregion 게임팁창

@@ -37,6 +37,11 @@ public class PlayerHeartStat : MonoBehaviour
 
         this.health += value;
         ClampHeart();
+
+        if (health == 0)
+        {
+            UIManager.instance.UrgentGameTip(UIManager.ZeroHeart);
+        }
     }
 
     public void AddMaxHealth()

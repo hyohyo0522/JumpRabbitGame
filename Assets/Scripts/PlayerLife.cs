@@ -156,6 +156,8 @@ public class PlayerLife : LivingEntity
     public void UpdateHearthUI()
     {
         PlayerHeartStat.Instance.ChangeFilledHeartNum(-1);
+
+
         //부활소리 재생시키면 좋겠다.
     }
 
@@ -177,6 +179,10 @@ public class PlayerLife : LivingEntity
     {
         _myKeyNum += value;
         UIManager.instance.UpdateKeyNumUI(_myKeyNum);
+        if(_myKeyNum == HouseDoor.NeededKeyNumForHouse)
+        {
+            UIManager.instance.UrgentGameTip(UIManager.AllKeyGatherd);
+        }
     }
 
     // UI 관련 
@@ -287,6 +293,8 @@ public class PlayerLife : LivingEntity
             hasPaid = true;
             UIManager.instance._moneyTxt.text = GetThousandCommaText(_myMoney).ToString();
             UpdateMyKeyNum(1); // 열쇠 넘버 1 올라감
+
+
 
             // ★돈 지불되는 소리 재생시키자!!!!
             return hasPaid;

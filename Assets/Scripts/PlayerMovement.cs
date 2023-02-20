@@ -28,10 +28,14 @@ public class PlayerMovement : MonoBehaviour
     float m_VerticalMovement;
 
 
-    //점프 카운트 관련 변수
+    //점프 카운트 관련 변수(당근 갯수)
     private int jumpCount = 0;  //당근 먹어서 생긴 점프 카운트
     private int jumpMaxCount = 1;
-    private int enableJumpCount = 10;
+    private int enableJumpCount = 10; // 당근 갯수, 점프 가능한 횟수
+    private int countForWaringCarrotShortage = 5; // 당근 부족을 경고할 현 당근 갯수
+    private int maxCarrot = 100; //당근 최대 갯수
+
+
 
 
 
@@ -289,7 +293,16 @@ public class PlayerMovement : MonoBehaviour
 
         jumpCount++;
         enableJumpCount--;
+        ClampCarrotValue();
         UIManager.instance.UpdateCarrotText(enableJumpCount); // UI갱신
+        if (enableJumpCount == countForWaringCarrotShortage)
+        {
+            UIManager.instance.UrgentGameTip(UIManager.CarrotShortage);
+        }
+        if(enableJumpCount == 0)
+        {
+            UIManager.instance.UrgentGameTip(UIManager.ZeroCarrot);
+        }
         Debug.Log("점프카운트는 1이 되었다.");
 
     }
@@ -297,13 +310,14 @@ public class PlayerMovement : MonoBehaviour
     void resetJumpCount()
     {
         jumpCount = 0;
-        Debug.Log("점프카운트는 0이 되었다.");
+        // Debug.Log("점프카운트는 0이 되었다.");
     }
 
     //당근 먹었을 때 점프카운트 올라가는 효과
     public void JumpCountUp(int value)
     {
         enableJumpCount += value;
+        ClampCarrotValue();
         UIManager.instance.UpdateCarrotText(enableJumpCount); //UI 갱신 
         //먹는 소리도 추가하자.
     }
@@ -317,6 +331,11 @@ public class PlayerMovement : MonoBehaviour
             UIManager.instance.UpdateCarrotText(enableJumpCount); //UI 갱신 
         }
 
+    }
+
+    void ClampCarrotValue()
+    {
+        enableJumpCount = Mathf.Clamp(enableJumpCount, 0, maxCarrot);
     }
 
 

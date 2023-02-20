@@ -41,6 +41,7 @@ public class HouseKeyItem : MonoBehaviour,IItem
         else //¿­¼è ¸ÔÀ» µ·ÀÌ ¾ø´Ù. 
         {
             AudioManager.instance.PlaySFX("PlayerNoKey");
+            UIManager.instance.UrgentGameTip(UIManager.KeyDestroyed);
             isPaid = false;
         }
 
