@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 6050642099150298772}
   - component: {fileID: 9189746626730543050}
   m_Layer: 0
-  m_Name: ItemBee
+  m_Name: ItemBee_Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

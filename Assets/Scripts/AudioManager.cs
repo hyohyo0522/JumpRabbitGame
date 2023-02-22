@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 [System.Serializable] // 인스펙터 창에서 수정할 수 있게 해주는 기능
@@ -18,10 +19,11 @@ public class AudioManager : MonoBehaviour
     public AudioMixer audioMixer;
     public Slider BgmSlider;
     public Slider SfxSlider;
+    public string startBgm;
 
     private void Start()
     {
-        PlayBGM("InGame_jumping");
+        PlayBGM(startBgm);
 
     }
 
