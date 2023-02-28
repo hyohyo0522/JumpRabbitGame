@@ -37,7 +37,7 @@ public class FoxMonSpawner : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         timeBetFoxInstantiate -= Time.deltaTime;
 

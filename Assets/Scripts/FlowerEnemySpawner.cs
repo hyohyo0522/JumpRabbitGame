@@ -88,7 +88,7 @@ public class FlowerEnemySpawner : MonoBehaviour
 
     public Flowerfield randomEmptyFileds()    // 플라워 몬스터가 없는 필드를 랜덤으로 하나 뽑는다.
     {
-        emptyFileds.Clear();
+        emptyFileds.Clear(); // 초기화
         currentNum = 0; //  현재 플라워 몬스터 수를 0으로 초기화한다. 
 
         for (int n = 0; n < allflowerFields.Count; n++)

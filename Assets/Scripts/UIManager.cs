@@ -282,7 +282,7 @@ public class UIManager : MonoBehaviour
 
     public void StartGameTipUICouroutine() // Invoke로 지연시간 줘서 코루틴 시작하기 위해 만든 함수
     {
-        StartCoroutine(" GameTipUI");
+        StartCoroutine("GameTipUI");
     }
 
     // 코루틴 써서 만들자!!!
