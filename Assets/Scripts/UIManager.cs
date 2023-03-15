@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 
 
@@ -53,6 +55,12 @@ public class UIManager : MonoBehaviour
     //플레이어무브관련
     float movePower;
     [SerializeField] float moveSpeed = 5f;
+
+    //플레이어Dig관련 (땅파서 당근얻기 기능)
+    public Slider digGageSlider;
+    float digGage = 0;
+    float sliderGagePower = 5f; // 슬라이더 올라가는 양
+    public event Action DigGageFullFilled;
 
     //환경설정관련
     public GameObject SettingPanel;
@@ -112,6 +120,8 @@ public class UIManager : MonoBehaviour
     {
         IsOpenSettingPanel(false); // 환경설정 패널 일단 끄기
 
+        digGageSlider.value = digGage; // 땅파기 게이지 초기화
+
 
         #region  HeartContainerUI StartSetting
 
@@ -153,7 +163,7 @@ public class UIManager : MonoBehaviour
 
     #endregion Item UI
 
-    #region PlayerMove
+    #region PlayerMove And Dig
 
     public void LeftBtnDown() //왼쪽 버튼 눌렸을 때
     {
@@ -188,7 +198,26 @@ public class UIManager : MonoBehaviour
         return movePower;
     }
 
-    #endregion PlayerMove
+    //PlayerDig관련
+    public void FillDigGage()
+    {
+        // 플레이어가 IsGrounded 일때에만 작동이 되어야하므로 PlayerMovement.cs에서 해당 함수를 호출한다.
+        digGage += Time.deltaTime*sliderGagePower;
+        digGageSlider.value = digGage;
+
+        if(digGage >= 1)
+        {
+            //게이지 초기화
+            digGage = 0;
+            digGageSlider.value = digGage;
+            if(DigGageFullFilled != null)
+            {
+                DigGageFullFilled();
+            }
+        }
+    }
+
+    #endregion PlayerMove And Dig
 
     #region SettingPanel : 환경설정창 관련
     public void IsOpenSettingPanel(bool isOn)

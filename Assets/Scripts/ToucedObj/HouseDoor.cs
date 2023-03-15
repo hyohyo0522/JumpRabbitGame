@@ -27,7 +27,7 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
     // 트리거감지를 통해 플레이어 정보를 저장할 변수
     [SerializeField] PlayerLife whoknocked;
     
-    private static int neededKeyNumForHouse = 3;//집을 구매하기 위한 키 갯수
+    private static int neededKeyNumForHouse = 1;//집을 구매하기 위한 키 갯수
     public static int NeededKeyNumForHouse { get { return neededKeyNumForHouse; } }
 
 

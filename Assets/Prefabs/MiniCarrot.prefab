@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6741353847575564423}
   - component: {fileID: 4809376665980721238}
-  - component: {fileID: 1998135705108596302}
+  - component: {fileID: 1768417296311650838}
   - component: {fileID: 1229493562087024984}
   - component: {fileID: 2743253398955993749}
   m_Layer: 11
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1998135705108596302
+--- !u!114 &1768417296311650838
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,12 +94,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4022583971699726592}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18a54d2124505dc40b93135b92916f86, type: 3}
+  m_Script: {fileID: 11500000, guid: fdeadea04f2903b49a042fd73b057ffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   destroyDelayTime: 5
-  jumpUpValue: 3
-  delayForUse: 0.2
+  jumpUpValue: 1
+  delayForUse: 1
 --- !u!50 &1229493562087024984
 Rigidbody2D:
   serializedVersion: 4

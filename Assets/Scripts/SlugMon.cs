@@ -12,6 +12,9 @@ public class SlugMon : MonoBehaviour
     public GameObject pung; // 죽을 때 펑 애니메이션 재생
     float pungAniPlayTime = 0.55f;
 
+    //플레이어 체력 올려주는 기능
+    float slugHeal = 20f;
+
     Transform _slugTransform;
     float headShotBouncePower = 1000f;
 
@@ -161,8 +164,15 @@ public class SlugMon : MonoBehaviour
                 player.UpdateSlugUI(slugKillPlus);
                 Vector2 DisappearPosition = this.transform.position;
                 GameObject pungPlay = Instantiate(pung, DisappearPosition, Quaternion.identity);
+
+                //달팽이 플레이어 체력 올려주는 기능 
+                player.RestoreHealth(slugHeal);
+
                 Destroy(pungPlay.gameObject, pungAniPlayTime);
                 Destroy(this.gameObject);
+
+
+
             }
 
         }

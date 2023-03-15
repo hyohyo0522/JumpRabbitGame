@@ -72,7 +72,7 @@ public sealed class StateMachine<T>
     public void Update(float deltaTime)
     {
         elapsedTimeInState += deltaTime;
-        currentState.Update(deltaTime);
+         currentState.Update(deltaTime); 
     }
 
     public A ChangeState<A>() where A : State<T>

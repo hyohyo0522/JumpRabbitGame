@@ -92,7 +92,6 @@ public class Chest : MonoBehaviour,ITouchedObj
 
                 // 효과 재생 : 펑 애니메이션
                 GameObject pungPlay = Instantiate(pung, this.transform.position, Quaternion.identity);
-                Destroy(pungPlay.gameObject, pungAniPlayTime);
 
 
                 //빙고판을 비활성화시키는 기능.

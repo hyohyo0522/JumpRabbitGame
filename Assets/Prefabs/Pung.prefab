@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7419763835651070387}
+  - component: {fileID: 716260458639453285}
+  - component: {fileID: 8148875487255038731}
   m_Layer: 0
   m_Name: Pung
   m_TagString: Untagged
@@ -34,6 +36,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &716260458639453285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419763835651070386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e87b21bb3df1104c806f62a1471c374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8148875487255038731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419763835651070386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e87b21bb3df1104c806f62a1471c374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7419763835665962744
 GameObject:
   m_ObjectHideFlags: 0
@@ -45,6 +71,7 @@ GameObject:
   - component: {fileID: 7419763835665962743}
   - component: {fileID: 7419763835665962742}
   - component: {fileID: 7419763835665962745}
+  - component: {fileID: 1885335460345418902}
   m_Layer: 0
   m_Name: PungEffect (3)
   m_TagString: Untagged
@@ -136,6 +163,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1885335460345418902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419763835665962744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1d19df75969954eab3557940ea102c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7419763835945165090
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,6 +186,7 @@ GameObject:
   - component: {fileID: 7419763835945165091}
   - component: {fileID: 7419763835945165089}
   - component: {fileID: 7419763835945165088}
+  - component: {fileID: 7327878744728433457}
   m_Layer: 0
   m_Name: PungEffect
   m_TagString: Untagged
@@ -238,6 +278,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7327878744728433457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419763835945165090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1d19df75969954eab3557940ea102c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7419763835981908557
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,6 +301,7 @@ GameObject:
   - component: {fileID: 7419763835981908552}
   - component: {fileID: 7419763835981908555}
   - component: {fileID: 7419763835981908554}
+  - component: {fileID: 3266505788437888628}
   m_Layer: 0
   m_Name: PungEffect (2)
   m_TagString: Untagged
@@ -340,6 +393,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3266505788437888628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419763835981908557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1d19df75969954eab3557940ea102c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7419763836486158496
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,6 +416,7 @@ GameObject:
   - component: {fileID: 7419763836486158527}
   - component: {fileID: 7419763836486158526}
   - component: {fileID: 7419763836486158497}
+  - component: {fileID: 4167707832087742593}
   m_Layer: 0
   m_Name: PungEffect (1)
   m_TagString: Untagged
@@ -442,3 +508,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4167707832087742593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419763836486158496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1d19df75969954eab3557940ea102c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

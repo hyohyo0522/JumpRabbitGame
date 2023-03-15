@@ -55,7 +55,7 @@ public class StartSceneManager : MonoBehaviour
         PlayerPrefs.SetString("_myNick", _myNick);
         PlayerPrefs.SetString("Mode", "Single"); //게임 모드는 싱글로 설정됨.
 
-        SceneManager.LoadScene("Stage_1");
+        SceneManager.LoadScene("Map_1");
 
     }
 

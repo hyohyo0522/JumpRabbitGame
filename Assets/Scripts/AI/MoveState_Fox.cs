@@ -25,9 +25,7 @@ public class MoveState_Fox : State<AIFoxController>
     public override void OnEnter()
     {
 
-        _animator?.SetBool(hasWalk, true);
-
-
+        _animator.SetBool(hasWalk, true);
 
     }
 

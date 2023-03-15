@@ -33,7 +33,7 @@ public class FoxMonSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxFoxNum = 3;
+        maxFoxNum = 5;
     }
 
     // Update is called once per frame

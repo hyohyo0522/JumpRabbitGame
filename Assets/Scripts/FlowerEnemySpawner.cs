@@ -36,7 +36,7 @@ public class FlowerEnemySpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        percentForFlowers = 0.6f;
+        percentForFlowers = 0.8f;
         updateMaxFlowers(); // 최대 꽃 몬스터 생성수 갱신
 
     }

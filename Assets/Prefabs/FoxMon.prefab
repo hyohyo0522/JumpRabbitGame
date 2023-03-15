@@ -223,6 +223,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundCollider: {fileID: 0}
+  ladderMaskInt: 0
+  monsterMaskInt: 0
   target: {fileID: 0}
   MiddlewayPoint: {x: 0, y: 0}
   currentLadder: {fileID: 0}
@@ -232,13 +234,14 @@ MonoBehaviour:
   _speed: 10
   _ladderSpeed: 7
   damagePower: 10
-  powerMakingAttackingPlayerToBounce: 600
   groundCheckCollider_fox: {fileID: 0}
+  beDamaged: 0
   headShotPoint_fox: {fileID: 1217445030117762068}
   whoAttacking: {fileID: 0}
   pung: {fileID: 7419763835651070386, guid: 1a1888bd427858d4aa5e3a2db8e8d8ac, type: 3}
   pungSmall: {fileID: 7419763835651070386, guid: 857c428a17dbed94684a20ea450872fb, type: 3}
   _healthSlider: {fileID: 1217445028654175857}
+  InTheLadder: 0
 --- !u!50 &1217445028935477936
 Rigidbody2D:
   serializedVersion: 4
@@ -287,7 +290,7 @@ PlatformEffector2D:
   m_UseColliderMask: 1
   m_ColliderMask:
     serializedVersion: 2
-    m_Bits: 448
+    m_Bits: 192
   m_RotationalOffset: 0
   m_UseOneWay: 0
   m_UseOneWayGrouping: 0

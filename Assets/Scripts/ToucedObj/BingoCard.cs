@@ -121,19 +121,32 @@ public class BingoCard : MonoBehaviour
         // 여기서 버튼을 클릭한 플레이어의 정보를 저장해서 BingoPanel을 통해
         // Chset에 저장하는 메소드를 추가해야할 것 같다. 
 
-        if (myPlayerInfo.HasEnuoughItem(myBingoItem, ItemNumber) == false)
-        {
-            AudioManager.instance.PlaySFX("BingoDisableClick");
-            return;
-        }
-
-
         if (!completed)
         {
-            SetCompletedStamp();
-            myParentBigoPanel.GetNewClick(n);
-
+            if(myPlayerInfo.HasEnuoughItem(myBingoItem, ItemNumber))
+            {
+                SetCompletedStamp();
+                myParentBigoPanel.GetNewClick(n);
+            }
+            else
+            {
+                AudioManager.instance.PlaySFX("BingoDisableClick");
+                return;
+            }
         }
+        
+        //if (!myPlayerInfo.HasEnuoughItem(myBingoItem, ItemNumber))
+        //{
+
+        //}
+
+
+        //if (!completed)
+        //{
+        //    SetCompletedStamp();
+        //    myParentBigoPanel.GetNewClick(n);
+
+        //}
 
        
 

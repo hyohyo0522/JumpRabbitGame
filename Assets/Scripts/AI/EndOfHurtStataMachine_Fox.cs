@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EndOfHurtStataMachine_Fox : StateMachineBehaviour
 {
+    AIFoxController myFoxAI;
+
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
@@ -19,7 +21,17 @@ public class EndOfHurtStataMachine_Fox : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator?.GetComponent<AIFoxController>().StateMachine.ChangeState<IdleState_Fox>();
+        myFoxAI = animator.GetComponent<AIFoxController>();
+        if(myFoxAI != null)
+        {
+            if (myFoxAI.StateMachine.CurrentState.GetType() == typeof(LadderMoveState_Fox)) 
+            {
+                myFoxAI.CheckFoxIsFalling();
+                return; //사다리에 있을 때에는 Idle상태 전환x
+            }
+            animator?.GetComponent<AIFoxController>().StateMachine.ChangeState<IdleState_Fox>();
+        }
+
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

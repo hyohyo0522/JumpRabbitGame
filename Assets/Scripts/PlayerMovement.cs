@@ -4,6 +4,8 @@ using System.Linq;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Bindings;
+using UnityEngine.Scripting;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
@@ -21,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     // 내 아이디 정보
     string _myNick;
 
-    private float speed = 10f; // 좌우스피드값
+    private float speed = 12f; // 좌우스피드값
 
     //좌우입력키 가져오기
     float m_HorizontalMovement;
@@ -35,8 +37,10 @@ public class PlayerMovement : MonoBehaviour
     private int countForWaringCarrotShortage = 5; // 당근 부족을 경고할 현 당근 갯수
     private int maxCarrot = 100; //당근 최대 갯수
 
-
-
+    //땅파기 + 당근얻기 관련
+    public GameObject CarrotInTheGround;
+    float carrotBouncePowerY = 500f;
+    Vector2 carrotBouncePower;
 
 
     //Ground체크
@@ -49,12 +53,19 @@ public class PlayerMovement : MonoBehaviour
 
     //헤드샷체크
     [SerializeField] Transform HeadShotCollider;
-    float bouncePowerforOtherInMyHead = 1000f;
+    float bouncePowerforOtherInMyHead = 600f;
 
 
-    public LayerMask groundMask;
+    public LayerMask groundMask; 
     public LayerMask LadderMask;
     public LayerMask ItemMask;
+    public LayerMask ItemBeeMask;
+
+    // IgnoreLayerCollision 함수를 활용하기 위한 변수 
+    int groundMaskInt;
+    int playerMaskInt;
+    int ItemBeeMaskInt;
+
     const float groundCheckRadius = 0.6f;
     public bool isGrounded;
     static public bool isLadder = false;
@@ -66,9 +77,8 @@ public class PlayerMovement : MonoBehaviour
     public Collider2D platformCollider;
 
     // 벌 위에 있을 때 플라잉 이벤트 발동
-    int maskPlayer = 1 >> 8; // 플레이어 레이어 마스크 
-    int maskGround = 1 >> 6; // Ground(사다리포함) 레이어 마스크
-    int maskMonFlying = 1 >> 10; // 날아다니는 플라잉 몬스터 마스크
+    //int maskPlayer = 1<< 8; // 플레이어 레이어 마스크 
+    //int maskMonFlying = 1<<10; // 날아다니는 플라잉 몬스터 마스크
     bool nowFlying = false; // 날고 있는지를 체크하는 불린변수
 
     //펑 이펙트 가져오기
@@ -97,10 +107,18 @@ public class PlayerMovement : MonoBehaviour
         playerCollider = GetComponent<Collider2D>();
 
 
+        groundMaskInt =LayerMask.NameToLayer("Ground");
+        playerMaskInt = LayerMask.NameToLayer("Player");
+        ItemBeeMaskInt = LayerMask.NameToLayer("Monster");
 
+
+        UIManager.instance.DigGageFullFilled += () => playGetCarrotInGround();
+        carrotBouncePower = new Vector2(0, carrotBouncePowerY);
         //점프 카운트 리셋을 위한 이벤트 등록 
         //Ground ground = FindObjectOfType<Ground>();
         //ground.playerTouched += resetJumpCount;
+
+
 
 
     }
@@ -109,11 +127,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        
+
 
         if (!LadderCheck())//사다리에 있는동안은  isGrounded 가 true가 되는 것을 방지한다. 
         {
             Physics2D.IgnoreCollision(playerCollider, platformCollider, false); // 땅 콜라이더 감지한다.
-            Physics2D.IgnoreLayerCollision(maskPlayer, maskMonFlying, false); // 플라잉몬스터 레이어 감지한다.
+            Physics2D.IgnoreLayerCollision(playerMaskInt, groundMaskInt, false);
+            Physics2D.IgnoreLayerCollision(playerMaskInt, ItemBeeMaskInt, false); // 플라잉몬스터 레이어 감지한다.
             playerRigidbody.gravityScale = gravityY;
             GroundCheck();
 
@@ -145,7 +166,8 @@ public class PlayerMovement : MonoBehaviour
         {
             
             Physics2D.IgnoreCollision(playerCollider, platformCollider, true); // 사다리 있는 동안은 Ground Collider 무시 
-            Physics2D.IgnoreLayerCollision(maskPlayer, maskMonFlying, true); // 사다리에 있는 동안은 플라잉몬스터 레이어 무시 
+            Physics2D.IgnoreLayerCollision(playerMaskInt, groundMaskInt, true);
+            Physics2D.IgnoreLayerCollision(playerMaskInt, ItemBeeMaskInt, true); // 사다리에 있는 동안은 플라잉몬스터 레이어 무시 
             playerRigidbody.gravityScale = 0f;
             MoveInLadder();
 
@@ -207,7 +229,18 @@ public class PlayerMovement : MonoBehaviour
             isLadder = true;
 
 
-        }//다리 접근시 사다리가 아래에 있는 경우
+        }
+        else if (LadderUp.Length > 0)
+        {
+            if (!wasLaddered)
+            {
+                playerRigidbody.velocity = Vector2.zero;
+            }
+            playerAnimator.SetBool("DoClimb", true);
+            isLadder = true;
+
+        }
+        //다리 접근시 사다리가 아래에 있는 경우
         else if (Input.GetKey(KeyCode.DownArrow) && LadderDown.Length > 0)
         {
 
@@ -280,6 +313,8 @@ public class PlayerMovement : MonoBehaviour
 
         //점프 최대 횟수 제한
         if (jumpCount >= jumpMaxCount) return;
+        
+        //당근 갯수에 따라 점프 안되게 만든다.
         if (enableJumpCount <= 0) return;
 
         // 점프구현방법 1. 
@@ -352,14 +387,21 @@ public class PlayerMovement : MonoBehaviour
 
         // m_HorizontalMovement = Input.GetAxisRaw("Horizontal");
         m_HorizontalMovement = UIManager.instance.GetHorizontalValue();
-        playerRigidbody.velocity = new Vector2(m_HorizontalMovement*speed, speedup * m_VerticalMovement);
+        playerRigidbody.velocity = new Vector2(0, speedup * m_VerticalMovement);
 
         if (m_HorizontalMovement != 0) // 땅에 도착하지 않고, 사다리에서 좌우키 눌렀을 때 떨어지게 만든다.
         {
-            Collider2D[] groundedTouched = Physics2D.OverlapCircleAll((Vector2)ladderColliderCheck1.position, 0.7f, groundMask);
+            Collider2D[] groundedTouched = Physics2D.OverlapCircleAll((Vector2)ladderColliderCheck1.position, 1.5f, groundMask);
             if (groundedTouched.Length <= 0)
             {
+                // 땅에 닿지 않았을 때에만 Horizontal값 유효
+                playerRigidbody.velocity = new Vector2(m_HorizontalMovement * speed,playerRigidbody.velocity.y);
                 playerRigidbody.velocity = new Vector2(speed * m_HorizontalMovement, speedJumpInLadder);
+
+            }
+            else // 사다리에 오르고 있는데 그라운드에 터치되면.. Horizontal 값을 무시한다. 땅에 자꾸 갇히는 현상 막기
+            {
+
             }
         }
 
@@ -416,13 +458,13 @@ public class PlayerMovement : MonoBehaviour
                 if (isKey == null)  // 아이템이 키가 아닐경우
                 {
                     GameObject pungItemPlay = Instantiate(pungStartObj, DisappearItemPosition, Quaternion.identity);
-                    Destroy(pungItemPlay.gameObject, pungAniPlayTime);
+
 
                 }
                 else // 키 아이템이 맞으면?
                 {
                     GameObject pungKeyPlay = isKey.isPaid ? Instantiate(pungBigStar, DisappearItemPosition, Quaternion.identity) : Instantiate(pungSmall, DisappearItemPosition, Quaternion.identity);
-                    Destroy(pungKeyPlay.gameObject, pungAniPlayTime);
+
                 }
 
             }
@@ -448,9 +490,7 @@ public class PlayerMovement : MonoBehaviour
                 if (otherRigidBody)
                 {
                     Vector2 cp = GetOthersInMyHead[i].transform.position;
-                    Vector2 dir = cp - (Vector2)transform.position;
-                    float randomX = Random.Range(1, 9);
-                    dir.x = dir.x * randomX;
+                    Vector2 dir = (cp - (Vector2)transform.position).normalized;
 
                     otherRigidBody.AddForce(dir * bouncePowerforOtherInMyHead);
                 }
@@ -463,12 +503,12 @@ public class PlayerMovement : MonoBehaviour
 
     public void CheckbeingFlying()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll((Vector2)groundCheckCollider.position, 0.5f, maskMonFlying);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll((Vector2)groundCheckCollider.position, 0.5f, ItemBeeMask);
         if (colliders.Length > 0 ) // 플라잉 몬스터 위에 있다. 
         {
             if (!nowFlying) 
             { nowFlying = true;
-              Physics2D.IgnoreLayerCollision(maskPlayer, maskGround, true);
+              Physics2D.IgnoreLayerCollision(playerMaskInt, groundMaskInt, true);
             }
 
         }
@@ -477,7 +517,7 @@ public class PlayerMovement : MonoBehaviour
             if (nowFlying) // 플라잉 몬스터 위에 없다. 
             {
                 nowFlying = false;
-                Physics2D.IgnoreLayerCollision(maskPlayer, maskGround, false);
+                Physics2D.IgnoreLayerCollision(playerMaskInt, groundMaskInt, false);
             }
 
         }
@@ -524,6 +564,59 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    public void DigGround()
+    {
+        if (!isGrounded) return;
+
+        UIManager.instance.FillDigGage();
+
+        //플레이어 애니메이터 재생 
+        playerAnimator.SetTrigger("Damaged");
+
+        //땅 파는 소리 재생
+        AudioManager.instance.PlaySFX("PlayerDig");
+
+        //주변 먼지 효과 재생 
+        Vector2 playerPosition = this.transform.position;
+        playerPosition.y -= 1.7f; 
+        int PungCount = Random.Range(1, 3);
+        for(int i =0; i < PungCount; i++)
+        {
+            Vector2 randomPungPosition = (Vector2)Random.insideUnitCircle + playerPosition; //랜덤위치
+            float randomPungSize = Random.Range(0.5f, 1.0f); //랜덤사이즈 
+            GameObject RandomPung = Instantiate(pungSmall,randomPungPosition,Quaternion.identity);
+            RandomPung.transform.localScale *= randomPungSize;
+
+        }
+
+
+    }
+
+    public void playGetCarrotInGround()
+    {
+        // 바로 아래 함수를 이벤트로 등록하니 랜덤값이 똑같이 되서 등록되므로 여기서 함수를 실행시킨다.
+        GetCarrotInTheGround();
+    }
+
+    void GetCarrotInTheGround() //땅속 당근 얻기 
+    {
+        Vector2 origincarrotBouncePower = carrotBouncePower; //원래 값 저장 
+
+        Vector3 CarrotPostion = groundCheckCollider.position;
+        CarrotPostion.x += Random.Range(-1.2f, 1.2f);
+
+        GameObject newCarrot = Instantiate(CarrotInTheGround, CarrotPostion, Quaternion.identity);
+        Rigidbody2D carrotRigidbody = newCarrot.GetComponent<Rigidbody2D>();
+        carrotBouncePower.x += Random.Range(-50f, 50f);
+
+        if(carrotRigidbody != null)
+        {
+            carrotRigidbody.AddForce(carrotBouncePower);
+            AudioManager.instance.PlaySFX("CarrotPulledOut");
+        }
+        carrotBouncePower = origincarrotBouncePower; //원래값복원 
+    }
+
     public void Revive()
     {
         Transform newReSpot = PlayerManager.randomReviveSpot();
@@ -533,6 +626,7 @@ public class PlayerMovement : MonoBehaviour
 
         this.transform.position = newReSpot.position;
         notRevive = false;
+        AudioManager.instance.PlaySFX("PlayerRevive");
 
         if (playerRigidbody.IsSleeping()==true) // 리디즈 바디 켜기 .. 
         //★이거 아무래도 작동이 안되는 듯하다?? 여기에 notRevive = false; 넣으니 작동안됨..
@@ -553,14 +647,12 @@ public class PlayerMovement : MonoBehaviour
     private void playDisappearPung()
     {
         GameObject pungPlay = Instantiate(pung, pungDisapperPosition, Quaternion.identity);
-        Destroy(pungPlay.gameObject, pungAniPlayTime);
 
     }
 
     private void playRevivePung()
     {
         GameObject pungPlay = Instantiate(pung, pungRevivePosition, Quaternion.identity);
-        Destroy(pungPlay.gameObject, pungAniPlayTime);
 
     }
 
