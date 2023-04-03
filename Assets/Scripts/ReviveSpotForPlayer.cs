@@ -8,7 +8,7 @@ public class ReviveSpotForPlayer : MonoBehaviour
 
     void Start()
     {
-        PlayerManager.allReviveSpots.Add(this);
+        PlayerManager.instance.allReviveSpots.Add(this);
     }
 
 

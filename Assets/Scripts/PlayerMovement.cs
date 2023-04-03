@@ -1,11 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Bindings;
-using UnityEngine.Scripting;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
@@ -70,11 +66,14 @@ public class PlayerMovement : MonoBehaviour
     public bool isGrounded;
     static public bool isLadder = false;
 
-    public bool JumpEnable = true; // 사다리 올라오다가 UP키 눌러서 자동으로 점프되는 것 방지
+    public bool JumpEnable = true; // 사다리 올라오다가 UP키 눌러서 자동으로 점프되는 것 방지   
+    float realTimeForCheckStuck=0f;  //사다리 올라오다가 잘못해서 땅에 갇힌 시간 체크
+    float timeForCheckStuck = 1.5f;
     const float gravityY = 9.81f;
 
     //사다리 건널 때 땅 Collision 무시해야함
     public Collider2D platformCollider;
+    bool DoNotTouchInLadder = false; // 사다리에 있을 때 건드리면 안되는 상태인지 확인한다. 
 
     // 벌 위에 있을 때 플라잉 이벤트 발동
     //int maskPlayer = 1<< 8; // 플레이어 레이어 마스크 
@@ -137,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
             Physics2D.IgnoreLayerCollision(playerMaskInt, ItemBeeMaskInt, false); // 플라잉몬스터 레이어 감지한다.
             playerRigidbody.gravityScale = gravityY;
             GroundCheck();
-
+            CheckStuckInTheGround();
 
             // 모바일 말고, 키보드로 할 때.
             //if (Input.GetKey(KeyCode.UpArrow))
@@ -392,14 +391,15 @@ public class PlayerMovement : MonoBehaviour
         if (m_HorizontalMovement != 0) // 땅에 도착하지 않고, 사다리에서 좌우키 눌렀을 때 떨어지게 만든다.
         {
             Collider2D[] groundedTouched = Physics2D.OverlapCircleAll((Vector2)ladderColliderCheck1.position, 1.5f, groundMask);
-            if (groundedTouched.Length <= 0)
+            DoNotTouchInLadder = (groundedTouched.Length > 0) ? true : false;
+            if (!DoNotTouchInLadder) // 사다리에 오르고 있는데 그라운드에 터치되면.. Horizontal 값을 무시한다. 땅에 자꾸 갇히는 현상 막기
             {
                 // 땅에 닿지 않았을 때에만 Horizontal값 유효
                 playerRigidbody.velocity = new Vector2(m_HorizontalMovement * speed,playerRigidbody.velocity.y);
                 playerRigidbody.velocity = new Vector2(speed * m_HorizontalMovement, speedJumpInLadder);
 
             }
-            else // 사다리에 오르고 있는데 그라운드에 터치되면.. Horizontal 값을 무시한다. 땅에 자꾸 갇히는 현상 막기
+            else  
             {
 
             }
@@ -425,6 +425,18 @@ public class PlayerMovement : MonoBehaviour
         if (playerRigidbody.velocity.y > 1000f)
         {
             return;
+        }
+
+        if (LadderCheck()) // 사다리에 있는 상태라면 물리적터치 가능한 상태인지 확인한다.
+        {
+
+            Debug.Log("Player: AddForcetoBounce >사다리에 있는 중 플레이어 물리터치를 시도하였습니다.");
+            if (DoNotTouchInLadder)
+            {
+                Debug.Log($"Player: AddForcetoBounce > DoNotTouchInLadder :{DoNotTouchInLadder} 로 return합니다.");
+                return;
+            }
+            Debug.Log($"Player: AddForcetoBounce > DoNotTouchInLadder :{DoNotTouchInLadder} 로 물리터치가 되었습니다. ");
         }
         playerRigidbody.velocity = Vector2.zero;
         playerRigidbody.AddForce(power);
@@ -479,7 +491,7 @@ public class PlayerMovement : MonoBehaviour
             //충돌한 상대방으로부터 Item컴포넌트 가져오는 데 성공했다
     }
 
-    public void GetHeadShot()
+    public void GetHeadShot() // 공격당함
     {
         Collider2D[] GetOthersInMyHead = Physics2D.OverlapCircleAll(HeadShotCollider.transform.position, 1f, 1 << 10);
         if (GetOthersInMyHead.Length > 0)
@@ -524,10 +536,37 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    //여우몬스터 때문에 땅에 갇히는 현상 방지
+    void CheckStuckInTheGround()
+    {
+
+        Collider2D[] colliders = Physics2D.OverlapCircleAll((Vector2)ladderColliderCheck1.position, 0.9f, groundMask);
+
+        if (colliders.Length > 0) 
+        {
+            realTimeForCheckStuck += Time.deltaTime;
+
+            if (realTimeForCheckStuck > timeForCheckStuck)
+            {
+                Vector2 myPosition = this.transform.position;
+                myPosition += Vector2.down;
+                this.transform.position = myPosition;
+            }
+
+        }
+        else
+        {
+            realTimeForCheckStuck = 0f;
+        }
+
+
+    }
+
 
     //PlayerLife 스크립트에서 이 함수를 호출해 쓸 것이다. 
     public void ImDead()
     {
+        Debug.Log($"PlayerLife :  PlayerMovement ImDead Entered");
         float reviveTime = 1.2f;
 
         notRevive = true;  //부활되기 전까지 못 움직이게 함.
@@ -541,13 +580,16 @@ public class PlayerMovement : MonoBehaviour
             isLadder = false;
         }
 
-        
+        Debug.Log($"PlayerLife :  PlayerMovement ImDead Entered And Course 1 Passed");
+
         //리지드바디 작동 끄기
         this.playerRigidbody.Sleep();
 
         //이펙트 애니메이션 재생 : 펑
         pungDisapperPosition = (Vector2)this.transform.position;
 
+
+        Debug.Log($"PlayerLife :  PlayerMovement ImDead Entered And Course 2 Passed");
 
         if (PlayerHeartStat.Instance.Health == 0) //하트가 다 떨어지면 
         {
@@ -556,10 +598,16 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
+        Debug.Log($"PlayerLife :  PlayerMovement ImDead Entered And Course 3 Passed");
+        // 여기 되는지 확인해보자!
 
         //부활 함수 작동 
         Invoke("Revive", reviveTime);
         Invoke("playDisappearPung",reviveTime);
+
+        Debug.Log($"PlayerLife :  PlayerMovement ImDead Entered And Course 4 Passed");
+
+
 
 
     }
@@ -619,14 +667,29 @@ public class PlayerMovement : MonoBehaviour
 
     public void Revive()
     {
-        Transform newReSpot = PlayerManager.randomReviveSpot();
+
+        Debug.Log($"PlayerLife :  PlayerMovement Revive Entered");
+
+        Transform newReSpot = PlayerManager.instance.randomReviveSpot();
+
+        
+        Debug.Log($"PlayerLife :  PlayerMovement Revive Entered And newReSpot get Successed : ");
+
         pungRevivePosition = newReSpot.position;
+        bool ISnewReSpotNull = newReSpot == null ? true:false;
+
+        Debug.Log($" PlayerLife : Detect newReSpot is Null? : {ISnewReSpotNull} / And pungRevivePosition Is Assigned? :  {pungRevivePosition } ");
+
         playRevivePung();
 
 
+        //여기서부터 안됨 
+        Debug.Log($"PlayerLife :  PlayerMovement Revive Entered : Course 1 Passed");
         this.transform.position = newReSpot.position;
         notRevive = false;
         AudioManager.instance.PlaySFX("PlayerRevive");
+
+        Debug.Log($"PlayerLife :  PlayerMovement Revive Entered : Course 2 Passed");
 
         if (playerRigidbody.IsSleeping()==true) // 리디즈 바디 켜기 .. 
         //★이거 아무래도 작동이 안되는 듯하다?? 여기에 notRevive = false; 넣으니 작동안됨..
@@ -636,16 +699,23 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
+
+        Debug.Log($"PlayerLife :  PlayerMovement Revive Entered : Course 3 Passed");
+
+        bool ImReviveIsNull = ImRevie == null ? true : false;
         if (ImRevie != null) // 부활 이벤트 작동
         {
             ImRevie();
 
 
         }
+
+        Debug.Log($"PlayerLife :  PlayerMovement Revive Entered : Course 4 Passed");
     }
 
     private void playDisappearPung()
     {
+        Debug.Log($"PlayerLife :  PlayerMovement playDisappearPung Entered");
         GameObject pungPlay = Instantiate(pung, pungDisapperPosition, Quaternion.identity);
 
     }

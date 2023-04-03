@@ -26,14 +26,14 @@ public class FoxMonSpawner : MonoBehaviour
     [SerializeField] List<AIFoxController> foxMonsEnabled = new List<AIFoxController>(); //생성된 여우몬들을 담을 리스트
 
     float timeBetFoxInstantiate = 10f; // 생성주기
-    public int maxFoxNum; // 최대 여우 몬스터 생성 수
-    private int currentNumOfFox; // 현재 폭스몬스터생성수
+    private int maxFoxNum = 5; // 최대 여우 몬스터 생성 수
+    private int currentNumOfFox=0; // 현재 폭스몬스터생성수
 
 
     // Start is called before the first frame update
     void Start()
     {
-        maxFoxNum = 5;
+        
     }
 
     // Update is called once per frame
@@ -44,6 +44,8 @@ public class FoxMonSpawner : MonoBehaviour
         if (timeBetFoxInstantiate <=0)
         {
             ResetCurrentNumOfFox();
+
+            Debug.Log($"FoxUpdate : currentNumOfFox -> {currentNumOfFox} / maxFoxNum -> {maxFoxNum}");
             if (currentNumOfFox < maxFoxNum)
             {
                 Vector2 newSpot = FlowerEnemySpawner.instance.randomEmptyFileds().flowerSpot.position;
@@ -78,6 +80,8 @@ public class FoxMonSpawner : MonoBehaviour
                 currentNumOfFox++;
             }
         }
+
+
 
         return currentNumOfFox;
         

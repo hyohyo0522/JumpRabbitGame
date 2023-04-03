@@ -28,7 +28,7 @@ public class StartSceneManager : MonoBehaviour
 
         }
         _myNick = myNickname.text;
-        _guideMsg.text = "Is " + _myNick.ToString()+ " yours, Press Start";
+        _guideMsg.text = "안녕! " + _myNick.ToString()+ ", Start를 눌러요!";
            
         //PlayerPrefs.SetString("MyNick", myNickname);
     }

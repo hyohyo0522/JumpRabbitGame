@@ -221,6 +221,7 @@ public class AIFoxController : MonoBehaviour
                 return;
             }
 
+            
             whoAttackingMove.AddForcetoBounce((dir).normalized * powerMakingAttackingPlayerToBounce);
             Debug.Log("여우가 바운스해주는 파워는!!! " + (dir).normalized * powerMakingAttackingPlayerToBounce);
 

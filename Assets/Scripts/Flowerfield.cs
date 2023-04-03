@@ -8,7 +8,7 @@ public class Flowerfield : MonoBehaviour
     public bool hasFlowerMon = false;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         flowerSpot.position = this.transform.position + new Vector3(0, 1, 0);
         //FlowerEnemySpawner.allflowerFields.Add(this);

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class PlayerLife : LivingEntity
 {
@@ -100,7 +101,10 @@ public class PlayerLife : LivingEntity
     private void Start()
     {
         playerSprite = GetComponent<SpriteRenderer>();
+
+        //여기서 한번 이벤트 함수 초기화해주면 좋을 것 같은데...
         OnDeath += () => _myMovement.ImDead();
+
         _myMovement.ImRevie += () => RestoreHealth(MaxHealth/2f); // 부활시 체력의 반만 회복한다. 
         _myMovement.ImRevie += () => UpdateHearthUI();
         _myMovement.ImRevie += () => dead=false;
@@ -112,6 +116,8 @@ public class PlayerLife : LivingEntity
 
         if (attacked) return;
         //여기 attacked 감지를 여기서 하면 좋을 것 같다!!
+        Debug.Log($"PlayerLife : player is dead? : {dead}");
+
         base.OnDamage(value);
         AudioManager.instance.PlaySFX("PlayeDamaged");
 
