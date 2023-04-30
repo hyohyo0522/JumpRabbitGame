@@ -12,19 +12,6 @@ public class LivingEntity : MonoBehaviour
 
     public event Action OnDeath; 
 
-    //생성자, 생성자 활용하는 방법은 없을까아?
-    //public LivingEntity(float hpValue, float damageValue)
-    //{
-    //    hp = hpValue;
-    //    damage = damageValue;
-    //}
-
-    ////기본생성자
-    //public LivingEntity()
-    //{
-
-    //}
-
 
     protected virtual void OnEnable()
     {
@@ -52,8 +39,6 @@ public class LivingEntity : MonoBehaviour
         dead = true;
         bool isDeathIsNull = OnDeath == null ? true: false;
 
-        //첫번째 의심 포인트 :  OnDeath가 null인지 확인 
-        Debug.Log($"PlayerLife : player is dead? :{dead} , IsOnDeathIsNull? : {isDeathIsNull}"); ;
         if (OnDeath != null)
         {
 

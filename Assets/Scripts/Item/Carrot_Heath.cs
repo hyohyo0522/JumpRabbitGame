@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Carrot_Heath : MonoBehaviour,IItem
 {
+    [SerializeField] float health = 30f;
+
     private void Start()
     {
         Destroy(this.gameObject, 4f);
@@ -11,7 +13,7 @@ public class Carrot_Heath : MonoBehaviour,IItem
 
     public void Use(GameObject target)
     {
-        float health = 30f;
+
 
         PlayerLife playerLife = target.GetComponent<PlayerLife>();
         if (playerLife != null && !playerLife.dead)
@@ -21,9 +23,7 @@ public class Carrot_Heath : MonoBehaviour,IItem
 
             Destroy(this.gameObject);
 
-            //네트워크에서 삭제해야할 때.
-            //// 모든 클라이언트에서 자신을 파괴
-            //PhotonNetwork.Destroy(gameObject);
+
         }
     }
     public void DestoySelf()

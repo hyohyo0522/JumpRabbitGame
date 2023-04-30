@@ -4,26 +4,24 @@ using UnityEngine;
 
 public class Mushroom_RestoreHealth : MonoBehaviour,IItem
 {
-    public float health = 30f;
-    public float destroyDelayTime = 5f;
-    public float delayForUse = 1f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
+    [SerializeField] float health = 30f; // 인스펙터에서 조정해서 범용적으로 프리팹 만들어 사용하자.
+    [SerializeField] float destroyDelayTime = 5f;
+    [SerializeField] float delayForUse = 1f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
     bool afterDelay = false;
-
-    private void OnEnable()
-    {
-        StartCoroutine("makeDelay");
-    }
 
     private void Start()
     {
         Destroy(this.gameObject, destroyDelayTime);
-    }
 
-    IEnumerator makeDelay()
-    {
-        afterDelay = false;
-        yield return new WaitForSeconds(delayForUse);
-        afterDelay = true;
+        float timeAfterInstantiate = 0;
+        while (!afterDelay)
+        {
+            timeAfterInstantiate += Time.deltaTime;
+            if (timeAfterInstantiate > delayForUse)
+            {
+                afterDelay = true;
+            }
+        }
     }
 
     public void Use(GameObject target)
@@ -40,9 +38,6 @@ public class Mushroom_RestoreHealth : MonoBehaviour,IItem
 
                     Destroy(this.gameObject);
 
-                    //네트워크에서 삭제해야할 때.
-                    //// 모든 클라이언트에서 자신을 파괴
-                    //PhotonNetwork.Destroy(gameObject);
                 }
 
             }

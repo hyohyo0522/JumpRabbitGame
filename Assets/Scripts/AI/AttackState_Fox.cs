@@ -23,7 +23,7 @@ public class AttackState_Fox : State<AIFoxController>
             if (!targetPlayerLife.attacked)
             {
                 _animator?.SetTrigger(hasAttack);
-                targetPlayerLife?.OnDamage(context.damagePower);
+                targetPlayerLife?.OnDamage(context.DamagePower);
                 float xPos = Random.Range(context.transform.position.x, context.target.transform.position.x);
                 float yPos = Random.Range(context.transform.position.y, context.target.transform.position.y);
                 Vector2 effectPosition = new Vector2(xPos, yPos);

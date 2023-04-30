@@ -20,22 +20,18 @@ public class BingoPanel : MonoBehaviour
 
     // 코인버튼 관련 값
     public static int ComboMoney;
-    Color ButtonColor;
 
-    
-    [SerializeField] Color UnEnableforNormal;
-    [SerializeField] Color EnableforNormal;
-    [SerializeField] Color UnEnableforCombo;
-    [SerializeField] Color EnableforCombo;
-
-
-    //플레이어 정보 가져오기
-    PlayerLife Myplayer;
+    // 버튼 컬러값
+    const string NormalBtnEnable = "#FF0000";
+    const string NormalBtnNotEnable = "#4B0000";
+    const string ComboBtnEnable = "#00FF2D";
+    const string ComboBtnNotEnable = "#002E08";
 
 
 
 
-    //체스트의 정보를 가져온다. 
+
+    //체스트에서 이 함수를 호출하여 정보를 가져온다. 
     public void getBingoCardsInfo(eBingoItem itemNameFromChest, int ItemNumFromChest, bool isCompleted, int index)
     {
         for (int n = 0; n < myBingoCards.Length; n++)
@@ -66,7 +62,7 @@ public class BingoPanel : MonoBehaviour
         }
     }
 
-    public void GetNewClick(int n )
+    public void GetNewClick(int n)
     {
         TryNewLineEnable(n); // 
         myBingoCards[n].completed = true;
@@ -85,21 +81,21 @@ public class BingoPanel : MonoBehaviour
         switch (newBingoIndex/3)
         {
             case 0: //빙고 가로 첫번째줄
-                if (ChecKBingoCount(0, 1, 2) == 2)
+                if (GetNumOfCompletedBinggoCard(0, 1, 2) == 2)
                 {
                     newLine++;
                     Debug.Log("빙고줄 가로 1 ");
                 }
                 break;
             case 1://빙고 가로 두번째줄
-                if (ChecKBingoCount(3, 4, 5) == 2)
+                if (GetNumOfCompletedBinggoCard(3, 4, 5) == 2)
                 {
                     newLine++;
                     Debug.Log("빙고줄 가로 2 ");
                 }
                 break;
             case 2://빙고 가로 세번째줄
-                if (ChecKBingoCount(6, 7, 8) == 2)
+                if (GetNumOfCompletedBinggoCard(6, 7, 8) == 2)
                 {
                     newLine++;
                     Debug.Log("빙고줄 가로 3 ");
@@ -110,21 +106,21 @@ public class BingoPanel : MonoBehaviour
         switch ((int)(newBingoIndex % 3))
         {
             case 0: //빙고 세로 첫번째줄
-                if (ChecKBingoCount(0, 3, 6) == 2)
+                if (GetNumOfCompletedBinggoCard(0, 3, 6) == 2)
                 {
                     newLine++;
                     Debug.Log("빙고줄 세로 1 ");
                 }
                 break;
             case 1://빙고 세로 두번째줄 /
-                if (ChecKBingoCount(1, 4, 7) == 2)
+                if (GetNumOfCompletedBinggoCard(1, 4, 7) == 2)
                 {
                     newLine++;
                     Debug.Log("빙고줄 세로 2 ");
                 }
                 break;
             case 2://빙고 세로 세번째줄
-                if (ChecKBingoCount(2, 5, 8) == 2)
+                if (GetNumOfCompletedBinggoCard(2, 5, 8) == 2)
                 {
                     newLine++;
                     Debug.Log("빙고줄 세로 3 ");
@@ -132,49 +128,37 @@ public class BingoPanel : MonoBehaviour
                 break;
         }
         //[3] 대각선 검사 >> 칸이 하나 완성될 때, 최대 대각선 생성갯수는 2개 : newBingoIndex가 4일때 유일.
-
         if (newBingoIndex%2 == 0) //대각선줄에 있으려면 인덱스 수가 짝수여야 한다. 
         {
             switch (newBingoIndex)
             {
                 case 0:
                 case 8:
-                    if (ChecKBingoCount(0, 4, 8) == 2)
+                    if (GetNumOfCompletedBinggoCard(0, 4, 8) == 2)
                     {
                         newLine++;
                         Debug.Log("빙고줄 대각선 1 ");
                     }
-                        break;
+                    break;
                 case 2:
                 case 6:
-                    if (ChecKBingoCount(0, 2, 6) == 2)
+                    if (GetNumOfCompletedBinggoCard(0, 2, 6) == 2)
                     {
                         newLine++;
                         Debug.Log("빙고줄 대각선 2 ");
                     }
                     break;
-                case 4: //여기를 손봐줘야함 .. 2개가 찍힐 수 있도록 해야함 
+                case 4: 
                     if(myBingoCompletedInfo[0] && myBingoCompletedInfo[8])
                     {
                         newLine++;
                         Debug.Log("빙고줄 대각선 3 ");
                     }
-
                     if (myBingoCompletedInfo[2] && myBingoCompletedInfo[6])
                     {
                         newLine++;
                         Debug.Log("빙고줄 대각선 4 ");
                     }
-                    //if (ChecKBingoCount(0, 4, 8) == 2)
-                    //{
-                    //    newLine++;
-
-                    //}
-                    //if (ChecKBingoCount(2, 4, 6) == 2)
-                    //{
-                    //    newLine++;
-                    //    Debug.Log("빙고줄 대각선 4 ");
-                    //}
                     break;
 
             }
@@ -215,10 +199,10 @@ public class BingoPanel : MonoBehaviour
                 ComboMoney = 300;
                 ComboCoin.transform.GetChild(0).GetComponent<Text>().text = "Combo" + "\n" + "\n" + "\n" + "\n" + ComboMoney.ToString();
                 EnableMoneyButton(ComboCoin);
-                MakeNewListOfNotInteratctableNormal(2);
+                MakeNormalBtnInteractableByRandom(2);
                 break;
             case 1:
-                MakeNewListOfNotInteratctableNormal(1);
+                MakeNormalBtnInteractableByRandom(1);
                 break;
 
         }
@@ -232,7 +216,9 @@ public class BingoPanel : MonoBehaviour
 
     }
 
-    void MakeNewListOfNotInteratctableNormal(int lineNum) //리스트를 이용해 아직 버튼활성화 안된 버튼을 램덤으로 활성화
+
+
+    void MakeNormalBtnInteractableByRandom(int lineNum) //리스트를 이용해 아직 버튼활성화 안된 버튼을 램덤으로 활성화
     {
         for (int n = 0; n < lineNum; n++)
         {
@@ -257,7 +243,7 @@ public class BingoPanel : MonoBehaviour
 
 
 
-    int ChecKBingoCount(int a, int b, int c)
+    int GetNumOfCompletedBinggoCard(int a, int b, int c) // 빙고 완성된 칸 몇개인지 확인 
     {
         int completedCount = 0;
         if (myBingoCompletedInfo[a])
@@ -281,19 +267,17 @@ public class BingoPanel : MonoBehaviour
     void EnableMoneyButton(GameObject CoinButtonObj)
     {
 
-        //버튼 컬러 활성화 컬러로 수정
+        //버튼 컬러 활성화 컬러로 수정  : 콤보코인버튼이냐, 노멀버튼이냐에 따라 색깔을 다르게 지정한다. 
         if (CoinButtonObj.name.StartsWith("C")) // 콤보
         {
-            ChangeButtonColor("#00FF2D"); // (!) 유니티 컬러팔레트에서 뽑은 hexadecimal에서 #을 붙여야 한다.
+            CoinButtonObj.GetComponent<Image>().color = ChangeButtonColorResult(ComboBtnEnable);
+
         }
         else
         {
-            ChangeButtonColor("#FF0000"); // 노멀
+            CoinButtonObj.GetComponent<Image>().color = ChangeButtonColorResult(NormalBtnEnable);
         }
-        //콤보코인버튼이냐, 노멀버튼이냐에 따라 색깔을 다르게 지정한다. 
 
-        Debug.Log(ButtonColor);
-        CoinButtonObj.GetComponent<Image>().color = ButtonColor;
 
             
         //버튼 활성화
@@ -314,10 +298,13 @@ public class BingoPanel : MonoBehaviour
         theChsetTouched = Touched;
     }
 
-    void ChangeButtonColor(string hexcod)
+    Color ButtonColor; // 컬러값 변경될 때마다 담아서 쓸 out 변수 
+    private Color ChangeButtonColorResult(string hexcod)
     {
-        
+
         ColorUtility.TryParseHtmlString(hexcod, out ButtonColor);
+
+        return ButtonColor;
 
     }
 
@@ -327,15 +314,13 @@ public class BingoPanel : MonoBehaviour
         if(binggoIndex == 3)
         {
             ComboCoin.gameObject.GetComponent<Button>().interactable = false;
-            ChangeButtonColor("#002E08");
-            ComboCoin.GetComponent<Image>().color = ButtonColor;
+            ComboCoin.GetComponent<Image>().color = ChangeButtonColorResult(ComboBtnNotEnable);
 
 
             return;
         }
 
         NormalButtons[binggoIndex].gameObject.GetComponent<Button>().interactable = false;
-        ChangeButtonColor("#4B0000");
-        NormalButtons[binggoIndex].GetComponent<Image>().color = ButtonColor;
+        NormalButtons[binggoIndex].GetComponent<Image>().color = ChangeButtonColorResult(NormalBtnNotEnable);
     }
 }

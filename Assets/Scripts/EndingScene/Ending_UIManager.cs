@@ -30,10 +30,14 @@ public class Ending_UIManager : MonoBehaviour
     [SerializeField] GameObject youWin;
     [SerializeField] GameObject youLose;
     [SerializeField] GameObject guideMsg;
+    
+    //게임결과 메시지 관련
+    string winnerMsg = "축하합니다! 당신이 이겼습니다!" + "\n" + "게임을 플레이해주셔서 감사합니다." + "\n" + "게임을 다시 시작하거나 앱을 종료해주세요.";
+    string loseMsg = "아쉽습니다.. 당신은 졌습니다." + "\n" + "게임을 플레이해주셔서 감사합니다." + "\n" + "게임을 다시 시작하거나 앱을 종료해주세요.";
 
     //모바일버튼 플레이어이동관련 
     float movePower;
-    [SerializeField] float moveSpeed = 5f;
+    [SerializeField] const float moveSpeed = 5f;
 
 
 
@@ -47,13 +51,13 @@ public class Ending_UIManager : MonoBehaviour
         {
             youWin.SetActive(true);
             youLose.SetActive(false);
-            endingGuideMsg.text = "축하합니다! 당신이 이겼습니다!" + "\n" + "게임을 플레이해주셔서 감사합니다." + "\n" + "게임을 다시 시작하거나 앱을 종료해주세요.";
+            endingGuideMsg.text = winnerMsg;
         }
         else
         {
             youWin.SetActive(false);
             youLose.SetActive(true);
-            endingGuideMsg.text = "아쉽습니다.. 당신은 졌습니다." + "\n" + "게임을 플레이해주셔서 감사합니다." + "\n" + "게임을 다시 시작하거나 앱을 종료해주세요.";
+            endingGuideMsg.text = loseMsg;
         }
 
 

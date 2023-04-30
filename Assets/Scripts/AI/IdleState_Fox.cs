@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class IdleState_Fox : State<AIFoxController>
 {
-
+    private Animator _animator;
     protected int hasMove = Animator.StringToHash("fxWalk");
 
     public override void OnInitialized()
     {
-
+        _animator = context.GetComponent<Animator>();
     }
 
     // Start is called before the first frame update
-    void Start()
+
+    public override void OnEnter()
     {
-        
+        _animator?.SetBool(hasMove, false);
     }
 
     // Update is called once per frame
@@ -31,6 +32,7 @@ public class IdleState_Fox : State<AIFoxController>
             }
             else
             {
+                Debug.Log("여우몬 MoveState로 이동!!!");
                 stateMachine.ChangeState<MoveState_Fox>();
             }
 
@@ -39,5 +41,10 @@ public class IdleState_Fox : State<AIFoxController>
         {
             //랜덤으로 움직이는 걸 구현해보고 싶다.
         }
+    }
+
+    public override void OnExit()
+    {
+
     }
 }

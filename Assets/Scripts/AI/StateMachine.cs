@@ -71,6 +71,7 @@ public sealed class StateMachine<T>
 
     public void Update(float deltaTime)
     {
+        Debug.Log($"여우몬 현재 스테이트 : {currentState}");
         elapsedTimeInState += deltaTime;
          currentState.Update(deltaTime); 
     }

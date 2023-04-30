@@ -9,15 +9,9 @@ public class StartSceneManager : MonoBehaviour
     public InputField myNickname;
     string _myNick;
 
-    public Text _guideMsg;
-    string firstGuide;
-
-    private void Start()
-    {
-        firstGuide = _guideMsg.text;
-    }
-
-
+    public Text _guideMsg; //인스펙터 할당
+    string firstGuide = "Please input your nickname";
+    string noNickNameMsg = "닉네임이 입력되지 않았습니다.";
 
     public void InputEnded()
     {
@@ -30,7 +24,6 @@ public class StartSceneManager : MonoBehaviour
         _myNick = myNickname.text;
         _guideMsg.text = "안녕! " + _myNick.ToString()+ ", Start를 눌러요!";
            
-        //PlayerPrefs.SetString("MyNick", myNickname);
     }
 
     private bool checkstringNull(string txt)
@@ -47,7 +40,7 @@ public class StartSceneManager : MonoBehaviour
     {
         if (checkstringNull(myNickname.text.ToString()))
         {
-            _guideMsg.text = "닉네임이 입력되지 않았습니다.";
+            _guideMsg.text = noNickNameMsg;
             return;
 
         }

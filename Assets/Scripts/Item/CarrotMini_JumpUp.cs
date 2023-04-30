@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CarrotMini_JumpUp : MonoBehaviour, IItem
 {
-    public float destroyDelayTime = 5f;
-    public int jumpUpValue = 1;  //에디터에서 수를 조정해서 범용적으로 쓰자.
-    public float delayForUse = 1.0f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
+    [SerializeField] float destroyDelayTime = 5f;
+    [SerializeField] int jumpUpValue = 1;  //에디터에서 수를 조정해서 범용적으로 쓰자.
+    [SerializeField] float delayForUse = 1.0f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
     bool afterDelay = false;
 
 
@@ -18,18 +18,21 @@ public class CarrotMini_JumpUp : MonoBehaviour, IItem
     private void Start()
     {
         playerMaskInt= LayerMask.NameToLayer("Player");
-        StartCoroutine("makeDelay");
         Destroy(this.gameObject, destroyDelayTime);
+        Physics2D.IgnoreLayerCollision(this.gameObject.layer, playerMaskInt, true);
+
+        float timeAfterInstantiate = 0;
+        while (!afterDelay)
+        {
+            timeAfterInstantiate += Time.deltaTime;
+            if (timeAfterInstantiate > delayForUse)
+            {
+                afterDelay = true;
+                Physics2D.IgnoreLayerCollision(this.gameObject.layer, playerMaskInt, false);
+            }
+        }
     }
 
-    IEnumerator makeDelay()
-    {
-        Physics2D.IgnoreLayerCollision(this.gameObject.layer, playerMaskInt, true);
-        afterDelay = false;
-        yield return new WaitForSeconds(delayForUse);
-        Physics2D.IgnoreLayerCollision(this.gameObject.layer, playerMaskInt, true);
-        afterDelay = true;
-    }
 
     public void Use(GameObject target)
     {
@@ -46,9 +49,7 @@ public class CarrotMini_JumpUp : MonoBehaviour, IItem
                 playerMove.JumpCountUp(jumpUpValue);
                 Destroy(this.gameObject);
 
-                //네트워크에서 삭제해야할 때.
-                //// 모든 클라이언트에서 자신을 파괴
-                //PhotonNetwork.Destroy(gameObject);
+
             }
         }
 

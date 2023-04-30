@@ -5,7 +5,6 @@ using UnityEngine;
 public class LadderMoveState_Fox : State<AIFoxController> // 사다리 수직이동 
 {
     private Animator _animator;
-    private Collider2D _collider;
     private Vector2 LadderDestination;
     private int hasClimb = Animator.StringToHash("fxClimb");
     float _moveYDirection;
@@ -13,7 +12,7 @@ public class LadderMoveState_Fox : State<AIFoxController> // 사다리 수직이동
     string NextStateName;
 
 
-    private float _gravity = 9.81f; // 좌우이동 때 적용되어야할 중력값
+    private const float _gravity = 9.81f; // 좌우이동 때 적용되어야할 중력값
 
     public override void OnInitialized()
     {
@@ -25,7 +24,6 @@ public class LadderMoveState_Fox : State<AIFoxController> // 사다리 수직이동
     {
         //Physics2D.IgnoreCollision(_collider, context.groundCollider,true); >> context에서 initialTouchingurrentLadder 가 true가 되는 시점에 바꾸는 걸로 변경
         LadderDestination = context.MiddlewayPoint;
-        Debug.Log("올라가야할 높이 LadderDestination: " + LadderDestination);
 
         //_animator.SetBool(hasClimb, true); >> context에서 initialTouchingurrentLadder 가 true가 되는 시점에 바꾸는 걸로 변경
         _moveYDirection =context.MiddlewayPoint.y > 0 ? 1f : -1f;

@@ -223,10 +223,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundCollider: {fileID: 0}
-  ladderMaskInt: 0
-  monsterMaskInt: 0
   target: {fileID: 0}
-  MiddlewayPoint: {x: 0, y: 0}
   currentLadder: {fileID: 0}
   initialTouchingurrentLadder: 0
   detectRadius: 10

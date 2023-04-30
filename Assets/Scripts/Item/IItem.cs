@@ -10,6 +10,7 @@ public interface IItem
 
     void DestoySelf();
 
+
 }
 
 

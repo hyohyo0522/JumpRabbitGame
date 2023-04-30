@@ -19,22 +19,17 @@ public class BingoCard : MonoBehaviour
     [SerializeField] Text bingoInfo;
     [SerializeField] Image completedImage;
 
-    bool hasbingoItem; // 방고 아이템이 세팅 되었는가?
     public bool completed; // 빙고칸이 달성되었는가?
 
-    Button myButton;
     [SerializeField] GameObject CompletedStamp;
     [SerializeField] BingoPanel myParentBigoPanel;
     [SerializeField] PlayerLife myPlayerInfo;
     
 
     //빙고 아이템 인포
-    string whatItem;
     int ItemNumber;
     eBingoItem myBingoItem;
 
-    // 빙고 아이템수 인덱스, 여기에 *n해서 아이템수를 정할 것이다.
-    int itemValueIndex;
 
 
     private void OnEnable()
@@ -44,52 +39,7 @@ public class BingoCard : MonoBehaviour
         myParentBigoPanel = GetComponentInParent<BingoPanel>();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        myButton = GetComponent<Button>();
 
-        //Sprite imageFile = Resources.Load<Sprite>("flower") as Sprite;
-        //itemImage.sprite = imageFile;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //SetBingoItem();
-    }
-
-
-    //void SetBingoItem( )
-    //{
-    //    if (hasbingoItem) { return; }
-
-    //    string itemName = "N";
-
-
-    //    int eBingoIndex = Random.Range(0, 5);
-    //    myBingoItem = (eBingoItem)eBingoIndex;
-
-    //    itemName = myBingoItem.ToString();
-    //    Debug.Log(itemName + "아이템 네임이 적용되었다.");
-
-
-    //    if (itemName != "N")
-    //    {
-    //        //int ItemRandomNumber = Random.Range(5, 10);
-
-
-    //        SetImage(itemName);
-    //        setInfoByEnum();
-    //        SetBingoInfoMessage(itemName, itemValueIndex);
-    //        SetBingoItemInfo(itemName, itemValueIndex);
-
-    //        hasbingoItem = true;
-
-    //    }
-
-
-    //}
 
     //BingoPanel(부모)에서 쓰고 있는것.
     public void ShowBingoCardUI(eBingoItem whatItem, int ItemNum, bool isCompleted) 
@@ -98,11 +48,10 @@ public class BingoCard : MonoBehaviour
         Debug.Log("생성해야하는 빙고아이템은 : " + Name);
 
         myBingoItem = whatItem;
+        ItemNumber = ItemNum;
         SetImage(Name); // 빙고 이미지 생성
         SetBingoInfoMessage(Name, ItemNum);
-        SetBingoItemInfo(name, ItemNum);
 
-        hasbingoItem = true;
 
 
         if (isCompleted)
@@ -134,20 +83,7 @@ public class BingoCard : MonoBehaviour
                 return;
             }
         }
-        
-        //if (!myPlayerInfo.HasEnuoughItem(myBingoItem, ItemNumber))
-        //{
-
-        //}
-
-
-        //if (!completed)
-        //{
-        //    SetCompletedStamp();
-        //    myParentBigoPanel.GetNewClick(n);
-
-        //}
-
+       
        
 
 
@@ -159,34 +95,12 @@ public class BingoCard : MonoBehaviour
         CompletedStamp.SetActive(true);
         completed = true;
     }
-
-    void setInfoByEnum()
-    {
-        itemValueIndex = Random.RandomRange(1, 6);
-        switch (myBingoItem)
-        {
-            case eBingoItem.carrot:
-                itemValueIndex *= 5;
-                break;
-            case eBingoItem.flower:
-                itemValueIndex *= 3;
-                break;
-            case eBingoItem.slug:
-                itemValueIndex *= 2;
-                break;
-            case eBingoItem.star:
-                itemValueIndex *= 2;
-                break;
-            case eBingoItem.player:
-                break;
-        }
-    }
     
 
 
     void SetImage(string imageName) // 빙고 이미지 
     {
-        if(imageName == "player") 
+        if(imageName == "player")  // 싱글모드와 멀티모드일때 필요한 아이템 이미지 다르게 한다. 
         {
             string gameMode = PlayerPrefs.GetString("Mode");
             if (gameMode == "Single") // 싱글게임모드  : 여우몬스터 이미지 빙고
@@ -215,12 +129,6 @@ public class BingoCard : MonoBehaviour
         bingoInfo.text = "x " + value + "개";
     }
 
-    void SetBingoItemInfo(string name, int value)
-    {
-        whatItem = name;
-        ItemNumber = value;
-
-    }
 
     
 }

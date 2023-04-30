@@ -15,10 +15,9 @@ public class EndingPlayerMove : MonoBehaviour
 
     //좌우입력키 가져오기
     float m_HorizontalMovement;
-    float m_VerticalMovement;
 
     //점프 카운트 관련 변수
-    private int jumpCount = 0;  //당근 먹어서 생긴 점프 카운트
+    private int jumpCount = 0;  //
     private int jumpMaxCount = 1;
 
 
@@ -31,19 +30,10 @@ public class EndingPlayerMove : MonoBehaviour
     public bool isGrounded;
     static public bool isLadder = false;  //? 
 
-    public bool JumpEnable = true; // 사다리 올라오다가 UP키 눌러서 자동으로 점프되는 것 방지
     const float gravityY = 9.81f;
 
     //사다리 건널 때 땅 Collision 무시해야함
     public Collider2D platformCollider;
-
-    // 벌 위에 있을 때 플라잉 이벤트 발동
-    //int maskPlayer = 1 >> 8; // 플레이어 레이어 마스크 
-    //int maskGround = 1 >> 6; // Ground(사다리포함) 레이어 마스크
-    //int maskMonFlying = 1 >> 10; // 날아다니는 플라잉 몬스터 마스크
-    //bool nowFlying = false; // 날고 있는지를 체크하는 불린변수
-
-
 
 
     // Start is called before the first frame update
@@ -70,11 +60,6 @@ public class EndingPlayerMove : MonoBehaviour
         playerRigidbody.gravityScale = gravityY;
         GroundCheck();
 
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            Jump();
-
-        }
         Walk();
 
         //CheckbeingFlying();
@@ -91,7 +76,7 @@ public class EndingPlayerMove : MonoBehaviour
     }
 
 
-    public bool GroundCheck()
+    public void GroundCheck()
     {
         bool wasGrounded = isGrounded;
 
@@ -105,7 +90,7 @@ public class EndingPlayerMove : MonoBehaviour
             if (jumpCount != 0) { resetJumpCount(); } // 점프카운트 갱신한다.
 
 
-            if (!wasGrounded) // 땅에 닿았지만 이전에 닿지 않았다.
+            if (!wasGrounded) // 땅에 이제 막 닿았다면 속도를 0으로 만들어준다.
             {
                 playerRigidbody.velocity = Vector2.zero;
 
@@ -116,8 +101,6 @@ public class EndingPlayerMove : MonoBehaviour
             isGrounded = false;
 
         }
-
-        return isGrounded;
     }
 
     void resetJumpCount()
@@ -128,7 +111,6 @@ public class EndingPlayerMove : MonoBehaviour
     void Walk()
     {
 
-        //m_HorizontalMovement = Input.GetAxis("Horizontal");
         m_HorizontalMovement = Ending_UIManager.instance.GetHorizontalValue();
         playerRigidbody.velocity = new Vector2(speed * m_HorizontalMovement, playerRigidbody.velocity.y);
 
@@ -146,8 +128,7 @@ public class EndingPlayerMove : MonoBehaviour
     {
 
  
-        if (!isGrounded) return;
-        if (!JumpEnable) return;
+        if (!isGrounded) return; //땅에 있을 때에만 점프 
 
         //점프 최대 횟수 제한
         if (jumpCount >= jumpMaxCount) return;
