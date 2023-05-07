@@ -73,7 +73,7 @@ public class UIManager : MonoBehaviour
     Color UrgentTipColor = Color.red;
 
     float UrgentGameTipTime = 5f; // 긴급게임메시지 띄워지는 시간 
-    public readonly WaitForSeconds m_waitForSecondsForGameTip = new WaitForSeconds(7f); //게임메시지 띄워지는 시간or게임메시지간 텀간격
+    readonly WaitForSeconds m_waitForSecondsForGameTip = new WaitForSeconds(7f); //게임메시지 띄워지는 시간or게임메시지간 텀간격
 
     [TextArea]
     public string[] NormalGuideTips; //게임메시지 저장소(노멀)

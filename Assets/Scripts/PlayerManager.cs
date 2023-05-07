@@ -29,18 +29,6 @@ public class PlayerManager : MonoBehaviour
     public List<ReviveSpotForPlayer> allReviveSpots = new List<ReviveSpotForPlayer>();
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     //필드에 있는 부활 스팟을 갱신하고, 랜덤스팟을 뽑는다.
      public Transform randomReviveSpot()
     {

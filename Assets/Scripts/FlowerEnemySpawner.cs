@@ -31,6 +31,7 @@ public class FlowerEnemySpawner : MonoBehaviour
     private int maxFlower=0; // 최대 꽃 몬스터 생성 수
     private float percentForFlowers= 0.7f; // 생성지역의 플라워 몬스터 생성비율
     private int currentNum=0; // 현재 꽃 몬스터 생성 수 
+    float timeBetFlowerInstantiate = 4.5f;
 
     // 정보은닉
 
@@ -52,7 +53,7 @@ public class FlowerEnemySpawner : MonoBehaviour
     // Kotlin
 
 
-    float timeBetFlowerInstantiate = 4.5f; 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,7 +64,7 @@ public class FlowerEnemySpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log($"Update Flower : {timeBetFlowerInstantiate}");
+
         timeBetFlowerInstantiate -= Time.deltaTime;
 
         // 생성주기때마다 최대몬스터 갯수보다 플라워몬스터가 없으면 몬스터를 생성한다. 
@@ -114,7 +115,7 @@ public class FlowerEnemySpawner : MonoBehaviour
 
             Debug.Log($"CreateFlower Position : {flowrEnemy.transform.position}");
 
-            spot.hasFlowerMon = true;
+            spot.DoeeHaveFlowerMon(true);
             //Flowerfield thisFlowerSpot = spot.GetComponent<Flowerfield>();
             //thisFlowerSpot.hasFlowerMon = true;
 
@@ -123,7 +124,7 @@ public class FlowerEnemySpawner : MonoBehaviour
 
             var entity = enemyObject.GetComponent<LivingEntity>();
             entity.OnDeath += () => enemies.Remove(flowrEnemy);
-            entity.OnDeath += () => spot.hasFlowerMon = false;
+            entity.OnDeath += () => spot.DoeeHaveFlowerMon(false);
             //플라워몬스터를 만든 공간에 플라워가 지금 없다는 것을 표시
         }
         else

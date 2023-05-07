@@ -11,20 +11,22 @@ public class FlowerEnemy : LivingEntity
     public Transform _leftattackpoint;
     Vector3 playerPos;
     bool stateInAttack;
+    const float _attackRange = 0.6f;
+    const float _detectRange = 10f;
+    const float _timeBetUpdateX = 3f;
 
     bool beDamaged=false;
-    float timebetDamage = 1f;
+    const float timebetDamage = 1f;
+    float damagedPower = 35f; // 플레이어에게 공격당하는 데미지
 
     public Transform _headShotPoint;
     Animator _flowerAni;
     SpriteRenderer _flowerSpriteRenderer;
 
-    // ★ 소리 재생 메서드 해야함 
 
 
     //공격당했을 때 토해낼 아이템담아둘 배열을 선언한다.
     public GameObject[] items;
-   //  public GameObject rewardItem; enemy spawner에서 하자.
 
     float damage = 10f;  //꽃의 공격력
 
@@ -42,17 +44,11 @@ public class FlowerEnemy : LivingEntity
         hp = newHealth;
         damage = newDamage;
     }
-
-    private void Start()
-    {
-        
-    }
-
     private void FixedUpdate()
     {
         if (!dead)
         {
-            if (DetectPlayers()) //이렇게 코드를 짜면 DetectPlayers()메서드가 주기적으로 한번씩은 꼭 실행되는 걸까?
+            if (DetectPlayers()) 
             {
                 if (!stateInAttack) // 플레이어가 감지된 상태에서 공격상황으로 들어가게 함
                 {
@@ -80,12 +76,11 @@ public class FlowerEnemy : LivingEntity
     }
 
 
-    private bool DetectPlayers() //이걸 bool로 만드는게 좋은지가 늘 궁금하다.
+    private bool DetectPlayers() 
     {
-        Collider2D[] hasPlayerClose = Physics2D.OverlapCircleAll(_detectPoint.position, 10f, PlayerMask);
+        Collider2D[] hasPlayerClose = Physics2D.OverlapCircleAll(_detectPoint.position, _detectRange, PlayerMask);
         if (hasPlayerClose.Length > 0)
         {
-            //int r = Random.Range(0, hasPlayerClose.Length); // 플레이어가 2명이상 감지될 경우 랜덤으로 한명의 위치를 받아온다.
             playerPos = hasPlayerClose[0].GetComponent<Transform>().position;
             StartCoroutine(UpdateXdirection());  // 플립X 코루틴 메서드 활성화
             
@@ -93,7 +88,7 @@ public class FlowerEnemy : LivingEntity
         }
         else 
         {
-            float randomx = Random.RandomRange(this.transform.position.x - 10, this.transform.position.x + 10);
+            float randomx = Random.RandomRange(this.transform.position.x - _detectRange, this.transform.position.x + _detectRange);
             Vector3 temPos = new Vector3(randomx, 0, 0);
             playerPos = temPos; // 자꾸 Transform 값 미싱오류나서 추가함 
             return false;
@@ -108,7 +103,7 @@ public class FlowerEnemy : LivingEntity
         if (!beDamaged)
         {
 
-            OnDamage(35);
+            OnDamage(damagedPower);
             if (hp > 0)
             {
                 AudioManager.instance.PlaySFX("AttackFlower");
@@ -128,10 +123,9 @@ public class FlowerEnemy : LivingEntity
     private void ActivateAttack()
     {
 
-        if((this.transform.position.x - playerPos.x)<0)
+        if((this.transform.position.x - playerPos.x)<0) //오른쪽 플레이어 감지 
         {
-            //Debug.Log("플레이가 오른쪽에 있다."); // 점검완료
-            Collider2D[] PlayerisRight = Physics2D.OverlapCircleAll((Vector2)_rightattackpoint.position,0.6f, PlayerMask);
+            Collider2D[] PlayerisRight = Physics2D.OverlapCircleAll((Vector2)_rightattackpoint.position, _attackRange, PlayerMask);
             if (PlayerisRight.Length > 0)
             {
                 //Debug.Log("플레이어와 접촉했다."); // 점검완료
@@ -140,13 +134,6 @@ public class FlowerEnemy : LivingEntity
                     PlayerLife attackPlayers = PlayerisRight[n].GetComponent<PlayerLife>();
                     attackPlayers?.OnDamage(damage);
 
-                    // 아래는 PlayerLife 의  OnDamage에 if (attacked) return; 한줄 추가하며 삭제함
-                    //if (!attackPlayers.attacked) // 플레이어가 공격당해서 빨간 색으로 변했을 때에는 공격하지 않는다. 
-                    //{
-                    //    attackPlayers.OnDamage(damage);
-                    //    // 플레이어 공격
-                    //    //Debug.Log("플레이가 공격당했다.");
-                    //}
 
                 }
             }
@@ -154,8 +141,8 @@ public class FlowerEnemy : LivingEntity
         }
         else
         {
-            //Debug.Log("플레이가 왼쪽에 있다.");
-            Collider2D[] PlayerisLeft = Physics2D.OverlapCircleAll((Vector2)_leftattackpoint.position, 0.8f, PlayerMask); ; 
+            //왼쪽 플레이어 감지
+            Collider2D[] PlayerisLeft = Physics2D.OverlapCircleAll((Vector2)_leftattackpoint.position, _attackRange, PlayerMask); ; 
             if(PlayerisLeft.Length > 0)
             {
                 //Debug.Log("플레이어와 접촉했다."); // 점검완료
@@ -165,8 +152,6 @@ public class FlowerEnemy : LivingEntity
                     if (!attackPlayers.attacked) // 플레이어가 공격당해서 빨간 색으로 변했을 때에는 공격하지 않는다. 
                     {
                         attackPlayers.OnDamage(damage);
-                        // 플레이어 공격
-                        //Debug.Log("플레이가 공격당했다.");
                     }
                 }
             }
@@ -176,11 +161,12 @@ public class FlowerEnemy : LivingEntity
     // 색을 잠깐 변화시키고, 색이 변화된 시간동안 공격을 받지 않는다.
     private IEnumerator onDamageEffect()
     {
+        var timebetDamageForCoroutine= new WaitForSeconds(timebetDamage);
         if (!dead)
         {
             _flowerSpriteRenderer.color = Color.gray;
             beDamaged = true;
-            yield return new WaitForSeconds(timebetDamage);
+            yield return timebetDamageForCoroutine;
             _flowerSpriteRenderer.color = Color.white;
             beDamaged = false;
         }
@@ -217,11 +203,12 @@ public class FlowerEnemy : LivingEntity
     // X좌표 
     private IEnumerator UpdateXdirection()
     {
-        while (stateInAttack)
-        {
+        var timeBetUpdateXDirectionForCoroutine = new WaitForSeconds(_timeBetUpdateX);
 
+        while (stateInAttack) // 공격이 감지가 되면 Flipx 실행? 
+        {
             _flowerSpriteRenderer.flipX = ((this.transform.position.x - playerPos.x) < 0) ? true : false;
-            yield return new WaitForSeconds(3f);
+            yield return timeBetUpdateXDirectionForCoroutine;
         }
 
     }

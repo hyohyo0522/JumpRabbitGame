@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
 
     //컴포넌트 가져오기
-    public Animator playerAnimator;
+    public Animator playerAnimator; //PlayerLife.cs에서 한번 호출할 일 있음
     SpriteRenderer playerSprite;
     Rigidbody2D playerRigidbody;
     Collider2D playerCollider;
@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
     private int maxCarrot = 100; //당근 최대 갯수
 
     //땅파기 + 당근얻기 관련
-    public GameObject CarrotInTheGround;
+    public GameObject CarrotInTheGround; //인스펙터에서 할당
     float carrotBouncePowerY = 500f;
     Vector2 carrotBouncePower;
 
@@ -64,9 +64,10 @@ public class PlayerMovement : MonoBehaviour
 
     const float groundCheckRadius = 0.6f;
     public bool isGrounded;
-    static public bool isLadder = false;
+    bool isLadder = false;
 
     public bool JumpEnable = true; // 사다리 올라오다가 UP키 눌러서 자동으로 점프되는 것 방지   
+    WaitForSeconds fimeForDelayJump = new WaitForSeconds(0.3f);
     float realTimeForCheckStuck=0f;  //사다리 올라오다가 잘못해서 땅에 갇힌 시간 체크
     float timeForCheckStuck = 1.5f;
     const float gravityY = 9.81f;
@@ -76,8 +77,6 @@ public class PlayerMovement : MonoBehaviour
     bool DoNotTouchInLadder = false; // 사다리에 있을 때 건드리면 안되는 상태인지 확인한다. 
 
     // 벌 위에 있을 때 플라잉 이벤트 발동
-    //int maskPlayer = 1<< 8; // 플레이어 레이어 마스크 
-    //int maskMonFlying = 1<<10; // 날아다니는 플라잉 몬스터 마스크
     bool nowFlying = false; // 날고 있는지를 체크하는 불린변수
 
     //펑 이펙트 가져오기
@@ -85,13 +84,12 @@ public class PlayerMovement : MonoBehaviour
     public GameObject pungSmall;
     public GameObject pungStartObj; // 아이템 먹으면 재생될 펑 오브젝트 파일
     public GameObject pungBigStar; // 열쇠 먹을 때 재생될 펑 오브젝트 파일 
-    float pungAniPlayTime = 0.55f;
     private Vector2 pungDisapperPosition;
     private Vector2 pungRevivePosition;
 
     //부활관련 이벤트 >> PlayerLife에서 체력회복이벤트로 쓴다. 
     public event Action ImRevie;
-    bool notRevive;
+    public bool notRevive {get; private set;}
 
 
 
@@ -113,9 +111,7 @@ public class PlayerMovement : MonoBehaviour
 
         UIManager.instance.DigGageFullFilled += () => playGetCarrotInGround();
         carrotBouncePower = new Vector2(0, carrotBouncePowerY);
-        //점프 카운트 리셋을 위한 이벤트 등록 
-        //Ground ground = FindObjectOfType<Ground>();
-        //ground.playerTouched += resetJumpCount;
+        notRevive = false;
 
 
 
@@ -137,13 +133,6 @@ public class PlayerMovement : MonoBehaviour
             playerRigidbody.gravityScale = gravityY;
             GroundCheck();
             CheckStuckInTheGround();
-
-            // 모바일 말고, 키보드로 할 때.
-            //if (Input.GetKey(KeyCode.UpArrow))
-            //{
-            //    Jump();
-
-            //}
 
 
             Walk();
@@ -262,7 +251,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            if (wasLaddered) { StartCoroutine("makeTermforJump"); }
+            if (wasLaddered) { StartCoroutine(makeTermforJump()); }
             isLadder = false;
             playerAnimator.SetBool("DoClimb", false);
         }
@@ -276,7 +265,6 @@ public class PlayerMovement : MonoBehaviour
         //좌우이동
 
 
-        //m_HorizontalMovement = Input.GetAxis("Horizontal");
         m_HorizontalMovement = UIManager.instance.GetHorizontalValue();
         playerRigidbody.velocity = new Vector2(speed * m_HorizontalMovement, playerRigidbody.velocity.y);
 
@@ -344,7 +332,6 @@ public class PlayerMovement : MonoBehaviour
     void resetJumpCount()
     {
         jumpCount = 0;
-        // Debug.Log("점프카운트는 0이 되었다.");
     }
 
     //당근 먹었을 때 점프카운트 올라가는 효과
@@ -380,8 +367,6 @@ public class PlayerMovement : MonoBehaviour
 
         float speedup = 7f; // 사다리 오르는 속도
         float speedJumpInLadder = -7f; // 사다리에서 좌우키 눌렀을 때, 사다리를 벗어나면서 아래로 떨어지게 만드는 속도이다.
-        //m_VerticalMovement = Input.GetAxisRaw("Vertical");
-       // playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, speedup * m_VerticalMovement);
 
 
         // m_HorizontalMovement = Input.GetAxisRaw("Horizontal");
@@ -399,10 +384,7 @@ public class PlayerMovement : MonoBehaviour
                 playerRigidbody.velocity = new Vector2(speed * m_HorizontalMovement, speedJumpInLadder);
 
             }
-            else  
-            {
 
-            }
         }
 
 
@@ -412,7 +394,7 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator makeTermforJump() // 사다리 위로 올라오자마자 바로 점프됨 방지
     {
         JumpEnable = false;
-        yield return new WaitForSeconds(0.3f);
+        yield return fimeForDelayJump;
         JumpEnable = true;
 
     }
@@ -458,11 +440,6 @@ public class PlayerMovement : MonoBehaviour
             if (item != null)
             {
                 Vector2 DisappearItemPosition = nearItem[0].transform.position;
-                ////호스트만 아이템 직접 사용가능
-                ////호스트에서는 아이템 사용 후사용된 아이템이의 효과를 모든 클라이언트에 동기화시킴
-                //if (PhotonNetwork.IsMasterClient)
-                //{
-                //    //Use매서드를 실행하여 아이템사용
                 item.Use(gameObject);
 
                 // ★ 사운드는 아이템 스크립트 별로 적용함 
@@ -483,12 +460,6 @@ public class PlayerMovement : MonoBehaviour
 
 
         }
-
-        // 아이템과 충돌한 경우 해당 아이템을 사용하는 처리
-        // 사망하지 않은 경우에만 아이템 사용 가능 
-        //충돌한 상대방으로부터 Item 컴포넌트 가져오기 시도
-
-            //충돌한 상대방으로부터 Item컴포넌트 가져오는 데 성공했다
     }
 
     public void GetHeadShot() // 공격당함
@@ -732,19 +703,6 @@ public class PlayerMovement : MonoBehaviour
         PlayerPrefs.SetString("Winner", _myNick);
         SceneManager.LoadScene("EndingScene");
     }
-
-    //public void onDamageforChange() // 다른 스크립트에서 이 스크립트 내 코루틴 메서드 실행하는 것을 도와줌
-    //{
-    //    StartCoroutine(DamageOncolorChange());
-    //}
-
-    //IEnumerator DamageOncolorChange()
-    //{
-    //    playerSprite.color = Color.red;
-
-    //    yield return new WaitForSeconds(2f);
-    //    playerSprite.color = Color.white;
-    //}
 
 
 

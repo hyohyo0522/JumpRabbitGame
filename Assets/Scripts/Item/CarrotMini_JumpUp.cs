@@ -4,35 +4,32 @@ using UnityEngine;
 
 public class CarrotMini_JumpUp : MonoBehaviour, IItem
 {
-    [SerializeField] float destroyDelayTime = 5f;
-    [SerializeField] int jumpUpValue = 1;  //에디터에서 수를 조정해서 범용적으로 쓰자.
-    [SerializeField] float delayForUse = 1.0f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
+    public float destroyDelayTime = 5f;
+    public int jumpUpValue = 1;  //에디터에서 수를 조정해서 범용적으로 쓰자.
     bool afterDelay = false;
+    WaitForSeconds delayForUse = new WaitForSeconds(1.0f);
 
 
     //Ignorelayer사용위함
-    int  playerMaskInt;
+    int playerMaskInt;
 
 
 
     private void Start()
     {
-        playerMaskInt= LayerMask.NameToLayer("Player");
+        playerMaskInt = LayerMask.NameToLayer("Player");
+        StartCoroutine(makeDelay());
         Destroy(this.gameObject, destroyDelayTime);
-        Physics2D.IgnoreLayerCollision(this.gameObject.layer, playerMaskInt, true);
-
-        float timeAfterInstantiate = 0;
-        while (!afterDelay)
-        {
-            timeAfterInstantiate += Time.deltaTime;
-            if (timeAfterInstantiate > delayForUse)
-            {
-                afterDelay = true;
-                Physics2D.IgnoreLayerCollision(this.gameObject.layer, playerMaskInt, false);
-            }
-        }
     }
 
+    IEnumerator makeDelay()
+    {
+        Physics2D.IgnoreLayerCollision(this.gameObject.layer, playerMaskInt, true);
+        afterDelay = false;
+        yield return delayForUse;
+        Physics2D.IgnoreLayerCollision(this.gameObject.layer, playerMaskInt, true);
+        afterDelay = true;
+    }
 
     public void Use(GameObject target)
     {
@@ -48,7 +45,6 @@ public class CarrotMini_JumpUp : MonoBehaviour, IItem
                 // 플레이어 점프 횟수 증가시킨다. 
                 playerMove.JumpCountUp(jumpUpValue);
                 Destroy(this.gameObject);
-
 
             }
         }

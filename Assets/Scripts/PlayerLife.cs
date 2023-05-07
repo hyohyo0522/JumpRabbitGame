@@ -8,7 +8,6 @@ public class PlayerLife : LivingEntity
 {
 
     float MaxHealth = 100f;
-    float timeBetattack = 0.5f;
 
     //열쇠 UI관련
     int _myKeyNum = 0;
@@ -41,6 +40,7 @@ public class PlayerLife : LivingEntity
     //public Text _myHealthValue;
 
     public bool attacked = false;
+    readonly WaitForSeconds timeBetBeAttacked = new WaitForSeconds(0.5f);
     SpriteRenderer playerSprite;
     private PlayerMovement _myMovement;
 
@@ -57,28 +57,10 @@ public class PlayerLife : LivingEntity
         // 아래 코드 순서 달라지니 이상하게 나왔음..
         base.OnEnable();
 
-        //Debug.Log(this.startHealth.ToString());
-        //Debug.Log(this.hp.ToString());
 
         _myMovement = this.gameObject.GetComponent<PlayerMovement>();
 
 
-        // --------------------------------------------
-        //UI 텍스트 초기화( 초기 버전 )
-        //_myHeathSlider.maxValue = MaxHealth; // 체력 슬라이더의 최댓값을 기본 체력값으로 변경
-        //_myHeathSlider.value = hp; // 체력 슬라이더 값을 현재값으로 변경
-
-
-        //_myHealthValue.text = hp.ToString();
-        //_moneyTxt.text = _myMoney.ToString();
-        //_scoreTxt.text = _myScore.ToString();
-        //_slugText.text = _mySlug.ToString();
-        //_flowerKill.text = _killPlayer.ToString();
-
-        //_myHeathSlider.gameObject.SetActive(true); // 체력슬라이더 활성화
-
-        // ---------------------------------
-        //여기서부터 바꾼 버전
 
         UIManager.instance._myHeathSlider.maxValue = MaxHealth; // 체력 슬라이더의 최댓값을 기본 체력값으로 변경
         UIManager.instance._myHeathSlider.value = hp; // 체력 슬라이더 값을 현재값으로 변경
@@ -113,7 +95,7 @@ public class PlayerLife : LivingEntity
 
     public override void OnDamage(float value)
     {
-
+        if (_myMovement.notRevive) return;
         if (attacked) return;
         //여기 attacked 감지를 여기서 하면 좋을 것 같다!!
         Debug.Log($"PlayerLife : player is dead? : {dead}");
@@ -137,7 +119,7 @@ public class PlayerLife : LivingEntity
         _myMovement.playerAnimator.SetTrigger("Damaged");
         playerSprite.color = Color.red;
         attacked = true;
-        yield return new WaitForSeconds(timeBetattack);
+        yield return timeBetBeAttacked;
         playerSprite.color = Color.white;
         attacked = false;
     }
@@ -302,12 +284,11 @@ public class PlayerLife : LivingEntity
 
 
 
-            // ★돈 지불되는 소리 재생시키자!!!!
             return hasPaid;
 
         }
 
-        // ★ 돈 못 먹고 버려지는 소리 재생시키자!!
+
         return hasPaid;
     }
 

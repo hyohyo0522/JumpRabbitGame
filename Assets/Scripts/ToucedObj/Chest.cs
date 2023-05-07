@@ -12,14 +12,14 @@ public class Chest : MonoBehaviour,ITouchedObj
 
     // 화살표 아이콘 관련 
     [SerializeField] Collider2D directIcon;
-    float iconSpeed = 1f;
+    const float iconSpeed = 1f;
     [SerializeField] float MaxTimeCycle = 1f;
     float moveTimeCycle = 1f;
     bool iconmoveUp = false;
 
     Animator chestAnimator;
 
-    // 플레이어가 점프하여 상자를 오픈함
+    // 플레이어가 점프하여 상자를 오픈하는 활동과 관련
     bool isOpen; // 상자를 오픈했는가?
     [SerializeField] float maxOpenTime = 5f;
     float realOpenTime = 0;
@@ -33,20 +33,21 @@ public class Chest : MonoBehaviour,ITouchedObj
     [SerializeField] GameObject bingGoUI;
 
 
-    public bool touchOn; // 빙고UI가 열렸는가?
+    public bool touchOn { get; private set; } // 빙고UI가 열렸는가?
 
     //빙고 다 완료될 때 필요한 변수,오브젝트들
     [SerializeField] int completedBingoNum = 0;
     public GameObject pung; // 죽을 때 펑 애니메이션 재생
-    float pungAniPlayTime = 0.65f;
-    string colorCodeUnEnable = "#477848";
-    string colorCodeEnable = "#FFFFFF";
+    const float pungAniPlayTime = 0.65f;
+    const string colorCodeUnEnable = "#477848";
+    const string colorCodeEnable = "#FFFFFF";
     private BoxCollider2D thisCollider;
     [SerializeField] float reSetTime;
-    float maxResetTime = 20f;
-    float minResetTime = 7f;
+    const float maxResetTime = 20f;
+    const float minResetTime = 7f;
 
-
+    //out 변수 
+    Color thatColorYouWantChange; // 컬러값 변경될 때마다 담아서 쓸 out 변수 
 
 
 
@@ -96,9 +97,7 @@ public class Chest : MonoBehaviour,ITouchedObj
 
                 //빙고판을 비활성화시키는 기능.
                 thisCollider.enabled = false;
-                Color whenUnenableColor;
-                ColorUtility.TryParseHtmlString(colorCodeUnEnable, out whenUnenableColor);
-                this.GetComponent<SpriteRenderer>().color = whenUnenableColor;
+                this.GetComponent<SpriteRenderer>().color = ColorYouWantToChange(colorCodeUnEnable);
                 completedBingoNum = 0;
                 return;
 
@@ -272,7 +271,7 @@ public class Chest : MonoBehaviour,ITouchedObj
     {
 
 
-        Array.Clear(myBingoChest,0,9); // 빙고판 클리어 
+        Array.Clear(myBingoChest,0, myBingoChest.Length); // 빙고판 정보를 일단 모두 삭제 
         
         for(int n =0; n < myBingoChest.Length; n++) // 9개의 새로운 빙고카드를 생성.
         {
@@ -284,9 +283,7 @@ public class Chest : MonoBehaviour,ITouchedObj
         if (thisCollider.enabled == false)
         {
             thisCollider.enabled = true; //클릭 가능한 상태로 만들기
-            Color whenEnableColor;
-            ColorUtility.TryParseHtmlString(colorCodeEnable, out whenEnableColor);
-            this.GetComponent<SpriteRenderer>().color = whenEnableColor;   // 샐깔 원래 상태로 되돌리기
+            this.GetComponent<SpriteRenderer>().color = ColorYouWantToChange(colorCodeEnable);  // 샐깔 원래 상태로 되돌리기
         }
 
 
@@ -299,7 +296,6 @@ public class Chest : MonoBehaviour,ITouchedObj
         public eBingoItem whatItem;
         public int ItemNumber;
         public bool isComplted  = false;
-        PlayerMovement whoCliick = null;
 
         public bingoCardInfo()  // 생성자에서 빙고 아이템과 수를 정한다.
         {
@@ -352,6 +348,15 @@ public class Chest : MonoBehaviour,ITouchedObj
 
     }
 
+
+    private Color ColorYouWantToChange(string hexcod)
+    {
+
+        ColorUtility.TryParseHtmlString(hexcod, out thatColorYouWantChange);
+
+        return thatColorYouWantChange;
+
+    }
 
 
 }

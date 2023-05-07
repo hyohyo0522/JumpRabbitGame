@@ -228,6 +228,9 @@ MonoBehaviour:
   BorderMask:
     serializedVersion: 2
     m_Bits: 512
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 256
   beeCenter: {fileID: 6050642097815536651}
   MaxUpLeft: {fileID: 0}
   MaxDownRight: {fileID: 0}

@@ -20,9 +20,9 @@ public class SlugMon : MonoBehaviour
 
 
 
-    public int slugKillPlus = 1;
-    public float destroyDelayTime = 15f;
-    public float delayForUse = 0.5f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
+    const int slugKillPlus = 1;
+    const float destroyDelayTime = 15f;
+    const float delayForUse = 0.5f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
     bool afterDelay = false;
 
     // 스피드 관련 
@@ -51,7 +51,7 @@ public class SlugMon : MonoBehaviour
     private void OnEnable()
     {
 
-        StartCoroutine(makeDelay());
+        Destroy(this.gameObject, destroyDelayTime); // 일정 시간 지나면 삭제한다.
 
         slugRigid = GetComponent<Rigidbody2D>();
         slugSprite = GetComponent<SpriteRenderer>();
@@ -59,12 +59,21 @@ public class SlugMon : MonoBehaviour
         ResetCrawlTime();
 
 
+        float timeAfterInstantiate = 0;
+        while (!afterDelay)
+        {
+            timeAfterInstantiate += Time.deltaTime;
+            if (timeAfterInstantiate > delayForUse)
+            {
+                afterDelay = true;
+            }
+        }
+
+
     }
 
-    private void Start()
-    {
-        Destroy(this.gameObject, destroyDelayTime); // 일정 시간 지나면 삭제한다.
-    }
+
+
 
     private void Update()
     {

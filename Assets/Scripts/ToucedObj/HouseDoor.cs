@@ -7,8 +7,9 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 {
     private GameObject clodedDoor;
     private GameObject openDoor;
-    [SerializeField] float maxOpenTime = 5f;
-    [SerializeField] bool isOpen;
+    float realOpenTime;
+    [SerializeField] const float maxOpenTime = 5f;
+    [SerializeField] bool isOpen = false;
 
     //화살표 관련
     private GameObject directIcon;
@@ -38,9 +39,7 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
         openDoor = this.transform.GetChild(1).gameObject;
         directIcon = this.transform.GetChild(2).gameObject;
 
-        maxOpenTime = 5f;
-        isOpen = false;
-
+        realOpenTime = maxOpenTime;
         openDoor.SetActive(false);
         directIcon.SetActive(false);
 
@@ -60,9 +59,9 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
     {
         if (isOpen)
         {
-            maxOpenTime -= Time.deltaTime;
+            realOpenTime -= Time.deltaTime;
             DirectIconMove();
-            if (maxOpenTime <= 0)
+            if (realOpenTime <= 0)
             {
                 CloseMyDoor();
                 
@@ -79,16 +78,9 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
                 OpenMyDoor();
                 whoknocked = collision.gameObject.GetComponent<PlayerLife>();
             }
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.tag == "Player") // 플레이어가 문에 닿았을 때.
-        {
-            if (!isOpen)
+            else // 플레이어가 닿고 있는 동안+IsOpen인 경우 문이 계속 열려있게 한다. 
             {
-            maxOpenTime = 5f;
+                realOpenTime = maxOpenTime;
             }
         }
     }
@@ -114,7 +106,7 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
 
         AudioManager.instance.PlaySFX("DoorClosed");
 
-        maxOpenTime = 5f; // 최대 오픈 시간 
+        realOpenTime = maxOpenTime; // 최대 오픈 시간 
 
     }
 
@@ -162,10 +154,10 @@ public class HouseDoor : MonoBehaviour, ITouchedObj
     public void TouchExit()
     {
 
-        if (touchOn)
-        {
+        //if (touchOn)
+        //{
             houseUIMsg.SetActive(false);
-        }
+        //}
     }
 
     public void SetInputManagerWhatEtoucedObj()

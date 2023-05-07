@@ -5,22 +5,23 @@ using UnityEngine;
 public class FlowerMon_HeadPoint : MonoBehaviour
 {
     Transform Tr;
-    float headShotBouncePower = 2000f;
+    const float headShotBouncePower = 2000f;
+    FlowerEnemy _myflower;
 
     private void OnEnable()
     {
         Tr = GetComponent<Transform>();
+        _myflower = GetComponentInParent<FlowerEnemy>();
+        //_myflower.OnDeath += 람다식 말고 다른 거 
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
-        //_tfGenPos = transform.GetChild(0);??
         if (collision.gameObject.CompareTag("Player"))
         {
-            //Debug.Log("헤드샷성공 : "+ collision.gameObject.name);
             PlayerMovement attackingPlayers = collision.gameObject.GetComponent<PlayerMovement>();
-            if (!attackingPlayers.isGrounded) // 땅에 있을 때에는 작동하지 HeadShot 효과가 작동하지 않는다. 
+            if (!attackingPlayers.isGrounded) //플레이어가 땅에 있을 때에는 작동하지 HeadShot 효과가 작동하지 않는다. 
             {
 
                 ContactPoint2D cp = collision.GetContact(0);
@@ -29,21 +30,27 @@ public class FlowerMon_HeadPoint : MonoBehaviour
 
                 attackingPlayers.AddForcetoBounce((dir).normalized * headShotBouncePower);
 
-                ///공격당했을때 아이템을 토해내는 메서드.
-                FlowerEnemy _myflowerMon = GetComponentInParent<FlowerEnemy>();
-                _myflowerMon.GetHeadShot();
-                if (_myflowerMon.dead)
+                _myflower.GetHeadShot();
+
+                // 헤드샷 당하고 나서 죽었는지 감지 : 람다식으로 했어야 하나? 
+                if (_myflower.dead)
                 {
                     PlayerLife attackingPlayersLife = collision.gameObject.GetComponent<PlayerLife>();
-                    attackingPlayersLife.UpgateFlowerKillUI();
-                    if(this.gameObject != null)
-                    {
-                        Destroy(this.gameObject);
-                    }
+                    OndeathEvent(attackingPlayersLife);
                 }
+
 
             }
 
+        }
+    }
+
+    void OndeathEvent(PlayerLife whoAttacking)
+    {
+        whoAttacking.UpgateFlowerKillUI();
+        if (this.gameObject != null)
+        {
+            Destroy(this.gameObject);
         }
     }
 }

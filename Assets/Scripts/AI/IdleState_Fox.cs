@@ -16,6 +16,7 @@ public class IdleState_Fox : State<AIFoxController>
 
     public override void OnEnter()
     {
+        Debug.Log("Idle·Î µ¹¾Æ¿È ");
         _animator?.SetBool(hasMove, false);
     }
 

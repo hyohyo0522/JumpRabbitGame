@@ -37,7 +37,6 @@ public class LivingEntity : MonoBehaviour
     public virtual void Die()
     {
         dead = true;
-        bool isDeathIsNull = OnDeath == null ? true: false;
 
         if (OnDeath != null)
         {

@@ -28,6 +28,8 @@ public class BingoPanel : MonoBehaviour
     const string ComboBtnNotEnable = "#002E08";
 
 
+    Color ButtonColor; // 컬러값 변경될 때마다 담아서 쓸 out 변수 
+
 
 
 
@@ -298,7 +300,7 @@ public class BingoPanel : MonoBehaviour
         theChsetTouched = Touched;
     }
 
-    Color ButtonColor; // 컬러값 변경될 때마다 담아서 쓸 out 변수 
+
     private Color ChangeButtonColorResult(string hexcod)
     {
 

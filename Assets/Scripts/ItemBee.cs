@@ -10,6 +10,8 @@ public class ItemBee : MonoBehaviour
     Vector2 newDestination;
     private SpriteRenderer BeeSpRender;
     public LayerMask BorderMask;
+    const float boarderCheckRadius = 5f;
+    public LayerMask playerMask;
     public Transform beeCenter;
 
     public Transform MaxUpLeft;
@@ -17,29 +19,36 @@ public class ItemBee : MonoBehaviour
 
     //아이템 드롭 관련
     public LayerMask GroundMask;
+    const float groundCheckRadius = 5f;
     public Transform rainPoint;
     public GameObject[] items;
-    bool _floatingGround;
+
+    //아이템 드롭 시 랜덤효과 주기 위해서 3개의 timeBetItemRainDrop을 만듦 (캐싱)
+    readonly WaitForSeconds[] timeBetItemRainDrop = { new WaitForSeconds(0.3f), new WaitForSeconds(0.4f), new WaitForSeconds(0.5f) };
 
     float itemBetTime;
-    float minBetTime = 4.5f;
-    float maxBetTime = 7.5f;
+    const float minBetTime = 4.5f;
+    const float maxBetTime = 7.5f;
 
     // Start is called before the first frame update
     void Start()
     {
+
+        //playerMask = LayerMask.NameToLayer("Player");
         SetDestination();
         setitemBetTime();
-        BeeSpRender = GetComponent<SpriteRenderer>(); 
+        BeeSpRender = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckIsFloating();
-        if (_floatingGround) // 땅 위에 떠 있을때에만, 아이템 비에 대한 로직이 동작하게 한다. 
+
+
+        if (CheckIsFloating()) // 땅 위에 떠 있을때에만, 아이템 비에 대한 로직이 동작하게 한다. 
         {
             itemBetTime -= Time.deltaTime;
+
             if (itemBetTime <= 0)
             {
                 StartCoroutine(ItemRains());
@@ -47,6 +56,12 @@ public class ItemBee : MonoBehaviour
 
             }
         }
+        else
+        {
+        }
+
+
+
 
         if ((newDestination.x - transform.position.x > 1f) || (newDestination.y - transform.position.y > 1f))
         {
@@ -57,7 +72,6 @@ public class ItemBee : MonoBehaviour
         }
         else
         {
-            // Debug.Log("새로운 목표지점을 설정한다.");
             SetDestination();
         }
 
@@ -82,7 +96,7 @@ public class ItemBee : MonoBehaviour
 
     void checkBorder()
     {
-        Collider2D[] nearBorder = Physics2D.OverlapCircleAll((Vector2)beeCenter.position, 5f, BorderMask);
+        Collider2D[] nearBorder = Physics2D.OverlapCircleAll((Vector2)beeCenter.position, boarderCheckRadius, BorderMask);
         if (nearBorder.Length > 0)
         {
             // Debug.Log("근처에 경계가 있다.");
@@ -92,20 +106,6 @@ public class ItemBee : MonoBehaviour
         }
     }
 
-    //랜덤시간에 따라 아이템 떨구게 하는 메서드
-    // 진짜 가끔 별/ 당근 많이 쏟아지게 함
-    //void ItemRains()
-    //{
-    //    int ItemNumber = Random.Range(7, 11);
-
-    //    for(int n =0; n<ItemNumber; n++)
-    //    {
-    //        int index = Random.Range(0, items.Length);
-    //        GameObject ItemDrop = Instantiate(items[index], rainPoint.position, Quaternion.identity);
-
-    //    }
-    //}
-
     private IEnumerator ItemRains()
     {
         int ItemNumber = Random.Range(7, 11);
@@ -113,9 +113,13 @@ public class ItemBee : MonoBehaviour
         for (int n = 0; n < ItemNumber; n++)
         {
             int index = Random.Range(0, items.Length);
-            float timeBetDrop = Random.Range(0.1f, 0.3f);
-            GameObject ItemDrop = Instantiate(items[index], rainPoint.position, Quaternion.identity);
-            yield return new WaitForSeconds(0.3f);
+
+            if (CheckIsFloating()) //아이템 뿌리기 전 한번 더 땅에 떠 있는지 체크한다. 
+            {
+                GameObject ItemDrop = Instantiate(items[index], rainPoint.position, Quaternion.identity);
+            }
+            int randomDropTimeIndex = Random.Range(0, timeBetItemRainDrop.Length);
+            yield return timeBetItemRainDrop[randomDropTimeIndex];
         }
 
     }
@@ -126,27 +130,41 @@ public class ItemBee : MonoBehaviour
 
     }
 
-    void CheckIsFloating() 
-    { 
-        //밑에 땅이 있는지 검사하고? >> 이거 없어도 될수도 있다. 
-        //RaycastHit2D hitInfo = Physics2D.Raycast(rainPoint.position, -Vector2.up, 10f, GroundMask);
+    bool CheckIsFloating() 
+    {
+
+        bool NotTouchingGround;
 
         //땅 속에 있을 때에는 아이템을 발사하지 않는다. Collider로 검사한다.
-        Collider2D[] buriedInGround = Physics2D.OverlapCircleAll((Vector2)rainPoint.position, 5f, GroundMask);
+        Collider2D[] buriedInGround = Physics2D.OverlapCircleAll((Vector2)rainPoint.position, groundCheckRadius, GroundMask);
 
 
 
         if (buriedInGround.Length == 0 ) 
         {
-            
-            //Debug.Log("땅이 밑에 있다!!!!!!!!!!!!!!!!!!!");
-            _floatingGround = true;
+            NotTouchingGround = true;
         }
         else
         {
-            //Debug.Log("땅이 밑에 없다!");
-            _floatingGround = false;
+            NotTouchingGround = false;
         }
+
+        return NotTouchingGround;
     }
 
+
+    bool CheckPlayerIsRiding()
+    {
+        bool isRiding = false;
+
+        Collider2D[] touchingPlayer = Physics2D.OverlapCircleAll((Vector2)rainPoint.position, 2f, playerMask);
+
+        if (touchingPlayer.Length > 0)
+        {
+            isRiding = true;
+
+        }
+        return isRiding;
+            
+    }
 }

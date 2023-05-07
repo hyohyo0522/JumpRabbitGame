@@ -69,6 +69,20 @@ public sealed class StateMachine<T>
 
     }
 
+    // Idle , Attact , Move
+
+    // CurrentState = Idle or Attact or Move
+    // CurrentState Enter 1번 <--- 여러번!
+    // Idle -> Move 
+    // Move -> Idle  =  Move 
+    // Idle -> Enter
+    // Current -> Update Current Idle (Move)
+    // Idle -> Move -> Idle -> Update? 
+
+    // 1. Enter 한번만
+    // 2. 왜 MoveState Idle로 바뀌는지
+    // 3. MoveState -> Update MoveState
+
     public void Update(float deltaTime)
     {
         Debug.Log($"여우몬 현재 스테이트 : {currentState}");

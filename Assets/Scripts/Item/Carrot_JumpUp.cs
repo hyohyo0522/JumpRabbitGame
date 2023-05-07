@@ -6,27 +6,18 @@ public class Carrot_JumpUp : MonoBehaviour,IItem
 {
     [SerializeField] float destroyDelayTime = 5f;
     [SerializeField] int jumpUpValue = 5;  //에디터에서 수를 조정해서 범용적으로 쓰자.
-    [SerializeField] float delayForUse = 0.5f; // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
+    WaitForSeconds delayForUse = new WaitForSeconds(0.5f); // 생성되자마자 바로 아이템이 사용되는 것을 방지하기 위한 딜레이타임
     bool afterDelay = false;
 
 
 
 
-    private void Start()
+    private void OnEnable()
     {
         Destroy(this.gameObject, destroyDelayTime);
 
-        float timeAfterInstantiate = 0;
-        while(!afterDelay)
-        {
-            timeAfterInstantiate += Time.deltaTime;
-            if(timeAfterInstantiate> delayForUse)
-            {
-                afterDelay = true;
-            }
-        }
+        StartCoroutine(makeDelay());
     }
-
 
     public void Use(GameObject target)
     {
@@ -45,6 +36,13 @@ public class Carrot_JumpUp : MonoBehaviour,IItem
             }
         }
 
+    }
+
+    IEnumerator makeDelay()
+    {
+        afterDelay = false;
+        yield return delayForUse;
+        afterDelay = true;
     }
 
     public void DestoySelf()

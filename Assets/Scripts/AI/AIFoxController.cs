@@ -272,7 +272,7 @@ public class AIFoxController : MonoBehaviour
 
 
 
-    public bool isMoveLadderRight() // 사다리 오르는 함수
+    public bool isMoveLadderRight() // 사다리 오르내리기 해야하는지 체크하는 함수
     {
 
         bool MovingLadder = false;
@@ -280,8 +280,7 @@ public class AIFoxController : MonoBehaviour
 
         if (ladderDetect.Length > 0)
         {
-
-
+            Debug.Log("여우몬사다리 : ladderDetect.Length > 0 성공");
             GameObject ladderPosition = ladderDetect[0].transform.GetChild(0).gameObject; // 사다리 위치 가져오기
             Transform ladderMiddlePoint = ladderPosition.GetComponent<Transform>();
 
@@ -290,28 +289,34 @@ public class AIFoxController : MonoBehaviour
             if (resultCompareY == 0)
             {
 
-                Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), ladderDetect[0], true);
+                Physics2D.IgnoreCollision(_collider, ladderDetect[0], true);
+
+                Debug.Log("여우몬사다리 : resultCompareY == 0 이다.");
 
                 return MovingLadder; // 사다리 무시하고 지나감
             }
             else if(resultCompareY == 1)
             {
                 MiddlewayPoint = ladderDetect[0].transform.GetChild(1).gameObject.transform.position;
+                Debug.Log("여우몬사다리 : resultCompareY == 1 이다.");
 
             }
             else if(resultCompareY == -1)
             {
                 MiddlewayPoint = ladderDetect[0].transform.GetChild(2).gameObject.transform.position;
+                Debug.Log("여우몬사다리 : resultCompareY == -1 이다.");
 
             }
 
-            currentLadder = ladderPosition.GetComponent<Collider2D>();
-            Debug.Log("여우가 사다리를 무시하지 않는다.");
-            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(), currentLadder, false);
+            currentLadder = ladderDetect[0];
+            //currentLadder = ladderDetect[0].GetComponent<Collider2D>();
+            Physics2D.IgnoreCollision(_collider, currentLadder, false); ;
             MovingLadder = true;
-
+            Debug.Log("여우몬사다리 :  무시하지 않고 MovingLadder를 true로 만들었다.");
+            //★ 여기서 그 다음 꺽쇠 너머로 안 넘아감 
         }
 
+        Debug.Log($"여우몬사다리의 MovingLadder 값은 :  {MovingLadder}");
         return MovingLadder;
 
     }
@@ -554,9 +559,11 @@ public class AIFoxController : MonoBehaviour
             {
 
                 foxIsGrounded = true;
+                _animator.SetBool(isFalling, false);
+                Debug.Log("여우몬사다리 : CheckFoxIsFalling에서 Idle로 바꿨습니다.");
+                stateMachine.ChangeState<IdleState_Fox>();  
             }
-            _animator.SetBool(isFalling, false);
-            stateMachine.ChangeState<IdleState_Fox>();  //이거때문인가??
+
 
         }
         else // 땅에 닿았다.
@@ -565,8 +572,9 @@ public class AIFoxController : MonoBehaviour
             if (foxIsGrounded)
             {
                 foxIsGrounded = false;
+                _animator.SetBool(isFalling, true);
             }
-            _animator.SetBool(isFalling, true);
+
             _animator.SetFloat(velocityY, _rigidBody.velocity.y);
         }
     }
